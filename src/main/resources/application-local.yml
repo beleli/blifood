@@ -1,0 +1,15 @@
+server:
+  port: 8081
+
+spring:
+  jpa:
+    show-sql: true
+
+blifood:
+  email:
+    impl: fake
+  storage:
+    type: local
+    local:
+      path: ./catalog
+

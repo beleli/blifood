@@ -1,0 +1,128 @@
+package br.com.blifood.api.exceptionhandler
+
+import br.com.blifood.api.exceptionhandler.ApiProblemDetail.ApiFieldError
+import br.com.blifood.core.message.Messages
+import br.com.blifood.domain.exception.BusinessException
+import br.com.blifood.domain.exception.EntityNotFoundException
+import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException
+import jakarta.validation.ConstraintViolationException
+import org.hibernate.validator.internal.engine.ConstraintViolationImpl
+import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpStatus
+import org.springframework.http.HttpStatusCode
+import org.springframework.http.ResponseEntity
+import org.springframework.http.converter.HttpMessageNotReadableException
+import org.springframework.validation.FieldError
+import org.springframework.validation.ObjectError
+import org.springframework.web.bind.MethodArgumentNotValidException
+import org.springframework.web.bind.annotation.ControllerAdvice
+import org.springframework.web.bind.annotation.ExceptionHandler
+import org.springframework.web.context.request.ServletWebRequest
+import org.springframework.web.context.request.WebRequest
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler
+import java.net.URI
+
+@ControllerAdvice
+class ExceptionHandler : ResponseEntityExceptionHandler() {
+
+    @ExceptionHandler(EntityNotFoundException::class)
+    fun handleNotFountException(ex: EntityNotFoundException, request: WebRequest): ResponseEntity<Any>? {
+        return this.handleExceptionInternal(ex, null, HttpHeaders(), HttpStatus.NOT_FOUND, request)
+    }
+
+    @ExceptionHandler(BusinessException::class)
+    fun handleNotFountException(ex: BusinessException, request: WebRequest): ResponseEntity<Any>? {
+        return this.handleExceptionInternal(ex, null, HttpHeaders(), HttpStatus.BAD_REQUEST, request)
+    }
+
+    @ExceptionHandler(AccessDeniedException::class)
+    fun handleAccessDenied(ex: AccessDeniedException, request: WebRequest): ResponseEntity<Any>? {
+        return this.handleExceptionInternal(ex, null, HttpHeaders(), HttpStatus.FORBIDDEN, request)
+    }
+
+    @ExceptionHandler(ConstraintViolationException::class)
+    fun handleConstraintViolationException(ex: ConstraintViolationException, request: WebRequest): ResponseEntity<Any>? {
+        val errors = mutableSetOf<ApiFieldError>()
+        ex.constraintViolations.map {
+            it as ConstraintViolationImpl
+            errors.add(ApiFieldError(it.propertyPath.toString(), Messages.get(it.message)))
+        }
+        val problemDetail = buildProblem(HttpStatus.BAD_REQUEST, Messages.get("validation.failed"), request, errors)
+        return this.handleExceptionInternal(ex, problemDetail, HttpHeaders(), HttpStatus.BAD_REQUEST, request)
+    }
+
+    @ExceptionHandler(Exception::class)
+    fun handleUncaughtException(ex: Exception, request: WebRequest): ResponseEntity<Any>? {
+        logger.error(ex.message, ex)
+        return this.handleExceptionInternal(ex, null, HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request)
+    }
+
+    override fun handleMethodArgumentNotValid(
+        ex: MethodArgumentNotValidException,
+        headers: HttpHeaders,
+        status: HttpStatusCode,
+        request: WebRequest
+    ): ResponseEntity<Any>? {
+        val errors = mutableSetOf<ApiFieldError>()
+        ex.bindingResult.allErrors.map {
+            when (it) {
+                is FieldError -> errors.add(ApiFieldError(it.field, Messages.get(it.defaultMessage!!)))
+                is ObjectError -> errors.add(ApiFieldError(it.objectName, Messages.get(it.defaultMessage!!)))
+                else -> {}
+            }
+        }
+        val problemDetail = buildProblem(HttpStatus.BAD_REQUEST, message = Messages.get("validation.failed"), request, errors)
+        return this.handleExceptionInternal(ex, problemDetail, headers, status, request)
+    }
+
+    override fun handleHttpMessageNotReadable(
+        ex: HttpMessageNotReadableException,
+        headers: HttpHeaders,
+        status: HttpStatusCode,
+        request: WebRequest
+    ): ResponseEntity<Any>? {
+        val errors = mutableSetOf<ApiFieldError>()
+        val rootCause = ex.rootCause
+        when (rootCause) {
+            is UnrecognizedPropertyException -> errors.add(ApiFieldError(rootCause.propertyName, Messages.get("unrecognized.field")))
+            else -> {}
+        }
+        val problemDetail = buildProblem(HttpStatus.BAD_REQUEST, message = Messages.get("readRequest.failed"), request, errors)
+        return this.handleExceptionInternal(Exception(rootCause), problemDetail, headers, status, request)
+    }
+
+    override fun handleExceptionInternal(
+        ex: Exception,
+        body: Any?,
+        headers: HttpHeaders,
+        statusCode: HttpStatusCode,
+        request: WebRequest
+    ): ResponseEntity<Any>? {
+        val newBody = when (body) {
+            null -> buildProblem(statusCode, ex.localizedMessage, request)
+            is String -> buildProblem(statusCode, body, request)
+            else -> body
+        }
+        return super.handleExceptionInternal(ex, newBody, headers, statusCode, request)
+    }
+
+    private fun buildProblem(
+        statusCode: HttpStatusCode,
+        message: String,
+        request: WebRequest,
+        fieldErrors: Set<ApiFieldError>? = null
+    ): ApiProblemDetail {
+        return ApiProblemDetail(
+            title = HttpStatus.valueOf(statusCode.value()).reasonPhrase,
+            status = statusCode.value(),
+            detail = message,
+            instance = URI.create((request as ServletWebRequest).request.requestURI),
+            errors = fieldErrors
+        )
+
+        /*val problem = ProblemDetail.forStatusAndDetail(statusCode, message)
+        problem.instance = URI.create((request as ServletWebRequest).request.requestURI)
+        fieldErrors?.let { if (it.isNotEmpty()) problem.setProperty("errors", fieldErrors) }
+        return problem*/
+    }
+}

@@ -1,0 +1,13 @@
+version: '3.6'
+
+services:
+  psql:
+    image: postgres:11.12
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=postgresDb
+      - POSTGRES_USER=postgresUser
+      - POSTGRES_PASSWORD=postgresPassword
+    volumes:
+      - ./postgres:/var/lib/postgresql/data

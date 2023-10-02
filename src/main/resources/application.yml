@@ -1,0 +1,20 @@
+spring:
+  jackson:
+    deserialization:
+      fail-on-unknown-properties: true
+      fail-on-ignored-properties: true
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/postgresDb
+    username: postgresUser
+    password: postgresPassword
+  flyway:
+    schemas: blifood
+  jpa:
+    properties:
+      hibernate:
+        default_schema: blifood
+
+blifood:
+  email:
+    from: bliFood <noreply@blifood.com.br>
