@@ -4,14 +4,15 @@ import br.com.blifood.api.exceptionhandler.ApiProblemDetail.ApiFieldError
 import br.com.blifood.core.message.Messages
 import br.com.blifood.domain.exception.BusinessException
 import br.com.blifood.domain.exception.EntityNotFoundException
+import br.com.blifood.domain.exception.UserNotAuthorizedException
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException
 import jakarta.validation.ConstraintViolationException
-import org.hibernate.validator.internal.engine.ConstraintViolationImpl
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.HttpStatusCode
 import org.springframework.http.ResponseEntity
 import org.springframework.http.converter.HttpMessageNotReadableException
+import org.springframework.security.access.AccessDeniedException
 import org.springframework.validation.FieldError
 import org.springframework.validation.ObjectError
 import org.springframework.web.bind.MethodArgumentNotValidException
@@ -25,36 +26,40 @@ import java.net.URI
 @ControllerAdvice
 class ExceptionHandler : ResponseEntityExceptionHandler() {
 
-    @ExceptionHandler(EntityNotFoundException::class)
-    fun handleNotFountException(ex: EntityNotFoundException, request: WebRequest): ResponseEntity<Any>? {
-        return this.handleExceptionInternal(ex, null, HttpHeaders(), HttpStatus.NOT_FOUND, request)
-    }
-
-    @ExceptionHandler(BusinessException::class)
-    fun handleNotFountException(ex: BusinessException, request: WebRequest): ResponseEntity<Any>? {
-        return this.handleExceptionInternal(ex, null, HttpHeaders(), HttpStatus.BAD_REQUEST, request)
+    @ExceptionHandler(Exception::class)
+    fun handleUnscathedException(ex: Exception, request: WebRequest): ResponseEntity<Any>? {
+        logger.error(ex)
+        return this.handleExceptionInternal(ex, Messages.get("system.unscathedException"), HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request)
     }
 
     @ExceptionHandler(AccessDeniedException::class)
-    fun handleAccessDenied(ex: AccessDeniedException, request: WebRequest): ResponseEntity<Any>? {
-        return this.handleExceptionInternal(ex, null, HttpHeaders(), HttpStatus.FORBIDDEN, request)
+    fun handleAccessDeniedException(ex: AccessDeniedException, request: WebRequest): ResponseEntity<Any>? {
+        return ResponseEntity(HttpStatus.FORBIDDEN)
+    }
+
+    @ExceptionHandler(EntityNotFoundException::class)
+    fun handleEntityNotFoundException(ex: EntityNotFoundException, request: WebRequest): ResponseEntity<Any>? {
+        return this.handleExceptionInternal(ex, null, HttpHeaders(), HttpStatus.NOT_FOUND, request)
+    }
+
+    @ExceptionHandler(UserNotAuthorizedException::class)
+    fun handleUserNotAuthorizedException(ex: UserNotAuthorizedException, request: WebRequest): ResponseEntity<Any>? {
+        return ResponseEntity(HttpStatus.FORBIDDEN)
+    }
+
+    @ExceptionHandler(BusinessException::class)
+    fun handleBusinessException(ex: BusinessException, request: WebRequest): ResponseEntity<Any>? {
+        return this.handleExceptionInternal(ex, null, HttpHeaders(), HttpStatus.BAD_REQUEST, request)
     }
 
     @ExceptionHandler(ConstraintViolationException::class)
     fun handleConstraintViolationException(ex: ConstraintViolationException, request: WebRequest): ResponseEntity<Any>? {
         val errors = mutableSetOf<ApiFieldError>()
         ex.constraintViolations.map {
-            it as ConstraintViolationImpl
             errors.add(ApiFieldError(it.propertyPath.toString(), Messages.get(it.message)))
         }
         val problemDetail = buildProblem(HttpStatus.BAD_REQUEST, Messages.get("validation.failed"), request, errors)
         return this.handleExceptionInternal(ex, problemDetail, HttpHeaders(), HttpStatus.BAD_REQUEST, request)
-    }
-
-    @ExceptionHandler(Exception::class)
-    fun handleUncaughtException(ex: Exception, request: WebRequest): ResponseEntity<Any>? {
-        logger.error(ex.message, ex)
-        return this.handleExceptionInternal(ex, null, HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request)
     }
 
     override fun handleMethodArgumentNotValid(
@@ -119,10 +124,5 @@ class ExceptionHandler : ResponseEntityExceptionHandler() {
             instance = URI.create((request as ServletWebRequest).request.requestURI),
             errors = fieldErrors
         )
-
-        /*val problem = ProblemDetail.forStatusAndDetail(statusCode, message)
-        problem.instance = URI.create((request as ServletWebRequest).request.requestURI)
-        fieldErrors?.let { if (it.isNotEmpty()) problem.setProperty("errors", fieldErrors) }
-        return problem*/
     }
 }

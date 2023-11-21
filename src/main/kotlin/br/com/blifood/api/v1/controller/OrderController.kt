@@ -1,11 +1,13 @@
 package br.com.blifood.api.v1.controller
 
-import br.com.blifood.api.v1.ResourceUriHelper
+import br.com.blifood.api.v1.addUriInResponseHeader
+import br.com.blifood.api.v1.getSecurityContextHolderUserId
 import br.com.blifood.api.v1.model.OrderModel
 import br.com.blifood.api.v1.model.input.OrderInputModel
 import br.com.blifood.api.v1.model.input.toEntity
 import br.com.blifood.api.v1.model.toModel
 import br.com.blifood.api.v1.openapi.OrderControllerOpenApi
+import br.com.blifood.domain.entity.Authority
 import br.com.blifood.domain.entity.Order
 import br.com.blifood.domain.exception.BusinessException
 import br.com.blifood.domain.exception.EntityNotFoundException
@@ -14,6 +16,7 @@ import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -29,24 +32,27 @@ class OrderController(
     private val orderService: OrderService
 ) : OrderControllerOpenApi {
 
+    @PreAuthorize("hasAuthority('${Authority.ORDER_READ}')")
     @GetMapping("/{orderCode}")
     override fun findByCode(@PathVariable orderCode: String): OrderModel {
         return orderService.findOrThrow(orderCode).toModel()
     }
 
+    @PreAuthorize("hasAuthority('${Authority.ORDER_WRITE}')")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     override fun create(
         @Valid @RequestBody
-        orderInputDto: OrderInputModel
+        orderInputModel: OrderInputModel
     ): OrderModel {
-        val userId = 1L
-        val order = orderInputDto.toEntity(userId)
+        val userId = getSecurityContextHolderUserId()
+        val order = orderInputModel.toEntity(userId)
         return issue(order).toModel().also {
-            ResourceUriHelper.addUriInResponseHeader(it.code)
+            addUriInResponseHeader(it.code)
         }
     }
 
+    @PreAuthorize("hasAuthority('${Authority.ORDER_WRITE}')")
     @PutMapping("/{orderCode}/confirm")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     override fun confirm(@PathVariable orderCode: String): ResponseEntity<Void> {
@@ -54,6 +60,7 @@ class OrderController(
         return ResponseEntity.noContent().build()
     }
 
+    @PreAuthorize("hasAuthority('${Authority.ORDER_WRITE}')")
     @PutMapping("/{orderCode}/delivery")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     override fun delivery(@PathVariable orderCode: String): ResponseEntity<Void> {
@@ -61,6 +68,7 @@ class OrderController(
         return ResponseEntity.noContent().build()
     }
 
+    @PreAuthorize("hasAuthority('${Authority.ORDER_WRITE}')")
     @PutMapping("/{orderCode}/cancel")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     override fun cancel(@PathVariable orderCode: String): ResponseEntity<Void> {

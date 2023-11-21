@@ -44,7 +44,7 @@ interface CityControllerOpenApi {
     )
     fun create(
         @RequestBody(description = "Representação de uma nova cidade", required = true)
-        cityInputDto: CityInputModel
+        cityInputModel: CityInputModel
     ): CityModel
 
     @Operation(
@@ -59,7 +59,7 @@ interface CityControllerOpenApi {
         @Parameter(example = "1", required = true)
         cityId: Long,
         @RequestBody(required = true)
-        cityInputDto: CityInputModel
+        cityInputModel: CityInputModel
     ): CityModel
 
     @Operation(

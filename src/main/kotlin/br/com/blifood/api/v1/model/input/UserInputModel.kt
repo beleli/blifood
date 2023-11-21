@@ -13,7 +13,7 @@ data class UserInputModel(
     @field:Size(max = 80)
     val name: String? = null,
 
-    @Schema(example = "beleli@gmail.com")
+    @Schema(example = "gerente@blifood.com.br")
     @field:NotBlank
     @field:Email
     val email: String? = null

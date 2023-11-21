@@ -1,12 +1,14 @@
 package br.com.blifood.api.v1.controller
 
-import br.com.blifood.api.v1.ResourceUriHelper
+import br.com.blifood.api.v1.addUriInResponseHeader
+import br.com.blifood.api.v1.getSecurityContextHolderUserId
 import br.com.blifood.api.v1.model.RestaurantModel
 import br.com.blifood.api.v1.model.input.RestaurantInputModel
 import br.com.blifood.api.v1.model.input.applyModel
 import br.com.blifood.api.v1.model.input.toEntity
 import br.com.blifood.api.v1.model.toModel
 import br.com.blifood.api.v1.openapi.RestaurantControllerOpenApi
+import br.com.blifood.domain.entity.Authority
 import br.com.blifood.domain.entity.Restaurant
 import br.com.blifood.domain.exception.BusinessException
 import br.com.blifood.domain.exception.EntityNotFoundException
@@ -16,6 +18,7 @@ import org.springframework.hateoas.CollectionModel
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -32,6 +35,7 @@ class RestaurantController(
     private val restaurantService: RestaurantService
 ) : RestaurantControllerOpenApi {
 
+    @PreAuthorize("hasAuthority('${Authority.RESTAURANT_READ}')")
     @GetMapping
     override fun findAll(): CollectionModel<RestaurantModel> {
         return CollectionModel.of(
@@ -40,60 +44,68 @@ class RestaurantController(
         )
     }
 
+    @PreAuthorize("hasAuthority('${Authority.RESTAURANT_READ}')")
     @GetMapping("/{restaurantId}")
     override fun findById(@PathVariable restaurantId: Long): RestaurantModel {
         return restaurantService.findOrThrow(restaurantId).toModel()
     }
 
+    @PreAuthorize("hasAuthority('${Authority.RESTAURANT_WRITE}')")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     override fun create(
         @Valid @RequestBody
-        restaurantInputDto: RestaurantInputModel
+        restaurantInputModel: RestaurantInputModel
     ): RestaurantModel {
-        return save(restaurantInputDto.toEntity()).toModel().also {
-            ResourceUriHelper.addUriInResponseHeader(it.id)
+        return save(restaurantInputModel.toEntity()).toModel().also {
+            addUriInResponseHeader(it.id)
         }
     }
 
+    @PreAuthorize("hasAuthority('${Authority.RESTAURANT_WRITE}')")
     @PutMapping("/{restaurantId}")
     override fun alter(
         @PathVariable restaurantId: Long,
         @Valid @RequestBody
-        restaurantInputDto: RestaurantInputModel
+        restaurantInputModel: RestaurantInputModel
     ): RestaurantModel {
-        val restaurant = restaurantService.findOrThrow(restaurantId).applyModel(restaurantInputDto)
+        val restaurant = restaurantService.findOrThrow(restaurantId).applyModel(restaurantInputModel)
         return save(restaurant).toModel()
     }
 
+    @PreAuthorize("hasAuthority('${Authority.RESTAURANT_WRITE}')")
     @DeleteMapping("/{restaurantId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     override fun delete(@PathVariable restaurantId: Long): ResponseEntity<Void> {
-        restaurantService.delete(restaurantId)
+        restaurantService.delete(restaurantId, getSecurityContextHolderUserId())
         return ResponseEntity.noContent().build()
     }
 
+    @PreAuthorize("hasAuthority('${Authority.RESTAURANT_WRITE}')")
     @PutMapping("/{restaurantId}/activate")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     override fun activate(@PathVariable restaurantId: Long): ResponseEntity<Void> {
-        restaurantService.activate(restaurantId)
+        restaurantService.activate(restaurantId, getSecurityContextHolderUserId())
         return ResponseEntity.noContent().build()
     }
 
+    @PreAuthorize("hasAuthority('${Authority.RESTAURANT_WRITE}')")
     @PutMapping("/{restaurantId}/inactivate")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     override fun inactivate(@PathVariable restaurantId: Long): ResponseEntity<Void> {
-        restaurantService.inactivate(restaurantId)
+        restaurantService.inactivate(restaurantId, getSecurityContextHolderUserId())
         return ResponseEntity.noContent().build()
     }
 
+    @PreAuthorize("hasAuthority('${Authority.RESTAURANT_WRITE}')")
     @PutMapping("/{restaurantId}/open")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     override fun open(@PathVariable restaurantId: Long): ResponseEntity<Void> {
-        restaurantService.open(restaurantId)
+        restaurantService.open(restaurantId, getSecurityContextHolderUserId())
         return ResponseEntity.noContent().build()
     }
 
+    @PreAuthorize("hasAuthority('${Authority.RESTAURANT_WRITE}')")
     @PutMapping("/{restaurantId}/close")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     override fun close(@PathVariable restaurantId: Long): ResponseEntity<Void> {
@@ -103,7 +115,7 @@ class RestaurantController(
 
     private fun save(restaurant: Restaurant): Restaurant {
         return try {
-            restaurantService.save(restaurant)
+            restaurantService.save(restaurant, getSecurityContextHolderUserId())
         } catch (ex: EntityNotFoundException) {
             throw throw BusinessException(ex.message)
         } catch (ex: Throwable) {

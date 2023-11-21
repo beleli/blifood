@@ -45,9 +45,9 @@ open class ProductImageModel(
     }
 }
 
-fun ProductImage.toModel() = ProductImageModel(
-    id,
-    product.restaurant.id,
+fun ProductImage.toModel(restaurantId: Long) = ProductImageModel(
+    id = id,
+    restaurantId = restaurantId,
     fileName = fileName,
     description = description,
     contentType = contentType,

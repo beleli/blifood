@@ -3,8 +3,6 @@ package br.com.blifood.domain.entity
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
 import jakarta.validation.constraints.PositiveOrZero
 import jakarta.validation.constraints.Size
@@ -16,10 +14,6 @@ data class ProductImage(
     @Id
     @Column(name = "id_product", unique = true, nullable = false)
     val id: Long = 0,
-
-    @OneToOne
-    @JoinColumn(name = "id_product", nullable = false)
-    val product: Product = Product(),
 
     @field:Size(min = 1, max = 150)
     @Column(name = "ds_file_name", nullable = false)

@@ -44,7 +44,7 @@ interface StateControllerOpenApi {
     )
     fun create(
         @RequestBody(required = true)
-        stateInputDto: StateInputModel
+        stateInputModel: StateInputModel
     ): StateModel
 
     @Operation(
@@ -59,7 +59,7 @@ interface StateControllerOpenApi {
         @Parameter(example = "1", required = true)
         stateId: Long,
         @RequestBody(required = true)
-        stateInputDto: StateInputModel
+        stateInputModel: StateInputModel
     ): StateModel
 
     @Operation(

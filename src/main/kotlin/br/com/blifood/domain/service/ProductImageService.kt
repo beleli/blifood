@@ -27,7 +27,7 @@ class ProductImageService(
     }
 
     @Transactional
-    fun delete(restaurantId: Long, productId: Long) {
+    fun delete(productId: Long) {
         val image = findOrThrow(productId)
         productImageRepository.delete(image)
         imageStorageService.remove(image.fileName)

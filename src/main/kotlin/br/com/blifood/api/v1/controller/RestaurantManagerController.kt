@@ -1,9 +1,8 @@
 package br.com.blifood.api.v1.controller
 
-import br.com.blifood.api.v1.getSecurityContextHolderUserId
-import br.com.blifood.api.v1.model.PaymentMethodModel
+import br.com.blifood.api.v1.model.UserModel
 import br.com.blifood.api.v1.model.toModel
-import br.com.blifood.api.v1.openapi.RestaurantPaymentMethodControllerOpenApi
+import br.com.blifood.api.v1.openapi.RestaurantManagerControllerOpenApi
 import br.com.blifood.domain.entity.Authority
 import br.com.blifood.domain.exception.BusinessException
 import br.com.blifood.domain.exception.EntityNotFoundException
@@ -22,20 +21,19 @@ import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("/v1/restaurants/{restaurantId}/payment-methods", produces = [MediaType.APPLICATION_JSON_VALUE])
-class RestaurantPaymentMethodController(
+@RequestMapping("/v1/restaurants/{restaurantId}/managers", produces = [MediaType.APPLICATION_JSON_VALUE])
+class RestaurantManagerController(
     private val restaurantService: RestaurantService
-) : RestaurantPaymentMethodControllerOpenApi {
+) : RestaurantManagerControllerOpenApi {
 
     @PreAuthorize("hasAuthority('${Authority.RESTAURANT_WRITE}')")
     @GetMapping
     override fun findAll(
         @PathVariable restaurantId: Long
-    ): CollectionModel<PaymentMethodModel> {
+    ): CollectionModel<UserModel> {
         try {
             return CollectionModel.of(
-                restaurantService.findAllPaymentMethods(restaurantId).map { it.toModel() },
-                PaymentMethodModel.findAllLink(true)
+                restaurantService.findAllManagers(restaurantId).map { it.toModel() }
             )
         } catch (ex: EntityNotFoundException) {
             throw throw BusinessException(ex.message)
@@ -45,14 +43,14 @@ class RestaurantPaymentMethodController(
     }
 
     @PreAuthorize("hasAuthority('${Authority.RESTAURANT_WRITE}')")
-    @PutMapping("/{paymentMethodId}")
+    @PutMapping("/{userId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     override fun add(
         @PathVariable restaurantId: Long,
-        @PathVariable paymentMethodId: Long?
+        @PathVariable userId: Long?
     ): ResponseEntity<Void> {
         try {
-            restaurantService.addPaymentMethod(restaurantId, getSecurityContextHolderUserId(), paymentMethodId!!)
+            restaurantService.addManager(restaurantId, userId!!)
             return ResponseEntity.noContent().build()
         } catch (ex: EntityNotFoundException) {
             throw throw BusinessException(ex.message)
@@ -62,14 +60,14 @@ class RestaurantPaymentMethodController(
     }
 
     @PreAuthorize("hasAuthority('${Authority.RESTAURANT_WRITE}')")
-    @DeleteMapping("/{paymentMethodId}")
+    @DeleteMapping("/{userId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     override fun remove(
         @PathVariable restaurantId: Long,
-        @PathVariable paymentMethodId: Long
+        @PathVariable userId: Long
     ): ResponseEntity<Void> {
         try {
-            restaurantService.removePaymentMethod(restaurantId, getSecurityContextHolderUserId(), paymentMethodId)
+            restaurantService.removeManager(restaurantId, userId)
             return ResponseEntity.noContent().build()
         } catch (ex: EntityNotFoundException) {
             throw throw BusinessException(ex.message)

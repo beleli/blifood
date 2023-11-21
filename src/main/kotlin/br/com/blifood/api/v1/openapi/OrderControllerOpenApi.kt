@@ -36,7 +36,7 @@ interface OrderControllerOpenApi {
     )
     fun create(
         @RequestBody
-        orderInputDto: OrderInputModel
+        orderInputModel: OrderInputModel
     ): OrderModel
 
     @Operation(

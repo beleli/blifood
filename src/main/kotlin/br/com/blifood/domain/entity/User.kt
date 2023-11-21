@@ -2,6 +2,8 @@ package br.com.blifood.domain.entity
 
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
+import jakarta.persistence.EnumType
+import jakarta.persistence.Enumerated
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
@@ -30,6 +32,10 @@ data class User(
     @field:Size(min = 1, max = 255)
     @Column(name = "ds_password", nullable = false)
     var password: String = "",
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "ds_type", nullable = false)
+    var profile: UserProfile = UserProfile.CUSTOMER,
 
     @CreationTimestamp
     @Column(name = "dt_create", nullable = false)

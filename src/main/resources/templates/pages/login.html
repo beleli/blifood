@@ -5,7 +5,7 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	
-	<title>Acesso à AlgaFood</title>
+	<title>BliFood Access</title>
 	
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
 	
@@ -59,10 +59,10 @@
 
 <body class="text-center">
 	<form class="form-signin" th:action="@{/login}" method="post">
-		<h1 class="h3 mb-3 font-weight-normal">Acesso à AlgaFood</h1>
+		<h1 class="h3 mb-3 font-weight-normal">Acesso à BliFood</h1>
 
 		<p class="alert alert-danger" th:if="${#bools.isTrue(param.error)}">
-			O e-mail ou senha não confere
+			Ivalid username or password
 		</p>
 
 		<input type="email" name="username" class="form-control" placeholder="Seu e-mail" required autofocus>
@@ -71,7 +71,7 @@
 
 		<button class="btn btn-lg btn-primary btn-block" type="submit">Login</button>
 
-		<p class="mt-5 mb-3 text-muted">&copy; AlgaWorks</p>
+		<p class="mt-5 mb-3 text-muted">&copy; BliFood</p>
 	</form>
 </body>
 </html>

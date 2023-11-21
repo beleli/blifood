@@ -57,8 +57,10 @@ open class RestaurantModel(
             this.add(linkTo(methodOn(RestaurantController::class.java).inactivate(id)).withRel("inactivate"))
         }
 
-        this.add(linkTo(methodOn(RestaurantPaymentMethodController::class.java).create(id, null))
-            .withRel("paymentMethods"))
+        this.add(
+            linkTo(methodOn(RestaurantPaymentMethodController::class.java).add(id, null))
+                .withRel("paymentMethods")
+        )
 
         this.add(ProductModel.findAllLink(id))
         this.add(findAllLink())

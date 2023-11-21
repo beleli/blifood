@@ -3,6 +3,7 @@ create table tb_user (
     ds_name varchar(80) not null,
     ds_email varchar(255) not null,
     ds_password varchar(255) not null,
+    ds_type varchar(64) not null,
     dt_create timestamp not null
 );
 alter table tb_user add constraint tb_user_pk primary key (id_user);

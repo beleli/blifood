@@ -1,6 +1,9 @@
 package br.com.blifood.api.v1.controller
 
+import br.com.blifood.api.v1.addUriInResponseHeader
+import br.com.blifood.api.v1.getSecurityContextHolderUserId
 import br.com.blifood.api.v1.model.UserModel
+import br.com.blifood.api.v1.model.input.ChangeProfileInputModel
 import br.com.blifood.api.v1.model.input.UserChangePasswordModel
 import br.com.blifood.api.v1.model.input.UserInputModel
 import br.com.blifood.api.v1.model.input.UserWithPasswordInputModel
@@ -8,10 +11,13 @@ import br.com.blifood.api.v1.model.input.applyModel
 import br.com.blifood.api.v1.model.input.toEntity
 import br.com.blifood.api.v1.model.toModel
 import br.com.blifood.api.v1.openapi.UserControllerOpenApi
+import br.com.blifood.domain.entity.Authority
+import br.com.blifood.domain.entity.UserProfile
 import br.com.blifood.domain.service.UserService
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -27,37 +33,54 @@ class UserController(
     private val userService: UserService
 ) : UserControllerOpenApi {
 
+    @PreAuthorize("hasAuthority('${Authority.USER_READ}')")
     @GetMapping("/{userId}")
     override fun findById(@PathVariable userId: Long): UserModel {
         return userService.findOrThrow(userId).toModel()
     }
 
+    @PreAuthorize("hasAuthority('${Authority.USER_WRITE}')")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     override fun create(
         @RequestBody @Valid
-        userWithPasswordInputDto: UserWithPasswordInputModel
+        userWithPasswordInputModel: UserWithPasswordInputModel
     ): UserModel {
-        return userService.save(userWithPasswordInputDto.toEntity()).toModel()
+        return userService.save(userWithPasswordInputModel.toEntity()).toModel().also {
+            addUriInResponseHeader(it.id)
+        }
     }
 
+    @PreAuthorize("hasAuthority('${Authority.USER_WRITE}')")
     @PutMapping("/{userId}")
     override fun alter(
         @PathVariable userId: Long,
         @Valid @RequestBody
-        userInputDto: UserInputModel
+        userInputModel: UserInputModel
     ): UserModel {
-        val user = userService.findOrThrow(userId).applyModel(userInputDto)
+        val user = userService.findOrThrow(userId).applyModel(userInputModel)
         return userService.save(user).toModel()
     }
 
+    @PreAuthorize("hasAuthority('${Authority.USER_WRITE}')")
     @PutMapping("/{userId}/password")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     override fun changePassword(
         @PathVariable userId: Long,
         @Valid @RequestBody
-        userChangePasswordDto: UserChangePasswordModel
+        userChangePasswordModel: UserChangePasswordModel
     ) {
-        userService.changePassword(userId, userChangePasswordDto.password!!, userChangePasswordDto.newPassword!!)
+        userService.changePassword(userId, userChangePasswordModel.password!!, userChangePasswordModel.newPassword!!)
+    }
+
+    @PreAuthorize("hasAuthority('${Authority.USER_WRITE}')")
+    @PutMapping("/{userId}/profile")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    override fun changeProfile(
+        @PathVariable userId: Long,
+        @Valid @RequestBody
+        changeProfileInputModel: ChangeProfileInputModel
+    ) {
+        userService.changeProfile(getSecurityContextHolderUserId(), userId, UserProfile.valueOf(changeProfileInputModel.profile!!.uppercase()))
     }
 }

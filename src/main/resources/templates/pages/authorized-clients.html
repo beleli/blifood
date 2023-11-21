@@ -21,7 +21,7 @@
         <tbody>
         <tr th:each="client,iterStat : ${clients}">
             <td th:text="${iterStat.count}">1</td>
-            <td th:text="${client.clientName}">AlgaFood Web</td>
+            <td th:text="${client.clientName}">BliFood Web</td>
             <td><button class="btn btn-primary js-btn-on-click-revoke" th:data-clientid="${client.clientId}">Revogar acesso</button></td>
         </tr>
         </tbody>

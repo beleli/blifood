@@ -46,7 +46,7 @@ interface RestaurantControllerOpenApi {
     )
     fun create(
         @RequestBody(required = true)
-        restaurantInputDto: RestaurantInputModel
+        restaurantInputModel: RestaurantInputModel
     ): RestaurantModel
 
     @Operation(
@@ -60,7 +60,7 @@ interface RestaurantControllerOpenApi {
         @Parameter(example = "1", required = true)
         restaurantId: Long,
         @RequestBody(required = true)
-        restaurantInputDto: RestaurantInputModel
+        restaurantInputModel: RestaurantInputModel
     ): RestaurantModel
 
     @Operation(

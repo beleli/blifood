@@ -1,6 +1,6 @@
 package br.com.blifood.api.v1.openapi
 
-import br.com.blifood.api.v1.model.PaymentMethodModel
+import br.com.blifood.api.v1.model.UserModel
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.media.Content
@@ -12,20 +12,20 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PathVariable
 
 @Tag(name = "Restaurants")
-interface RestaurantPaymentMethodControllerOpenApi {
+interface RestaurantManagerControllerOpenApi {
 
     @Operation(
-        summary = "List all Payment Methods of a restaurant",
+        summary = "List all Managers of a restaurant",
         responses = [
             ApiResponse(responseCode = "200")
         ]
     )
     fun findAll(
         @PathVariable restaurantId: Long
-    ): CollectionModel<PaymentMethodModel>
+    ): CollectionModel<UserModel>
 
     @Operation(
-        summary = "Add Payment Method to the Restaurant",
+        summary = "Add Manager to the Restaurant",
         responses = [
             ApiResponse(responseCode = "204"),
             ApiResponse(responseCode = "400", content = [Content(schema = Schema(ref = "ApiProblemDetail"))])
@@ -35,11 +35,11 @@ interface RestaurantPaymentMethodControllerOpenApi {
         @Parameter(example = "1", required = true)
         restaurantId: Long,
         @Parameter(example = "1", required = true)
-        paymentMethodId: Long?
+        userId: Long?
     ): ResponseEntity<Void>
 
     @Operation(
-        summary = "Remove Payment Method to the Restaurant",
+        summary = "Remove Manager to the Restaurant",
         responses = [
             ApiResponse(responseCode = "204"),
             ApiResponse(responseCode = "400", content = [Content(schema = Schema(ref = "ApiProblemDetail"))]),
@@ -50,6 +50,6 @@ interface RestaurantPaymentMethodControllerOpenApi {
         @Parameter(example = "1", required = true)
         restaurantId: Long,
         @Parameter(example = "1", required = true)
-        paymentMethodId: Long
+        userId: Long
     ): ResponseEntity<Void>
 }

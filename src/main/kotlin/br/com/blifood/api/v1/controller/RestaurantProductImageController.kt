@@ -5,6 +5,7 @@ import br.com.blifood.api.v1.model.input.ProductImageInputModel
 import br.com.blifood.api.v1.model.input.toEntity
 import br.com.blifood.api.v1.model.toModel
 import br.com.blifood.api.v1.openapi.RestaurantProductImageControllerOpenApi
+import br.com.blifood.domain.entity.Authority
 import br.com.blifood.domain.entity.Product
 import br.com.blifood.domain.exception.BusinessException
 import br.com.blifood.domain.exception.EntityNotFoundException
@@ -16,6 +17,7 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -33,14 +35,16 @@ class RestaurantProductImageController(
     private val productImageService: ProductImageService
 ) : RestaurantProductImageControllerOpenApi {
 
+    @PreAuthorize("hasAuthority('${Authority.RESTAURANT_READ}')")
     @GetMapping
     override fun findById(@PathVariable restaurantId: Long, @PathVariable productId: Long): ProductImageModel {
-        return productImageService.findOrThrow(productId).toModel()
+        return productImageService.findOrThrow(productId).toModel(restaurantId)
     }
 
+    @PreAuthorize("hasAuthority('${Authority.RESTAURANT_READ}')")
     @GetMapping(produces = [MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE])
     fun download(@PathVariable restaurantId: Long, @PathVariable productId: Long): Any {
-        val productImage = productImageService.findOrThrow(productId).toModel()
+        val productImage = productImageService.findOrThrow(productId).toModel(restaurantId)
         val image = productImageService.recoverImage(productImage.fileName)
         return if (image is URL) {
             ResponseEntity
@@ -55,6 +59,7 @@ class RestaurantProductImageController(
         }
     }
 
+    @PreAuthorize("hasAuthority('${Authority.RESTAURANT_WRITE}')")
     @PutMapping(consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
     override fun upload(
         @PathVariable restaurantId: Long,
@@ -63,14 +68,15 @@ class RestaurantProductImageController(
     ): ProductImageModel {
         val product = findProductOrThrow(restaurantId, productId)
         val productImage = productImageInput.toEntity(product)
-        return productImageService.save(productImage, productImageInput.file!!.inputStream).toModel()
+        return productImageService.save(productImage, productImageInput.file!!.inputStream).toModel(restaurantId)
     }
 
+    @PreAuthorize("hasAuthority('${Authority.RESTAURANT_WRITE}')")
     @DeleteMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
     override fun remove(@PathVariable restaurantId: Long, @PathVariable productId: Long) {
         findProductOrThrow(restaurantId, productId)
-        productImageService.delete(restaurantId, productId)
+        productImageService.delete(productId)
     }
 
     private fun findProductOrThrow(restaurantId: Long, productId: Long): Product {

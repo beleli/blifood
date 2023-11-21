@@ -4,12 +4,6 @@ server:
 spring:
   jpa:
     show-sql: true
-
-blifood:
-  email:
-    impl: fake
-  storage:
-    type: local
-    local:
-      path: ./catalog
+  flyway:
+    locations: classpath:db/migration,classpath:db/testdata
 

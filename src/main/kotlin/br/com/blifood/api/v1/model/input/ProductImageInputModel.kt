@@ -27,7 +27,6 @@ data class ProductImageInputModel(
 
 fun ProductImageInputModel.toEntity(product: Product) = ProductImage(
     id = product.id,
-    product = product,
     fileName = "${product.id}.${file!!.originalFilename!!.substringAfter('.')}",
     description = description,
     contentType = file.contentType!!,

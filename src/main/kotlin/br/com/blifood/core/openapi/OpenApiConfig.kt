@@ -3,6 +3,8 @@ package br.com.blifood.core.openapi
 import br.com.blifood.api.exceptionhandler.ApiProblemDetail
 import br.com.blifood.api.exceptionhandler.ApiProblemDetail.ApiFieldError
 import io.swagger.v3.core.converter.ModelConverters
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType
+import io.swagger.v3.oas.annotations.security.SecurityScheme
 import io.swagger.v3.oas.models.Components
 import io.swagger.v3.oas.models.OpenAPI
 import io.swagger.v3.oas.models.Operation
@@ -12,6 +14,7 @@ import io.swagger.v3.oas.models.media.Content
 import io.swagger.v3.oas.models.media.MediaType
 import io.swagger.v3.oas.models.media.Schema
 import io.swagger.v3.oas.models.responses.ApiResponse
+import io.swagger.v3.oas.models.security.SecurityRequirement
 import io.swagger.v3.oas.models.tags.Tag
 import org.springdoc.core.customizers.OpenApiCustomizer
 import org.springframework.context.annotation.Bean
@@ -20,6 +23,12 @@ import org.springframework.http.MediaType.APPLICATION_JSON_VALUE
 import java.util.function.Consumer
 
 @Configuration
+@SecurityScheme(
+    name = "Bearer Authentication",
+    type = SecuritySchemeType.HTTP,
+    bearerFormat = "JWT",
+    scheme = "bearer"
+)
 class OpenApiConfig {
 
     private val badRequestResponse = "BadRequestResponse"
@@ -30,18 +39,6 @@ class OpenApiConfig {
     @Bean
     fun openAPI(): OpenAPI {
         return OpenAPI()
-            /*.addSecurityItem(SecurityRequirement().addList(securitySchemeName))
-        .components(
-            Components()
-                .addSecuritySchemes(
-                    securitySchemeName,
-                    SecurityScheme()
-                        .name(securitySchemeName)
-                        .type(SecurityScheme.Type.HTTP)
-                        .scheme("bearer")
-                        .bearerFormat("JWT")
-                )
-        )*/
             .info(generateInfo())
             .tags(generateTags())
             .components(
@@ -49,6 +46,7 @@ class OpenApiConfig {
                     .schemas(generateSchemas())
                     .responses(generateResponses())
             )
+            .addSecurityItem(SecurityRequirement().addList("Bearer Authentication"))
     }
 
     private fun generateInfo(): Info {
@@ -60,6 +58,7 @@ class OpenApiConfig {
 
     private fun generateTags(): List<Tag> {
         return listOf(
+            Tag().name("Login").description("Authentication Token"),
             Tag().name("States").description("State Management"),
             Tag().name("Cities").description("City Management"),
             Tag().name("Culinary").description("Culinary Management"),

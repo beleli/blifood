@@ -52,7 +52,7 @@ interface RestaurantProductControllerOpenApi {
         @Parameter(example = "1", required = true)
         restaurantId: Long,
         @RequestBody(required = true)
-        productInputDto: ProductInputModel
+        productInputModel: ProductInputModel
     ): ProductModel
 
     @Operation(
@@ -70,7 +70,7 @@ interface RestaurantProductControllerOpenApi {
         @Parameter(example = "1", required = true)
         productId: Long,
         @RequestBody(required = true)
-        productInputDto: ProductInputModel
+        productInputModel: ProductInputModel
     ): ProductModel
 
     @Operation(

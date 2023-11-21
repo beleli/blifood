@@ -1,6 +1,7 @@
 package br.com.blifood.api.v1.openapi
 
 import br.com.blifood.api.v1.model.UserModel
+import br.com.blifood.api.v1.model.input.ChangeProfileInputModel
 import br.com.blifood.api.v1.model.input.UserChangePasswordModel
 import br.com.blifood.api.v1.model.input.UserInputModel
 import br.com.blifood.api.v1.model.input.UserWithPasswordInputModel
@@ -38,7 +39,7 @@ interface UserControllerOpenApi {
     )
     fun create(
         @RequestBody(required = true)
-        userWithPasswordInputDto: UserWithPasswordInputModel
+        userWithPasswordInputModel: UserWithPasswordInputModel
     ): UserModel
 
     @Operation(
@@ -52,7 +53,7 @@ interface UserControllerOpenApi {
         @Parameter(example = "1", required = true)
         userId: Long,
         @RequestBody(required = true)
-        userInputDto: UserInputModel
+        userInputModel: UserInputModel
     ): UserModel
 
     @Operation(
@@ -67,6 +68,21 @@ interface UserControllerOpenApi {
         @Parameter(example = "1", required = true)
         userId: Long,
         @RequestBody(required = true)
-        userChangePasswordDto: UserChangePasswordModel
+        userChangePasswordModel: UserChangePasswordModel
+    )
+
+    @Operation(
+        summary = "Update user profile by Id",
+        responses = [
+            ApiResponse(responseCode = "200"),
+            ApiResponse(responseCode = "400", content = [Content(schema = Schema(ref = "ApiProblemDetail"))]),
+            ApiResponse(responseCode = "404", content = [Content(schema = Schema(ref = "ApiProblemDetail"))])
+        ]
+    )
+    fun changeProfile(
+        @Parameter(example = "1", required = true)
+        userId: Long,
+        @RequestBody
+        changeProfileInputModel: ChangeProfileInputModel
     )
 }

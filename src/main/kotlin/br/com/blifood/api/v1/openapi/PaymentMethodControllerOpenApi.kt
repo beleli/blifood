@@ -44,7 +44,7 @@ interface PaymentMethodControllerOpenApi {
     )
     fun create(
         @RequestBody(required = true)
-        paymentMethodInputDto: PaymentMethodInputModel
+        paymentMethodInputModel: PaymentMethodInputModel
     ): PaymentMethodModel
 
     @Operation(
@@ -59,7 +59,7 @@ interface PaymentMethodControllerOpenApi {
         @Parameter(example = "1", required = true)
         paymentMethodId: Long,
         @RequestBody(required = true)
-        paymentMethodInputDto: PaymentMethodInputModel
+        paymentMethodInputModel: PaymentMethodInputModel
     ): PaymentMethodModel
 
     @Operation(

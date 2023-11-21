@@ -1,12 +1,13 @@
 package br.com.blifood.api.v1.controller
 
-import br.com.blifood.api.v1.ResourceUriHelper
+import br.com.blifood.api.v1.addUriInResponseHeader
 import br.com.blifood.api.v1.model.ProductModel
 import br.com.blifood.api.v1.model.input.ProductInputModel
 import br.com.blifood.api.v1.model.input.applyModel
 import br.com.blifood.api.v1.model.input.toEntity
 import br.com.blifood.api.v1.model.toModel
 import br.com.blifood.api.v1.openapi.RestaurantProductControllerOpenApi
+import br.com.blifood.domain.entity.Authority
 import br.com.blifood.domain.entity.Product
 import br.com.blifood.domain.exception.BusinessException
 import br.com.blifood.domain.exception.EntityNotFoundException
@@ -15,6 +16,7 @@ import jakarta.validation.Valid
 import org.springframework.hateoas.CollectionModel
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -31,6 +33,7 @@ class RestaurantProductController(
     private val productService: ProductService
 ) : RestaurantProductControllerOpenApi {
 
+    @PreAuthorize("hasAuthority('${Authority.RESTAURANT_READ}')")
     @GetMapping
     override fun findAll(@PathVariable restaurantId: Long): CollectionModel<ProductModel> {
         return CollectionModel.of(
@@ -39,34 +42,38 @@ class RestaurantProductController(
         )
     }
 
+    @PreAuthorize("hasAuthority('${Authority.RESTAURANT_READ}')")
     @GetMapping("/{productId}")
     override fun findById(@PathVariable restaurantId: Long, @PathVariable productId: Long): ProductModel {
         return productService.findOrThrow(restaurantId, productId).toModel()
     }
 
+    @PreAuthorize("hasAuthority('${Authority.RESTAURANT_WRITE}')")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     override fun create(
         @PathVariable restaurantId: Long,
         @Valid @RequestBody
-        productInputDto: ProductInputModel
+        productInputModel: ProductInputModel
     ): ProductModel {
-        return save(productInputDto.toEntity(restaurantId)).toModel().also {
-            ResourceUriHelper.addUriInResponseHeader(it.id)
+        return save(productInputModel.toEntity(restaurantId)).toModel().also {
+            addUriInResponseHeader(it.id)
         }
     }
 
+    @PreAuthorize("hasAuthority('${Authority.RESTAURANT_WRITE}')")
     @PutMapping("/{productId}")
     override fun alter(
         @PathVariable restaurantId: Long,
         @PathVariable productId: Long,
         @Valid @RequestBody
-        productInputDto: ProductInputModel
+        productInputModel: ProductInputModel
     ): ProductModel {
-        val product = productService.findOrThrow(restaurantId, productId).applyModel(productInputDto)
+        val product = productService.findOrThrow(restaurantId, productId).applyModel(productInputModel)
         return save(product).toModel()
     }
 
+    @PreAuthorize("hasAuthority('${Authority.RESTAURANT_WRITE}')")
     @DeleteMapping("/{productId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     override fun delete(@PathVariable restaurantId: Long, @PathVariable productId: Long) {

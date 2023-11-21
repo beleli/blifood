@@ -67,6 +67,14 @@ data class Restaurant(
     )
     var paymentsMethods: MutableSet<PaymentMethod> = mutableSetOf(),
 
+    @ManyToMany
+    @JoinTable(
+        name = "tb_restaurant_user",
+        joinColumns = [JoinColumn(name = "id_restaurant")],
+        inverseJoinColumns = [JoinColumn(name = "id_user")]
+    )
+    var managers: MutableSet<User> = mutableSetOf(),
+
     @OneToMany(mappedBy = "restaurant")
     val products: MutableSet<Product> = mutableSetOf()
 ) {
@@ -78,4 +86,6 @@ data class Restaurant(
     fun close() = apply { open = false }
     fun addPaymentMethod(paymentMethod: PaymentMethod) = apply { paymentsMethods.add(paymentMethod) }
     fun removePaymentMethod(paymentMethod: PaymentMethod) = apply { paymentsMethods.remove(paymentMethod) }
+    fun addManager(user: User) = apply { managers.add(user) }
+    fun removeManager(user: User) = apply { managers.remove(user) }
 }

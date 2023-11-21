@@ -21,7 +21,7 @@ class OrderService(
         return orderRepository.findByCode(code).orElseThrow { OrderNotFoundException() }
     }
 
-    @Transactional()
+    @Transactional
     fun issue(order: Order): Order {
         order.deliveryAddress.city = cityService.findOrThrow(order.deliveryAddress.city.id)
         order.restaurant = restaurantService.findOrThrow(order.restaurant.id)
@@ -38,19 +38,19 @@ class OrderService(
         return orderRepository.save(order)
     }
 
-    @Transactional()
+    @Transactional
     fun confirm(code: String) {
         val order = findOrThrow(code)
         orderRepository.save(order.confirm())
     }
 
-    @Transactional()
+    @Transactional
     fun cancel(code: String) {
         val order = findOrThrow(code)
         orderRepository.save(order.cancel())
     }
 
-    @Transactional()
+    @Transactional
     fun delivery(code: String) {
         val order = findOrThrow(code)
         orderRepository.save(order.delivery())

@@ -8,6 +8,10 @@ class UserInvalidPasswordException(
     message: String = Messages.get("user.invalidPassword")
 ) : BusinessException(message)
 
+class UserNotAuthorizedException(
+    message: String = Messages.get("user.notAuthorized")
+) : BusinessException(message)
+
 class OrderInvalidPaymentMethodException(
     message: String = Messages.get("order.invalidPaymentMethod")
 ) : BusinessException(message)

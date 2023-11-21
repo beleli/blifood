@@ -44,7 +44,7 @@ interface CulinaryControllerOpenApi {
     )
     fun create(
         @RequestBody(required = true)
-        culinaryInputDto: CulinaryInputModel
+        culinaryInputModel: CulinaryInputModel
     ): CulinaryModel
 
     @Operation(
@@ -59,7 +59,7 @@ interface CulinaryControllerOpenApi {
         @Parameter(example = "1", required = true)
         culinaryId: Long,
         @RequestBody(required = true)
-        culinaryInputDto: CulinaryInputModel
+        culinaryInputModel: CulinaryInputModel
     ): CulinaryModel
 
     @Operation(
