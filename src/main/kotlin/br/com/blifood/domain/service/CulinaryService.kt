@@ -6,6 +6,8 @@ import br.com.blifood.domain.exception.CulinaryInUseException
 import br.com.blifood.domain.exception.CulinaryNotFoundException
 import br.com.blifood.domain.repository.CulinaryRepository
 import org.springframework.dao.DataIntegrityViolationException
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -15,8 +17,8 @@ class CulinaryService(
 ) {
 
     @Transactional(readOnly = true)
-    fun findAll(): List<Culinary> {
-        return culinaryRepository.findAll()
+    fun findAll(pageable: Pageable): Page<Culinary> {
+        return culinaryRepository.findAll(pageable)
     }
 
     @Transactional(readOnly = true)

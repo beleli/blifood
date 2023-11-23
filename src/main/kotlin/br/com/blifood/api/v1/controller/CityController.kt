@@ -1,5 +1,6 @@
 package br.com.blifood.api.v1.controller
 
+import br.com.blifood.api.v1.DEFAULT_PAGE_SIZE
 import br.com.blifood.api.v1.addUriInResponseHeader
 import br.com.blifood.api.v1.model.CityModel
 import br.com.blifood.api.v1.model.input.CityInputModel
@@ -13,7 +14,9 @@ import br.com.blifood.domain.exception.BusinessException
 import br.com.blifood.domain.exception.EntityNotFoundException
 import br.com.blifood.domain.service.CityService
 import jakarta.validation.Valid
-import org.springframework.hateoas.CollectionModel
+import org.springframework.data.domain.Pageable
+import org.springframework.data.web.PageableDefault
+import org.springframework.hateoas.PagedModel
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType.APPLICATION_JSON_VALUE
 import org.springframework.security.access.prepost.PreAuthorize
@@ -35,10 +38,12 @@ class CityController(
 
     @PreAuthorize("hasAuthority('${Authority.CITY_READ}')")
     @GetMapping
-    override fun findAll(): CollectionModel<CityModel> {
-        return CollectionModel.of(
-            cityService.findAll().map { it.toModel() },
-            CityModel.findAllLink(true)
+    override fun findAll(@PageableDefault(size = DEFAULT_PAGE_SIZE) pageable: Pageable): PagedModel<CityModel> {
+        val page = cityService.findAll(pageable).map { it.toModel() }
+        return PagedModel.of(
+            page.content,
+            PagedModel.PageMetadata(page.size.toLong(), page.number.toLong(), page.totalElements),
+            CityModel.findAllLink(pageable, true)
         )
     }
 

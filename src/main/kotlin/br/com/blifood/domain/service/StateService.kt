@@ -6,6 +6,8 @@ import br.com.blifood.domain.exception.StateInUseException
 import br.com.blifood.domain.exception.StateNotFoundException
 import br.com.blifood.domain.repository.StateRepository
 import org.springframework.dao.DataIntegrityViolationException
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -15,8 +17,8 @@ class StateService(
 ) {
 
     @Transactional(readOnly = true)
-    fun findAll(): List<State> {
-        return stateRepository.findAll()
+    fun findAll(pageable: Pageable): Page<State> {
+        return stateRepository.findAll(pageable)
     }
 
     @Transactional(readOnly = true)

@@ -2,6 +2,7 @@ package br.com.blifood.api.v1.openapi
 
 import br.com.blifood.api.v1.model.CityModel
 import br.com.blifood.api.v1.model.input.CityInputModel
+import br.com.blifood.core.openapi.PageableParameter
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.media.Content
@@ -9,18 +10,20 @@ import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.parameters.RequestBody
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.tags.Tag
+import org.springframework.data.domain.Pageable
 import org.springframework.hateoas.CollectionModel
 
 @Tag(name = "Cities")
 interface CityControllerOpenApi {
 
+    @PageableParameter
     @Operation(
         summary = "List all Cities",
         responses = [
             ApiResponse(responseCode = "200")
         ]
     )
-    fun findAll(): CollectionModel<CityModel>
+    fun findAll(@Parameter(hidden = true) pageable: Pageable): CollectionModel<CityModel>
 
     @Operation(
         summary = "Find City by Id",

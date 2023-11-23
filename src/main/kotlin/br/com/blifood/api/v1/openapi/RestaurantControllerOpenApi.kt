@@ -2,26 +2,29 @@ package br.com.blifood.api.v1.openapi
 
 import br.com.blifood.api.v1.model.RestaurantModel
 import br.com.blifood.api.v1.model.input.RestaurantInputModel
+import br.com.blifood.core.openapi.PageableParameter
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.tags.Tag
-import org.springframework.hateoas.CollectionModel
+import org.springframework.data.domain.Pageable
+import org.springframework.hateoas.PagedModel
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RequestBody
 
 @Tag(name = "Restaurants")
 interface RestaurantControllerOpenApi {
 
+    @PageableParameter
     @Operation(
         summary = "List all Restaurants",
         responses = [
             ApiResponse(responseCode = "200")
         ]
     )
-    fun findAll(): CollectionModel<RestaurantModel>
+    fun findAll(@Parameter(hidden = true) pageable: Pageable): PagedModel<RestaurantModel>
 
     @Operation(
         summary = "Find Restaurant by Id",

@@ -1,5 +1,6 @@
 package br.com.blifood.api.v1.controller
 
+import br.com.blifood.api.v1.DEFAULT_PAGE_SIZE
 import br.com.blifood.api.v1.getSecurityContextHolderUserId
 import br.com.blifood.api.v1.model.PaymentMethodModel
 import br.com.blifood.api.v1.model.toModel
@@ -8,6 +9,7 @@ import br.com.blifood.domain.entity.Authority
 import br.com.blifood.domain.exception.BusinessException
 import br.com.blifood.domain.exception.EntityNotFoundException
 import br.com.blifood.domain.service.RestaurantService
+import org.springframework.data.domain.Pageable
 import org.springframework.hateoas.CollectionModel
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
@@ -35,7 +37,7 @@ class RestaurantPaymentMethodController(
         try {
             return CollectionModel.of(
                 restaurantService.findAllPaymentMethods(restaurantId).map { it.toModel() },
-                PaymentMethodModel.findAllLink(true)
+                PaymentMethodModel.findAllLink(Pageable.ofSize(DEFAULT_PAGE_SIZE), true)
             )
         } catch (ex: EntityNotFoundException) {
             throw throw BusinessException(ex.message)

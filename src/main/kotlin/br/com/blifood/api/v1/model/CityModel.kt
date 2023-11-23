@@ -1,8 +1,10 @@
 package br.com.blifood.api.v1.model
 
+import br.com.blifood.api.v1.DEFAULT_PAGE_SIZE
 import br.com.blifood.api.v1.controller.CityController
 import br.com.blifood.domain.entity.City
 import io.swagger.v3.oas.annotations.media.Schema
+import org.springframework.data.domain.Pageable
 import org.springframework.hateoas.IanaLinkRelations
 import org.springframework.hateoas.RepresentationModel
 import org.springframework.hateoas.server.core.Relation
@@ -25,12 +27,12 @@ open class CityModel(
 
 ) : RepresentationModel<CityModel>() {
     companion object {
-        fun findAllLink(isSelfRel: Boolean = false) = linkTo(methodOn(CityController::class.java).findAll())
+        fun findAllLink(pageable: Pageable, isSelfRel: Boolean = false) = linkTo(methodOn(CityController::class.java).findAll(pageable))
             .withRel(if (isSelfRel) IanaLinkRelations.SELF_VALUE else COLLECTION_RELATION)
     }
     init {
         this.add(linkTo(methodOn(CityController::class.java).findById(id)).withSelfRel())
-        this.add(findAllLink())
+        this.add(findAllLink(Pageable.ofSize(DEFAULT_PAGE_SIZE)))
     }
 }
 

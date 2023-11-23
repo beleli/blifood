@@ -6,6 +6,8 @@ import br.com.blifood.domain.exception.CityInUseException
 import br.com.blifood.domain.exception.CityNotFoundException
 import br.com.blifood.domain.repository.CityRepository
 import org.springframework.dao.DataIntegrityViolationException
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -16,8 +18,8 @@ class CityService(
 ) {
 
     @Transactional(readOnly = true)
-    fun findAll(): List<City> {
-        return cityRepository.findAll()
+    fun findAll(pageable: Pageable): Page<City> {
+        return cityRepository.findAll(pageable)
     }
 
     @Transactional(readOnly = true)

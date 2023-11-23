@@ -1,5 +1,6 @@
 package br.com.blifood.api.v1.controller
 
+import br.com.blifood.api.v1.DEFAULT_PAGE_SIZE
 import br.com.blifood.api.v1.addUriInResponseHeader
 import br.com.blifood.api.v1.model.StateModel
 import br.com.blifood.api.v1.model.input.StateInputModel
@@ -10,7 +11,9 @@ import br.com.blifood.api.v1.openapi.StateControllerOpenApi
 import br.com.blifood.domain.entity.Authority
 import br.com.blifood.domain.service.StateService
 import jakarta.validation.Valid
-import org.springframework.hateoas.CollectionModel
+import org.springframework.data.domain.Pageable
+import org.springframework.data.web.PageableDefault
+import org.springframework.hateoas.PagedModel
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.security.access.prepost.PreAuthorize
@@ -32,11 +35,12 @@ class StateController(
 
     @PreAuthorize("hasAuthority('${Authority.STATE_READ}')")
     @GetMapping
-    override fun findAll(): CollectionModel<StateModel> {
-        return CollectionModel.of(
-            stateService.findAll().map { it.toModel() },
-            StateModel.findAllLink(true),
-            StateModel.controllerLink()
+    override fun findAll(@PageableDefault(size = DEFAULT_PAGE_SIZE) pageable: Pageable): PagedModel<StateModel> {
+        val page = stateService.findAll(pageable).map { it.toModel() }
+        return PagedModel.of(
+            page.content,
+            PagedModel.PageMetadata(page.size.toLong(), page.number.toLong(), page.totalElements),
+            StateModel.findAllLink(pageable, true)
         )
     }
 

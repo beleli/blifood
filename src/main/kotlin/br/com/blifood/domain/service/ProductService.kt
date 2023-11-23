@@ -6,6 +6,8 @@ import br.com.blifood.domain.exception.ProductInUseException
 import br.com.blifood.domain.exception.ProductNotFoundException
 import br.com.blifood.domain.repository.ProductRepository
 import org.springframework.dao.DataIntegrityViolationException
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -16,8 +18,8 @@ class ProductService(
 ) {
 
     @Transactional(readOnly = true)
-    fun findAll(restaurantId: Long): List<Product> {
-        return productRepository.findByRestaurantId(restaurantId)
+    fun findAll(restaurantId: Long, pageable: Pageable): Page<Product> {
+        return productRepository.findByRestaurantId(restaurantId, pageable)
     }
 
     @Transactional(readOnly = true)

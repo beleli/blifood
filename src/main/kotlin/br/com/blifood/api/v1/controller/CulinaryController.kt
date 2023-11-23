@@ -1,5 +1,6 @@
 package br.com.blifood.api.v1.controller
 
+import br.com.blifood.api.v1.DEFAULT_PAGE_SIZE
 import br.com.blifood.api.v1.addUriInResponseHeader
 import br.com.blifood.api.v1.model.CulinaryModel
 import br.com.blifood.api.v1.model.input.CulinaryInputModel
@@ -10,7 +11,9 @@ import br.com.blifood.api.v1.openapi.CulinaryControllerOpenApi
 import br.com.blifood.domain.entity.Authority
 import br.com.blifood.domain.service.CulinaryService
 import jakarta.validation.Valid
-import org.springframework.hateoas.CollectionModel
+import org.springframework.data.domain.Pageable
+import org.springframework.data.web.PageableDefault
+import org.springframework.hateoas.PagedModel
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.security.access.prepost.PreAuthorize
@@ -32,10 +35,12 @@ class CulinaryController(
 
     @PreAuthorize("hasAuthority('${Authority.CULINARY_READ}')")
     @GetMapping
-    override fun findAll(): CollectionModel<CulinaryModel> {
-        return CollectionModel.of(
-            culinaryService.findAll().map { it.toModel() },
-            CulinaryModel.findAllLink(true)
+    override fun findAll(@PageableDefault(size = DEFAULT_PAGE_SIZE) pageable: Pageable): PagedModel<CulinaryModel> {
+        val page = culinaryService.findAll(pageable).map { it.toModel() }
+        return PagedModel.of(
+            page.content,
+            PagedModel.PageMetadata(page.size.toLong(), page.number.toLong(), page.totalElements),
+            CulinaryModel.findAllLink(pageable, true)
         )
     }
 

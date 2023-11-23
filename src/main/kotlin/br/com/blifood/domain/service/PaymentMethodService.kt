@@ -6,6 +6,8 @@ import br.com.blifood.domain.exception.PaymentMethodInUseException
 import br.com.blifood.domain.exception.PaymentTypeNotFoundException
 import br.com.blifood.domain.repository.PaymentMethodRepository
 import org.springframework.dao.DataIntegrityViolationException
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -15,8 +17,8 @@ class PaymentMethodService(
 ) {
 
     @Transactional(readOnly = true)
-    fun findAll(): List<PaymentMethod> {
-        return paymentMethodRepository.findAll()
+    fun findAll(pageable: Pageable): Page<PaymentMethod> {
+        return paymentMethodRepository.findAll(pageable)
     }
 
     @Transactional(readOnly = true)

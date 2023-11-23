@@ -37,7 +37,7 @@ class LoginController(
             throw UserNotAuthorizedException()
         } catch (ex: UserNotAuthorizedException) {
             throw UserNotAuthorizedException()
-        } catch (ex: Exception) {
+        } catch (ex: Throwable) {
             throw ex
         }
     }

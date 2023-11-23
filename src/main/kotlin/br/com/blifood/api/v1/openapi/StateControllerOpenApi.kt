@@ -2,25 +2,28 @@ package br.com.blifood.api.v1.openapi
 
 import br.com.blifood.api.v1.model.StateModel
 import br.com.blifood.api.v1.model.input.StateInputModel
+import br.com.blifood.core.openapi.PageableParameter
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.tags.Tag
-import org.springframework.hateoas.CollectionModel
+import org.springframework.data.domain.Pageable
+import org.springframework.hateoas.PagedModel
 import org.springframework.web.bind.annotation.RequestBody
 
 @Tag(name = "States")
 interface StateControllerOpenApi {
 
+    @PageableParameter
     @Operation(
         summary = "List all States",
         responses = [
             ApiResponse(responseCode = "200")
         ]
     )
-    fun findAll(): CollectionModel<StateModel>
+    fun findAll(@Parameter(hidden = true) pageable: Pageable): PagedModel<StateModel>
 
     @Operation(
         summary = "Find State by Id",

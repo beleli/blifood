@@ -1,5 +1,6 @@
 package br.com.blifood.api.v1.controller
 
+import br.com.blifood.api.v1.DEFAULT_PAGE_SIZE
 import br.com.blifood.api.v1.addUriInResponseHeader
 import br.com.blifood.api.v1.model.ProductModel
 import br.com.blifood.api.v1.model.input.ProductInputModel
@@ -13,7 +14,9 @@ import br.com.blifood.domain.exception.BusinessException
 import br.com.blifood.domain.exception.EntityNotFoundException
 import br.com.blifood.domain.service.ProductService
 import jakarta.validation.Valid
-import org.springframework.hateoas.CollectionModel
+import org.springframework.data.domain.Pageable
+import org.springframework.data.web.PageableDefault
+import org.springframework.hateoas.PagedModel
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.security.access.prepost.PreAuthorize
@@ -35,10 +38,12 @@ class RestaurantProductController(
 
     @PreAuthorize("hasAuthority('${Authority.RESTAURANT_READ}')")
     @GetMapping
-    override fun findAll(@PathVariable restaurantId: Long): CollectionModel<ProductModel> {
-        return CollectionModel.of(
-            productService.findAll(restaurantId).map { it.toModel() },
-            ProductModel.findAllLink(restaurantId, true)
+    override fun findAll(@PathVariable restaurantId: Long, @PageableDefault(size = DEFAULT_PAGE_SIZE) pageable: Pageable): PagedModel<ProductModel> {
+        val page = productService.findAll(restaurantId, pageable).map { it.toModel() }
+        return PagedModel.of(
+            page.content,
+            PagedModel.PageMetadata(page.size.toLong(), page.number.toLong(), page.totalElements),
+            ProductModel.findAllLink(restaurantId, pageable, true)
         )
     }
 

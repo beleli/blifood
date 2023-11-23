@@ -6,6 +6,8 @@ import org.springframework.web.context.request.RequestContextHolder
 import org.springframework.web.context.request.ServletRequestAttributes
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder
 
+const val DEFAULT_PAGE_SIZE: Int = 10
+
 fun addUriInResponseHeader(resourceId: Any) {
     val uri = ServletUriComponentsBuilder.fromCurrentRequestUri()
         .path("/{resourceId}")

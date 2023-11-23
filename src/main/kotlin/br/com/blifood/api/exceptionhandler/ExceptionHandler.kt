@@ -7,6 +7,7 @@ import br.com.blifood.domain.exception.EntityNotFoundException
 import br.com.blifood.domain.exception.UserNotAuthorizedException
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException
 import jakarta.validation.ConstraintViolationException
+import org.springframework.data.mapping.PropertyReferenceException
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.HttpStatusCode
@@ -30,6 +31,11 @@ class ExceptionHandler : ResponseEntityExceptionHandler() {
     fun handleUnscathedException(ex: Exception, request: WebRequest): ResponseEntity<Any>? {
         logger.error(ex)
         return this.handleExceptionInternal(ex, Messages.get("system.unscathedException"), HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request)
+    }
+
+    @ExceptionHandler(PropertyReferenceException::class)
+    fun handlePropertyReferenceException(ex: PropertyReferenceException, request: WebRequest): ResponseEntity<Any>? {
+        return this.handleExceptionInternal(ex, Messages.get("system.propertyReferenceException"), HttpHeaders(), HttpStatus.BAD_REQUEST, request)
     }
 
     @ExceptionHandler(AccessDeniedException::class)

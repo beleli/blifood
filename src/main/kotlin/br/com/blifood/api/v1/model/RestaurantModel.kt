@@ -1,9 +1,11 @@
 package br.com.blifood.api.v1.model
 
+import br.com.blifood.api.v1.DEFAULT_PAGE_SIZE
 import br.com.blifood.api.v1.controller.RestaurantController
 import br.com.blifood.api.v1.controller.RestaurantPaymentMethodController
 import br.com.blifood.domain.entity.Restaurant
 import io.swagger.v3.oas.annotations.media.Schema
+import org.springframework.data.domain.Pageable
 import org.springframework.hateoas.IanaLinkRelations
 import org.springframework.hateoas.RepresentationModel
 import org.springframework.hateoas.server.core.Relation
@@ -39,7 +41,7 @@ open class RestaurantModel(
 
 ) : RepresentationModel<RestaurantModel>() {
     companion object {
-        fun findAllLink(isSelfRel: Boolean = false) = linkTo(methodOn(RestaurantController::class.java).findAll())
+        fun findAllLink(pageable: Pageable, isSelfRel: Boolean = false) = linkTo(methodOn(RestaurantController::class.java).findAll(pageable))
             .withRel(if (isSelfRel) IanaLinkRelations.SELF_VALUE else COLLECTION_RELATION)
     }
     init {
@@ -62,19 +64,19 @@ open class RestaurantModel(
                 .withRel("paymentMethods")
         )
 
-        this.add(ProductModel.findAllLink(id))
-        this.add(findAllLink())
+        this.add(ProductModel.findAllLink(id, Pageable.ofSize(DEFAULT_PAGE_SIZE)))
+        this.add(findAllLink(Pageable.ofSize(DEFAULT_PAGE_SIZE)))
     }
 }
 
 fun Restaurant.toModel() =
     RestaurantModel(
-        id,
-        name,
-        deliveryFee,
-        isActive(),
-        isOpen(),
-        address.toModel(),
-        culinary.toModel(),
-        paymentsMethods.map { it.toModel() }
+        id = id,
+        name = name,
+        deliveryFee = deliveryFee,
+        active = isActive(),
+        open = isOpen(),
+        address = address.toModel(),
+        culinary = culinary.toModel(),
+        paymentMethods = paymentsMethods.map { it.toModel() }
     )

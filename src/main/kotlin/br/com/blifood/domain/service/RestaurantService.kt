@@ -10,6 +10,8 @@ import br.com.blifood.domain.exception.RestaurantNotFoundException
 import br.com.blifood.domain.exception.UserNotAuthorizedException
 import br.com.blifood.domain.repository.RestaurantRepository
 import org.springframework.dao.DataIntegrityViolationException
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -23,8 +25,8 @@ class RestaurantService(
 ) {
 
     @Transactional(readOnly = true)
-    fun findAll(): List<Restaurant> {
-        return restaurantRepository.findAll()
+    fun findAll(pageable: Pageable): Page<Restaurant> {
+        return restaurantRepository.findAll(pageable)
     }
 
     @Transactional(readOnly = true)
