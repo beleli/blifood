@@ -11,3 +11,29 @@ services:
       - POSTGRES_PASSWORD=postgresPassword
     volumes:
       - ./postgres:/var/lib/postgresql/data
+
+  localstack:
+    image: localstack/localstack:0.12.1
+    container_name: checkout-api-localstack
+    ports:
+      - "4566-4584:4566-4584"
+    environment:
+      - SERVICES=secretsmanager,ssm
+    volumes:
+      - './.localstack:/var/lib/localstack'
+      - '/var/run/docker.sock:/var/run/docker.sock'
+
+  setup-resources:
+    image: amazon/aws-cli:latest
+    environment:
+      - AWS_ACCESS_KEY_ID=localstack
+      - AWS_SECRET_ACCESS_KEY=localstack
+      - AWS_DEFAULT_REGION=us-east-1
+    entrypoint: /bin/sh -c
+    command: >
+      "
+        sleep 20;
+        aws --endpoint-url=http://localstack:4566 secretsmanager create-secret --name secret_name --secret-string "secret_value"
+      "
+    depends_on:
+      - localstack
