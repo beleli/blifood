@@ -6,10 +6,11 @@ import org.springframework.context.annotation.Profile
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials
 import software.amazon.awssdk.regions.Region
 import software.amazon.awssdk.services.secretsmanager.SecretsManagerClient
+import software.amazon.awssdk.services.secretsmanager.model.GetSecretValueRequest
 import java.net.URI
 
 @Configuration
-class SecretsManagerConfig {
+class SecretsManagerClientConfig {
 
     @Bean
     @Profile("!local")
@@ -26,4 +27,10 @@ class SecretsManagerConfig {
             .credentialsProvider { AwsBasicCredentials.create("localstack", "localstack") }
             .build()
     }
+}
+
+fun SecretsManagerClient.getSecretValue(secretName: String): String {
+    val valueRequest = GetSecretValueRequest.builder().secretId(secretName).build()
+    val response = this.getSecretValue(valueRequest)
+    return response.secretString()
 }

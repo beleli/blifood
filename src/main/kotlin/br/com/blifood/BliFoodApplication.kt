@@ -2,14 +2,12 @@ package br.com.blifood
 
 import br.com.blifood.core.email.EmailProperties
 import br.com.blifood.core.io.Base64ProtocolResolver
-import br.com.blifood.core.secretsmanager.SecretsManagerProtocolResolver
+import br.com.blifood.core.io.SecretsManagerProtocolResolver
 import br.com.blifood.core.security.JwtKeyStoreProperties
 import br.com.blifood.core.storage.StorageProperties
-import com.sun.tools.javac.tree.TreeInfo
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.context.properties.EnableConfigurationProperties
-import org.springframework.core.env.Environment
 
 @EnableConfigurationProperties(StorageProperties::class, EmailProperties::class, JwtKeyStoreProperties::class)
 @SpringBootApplication

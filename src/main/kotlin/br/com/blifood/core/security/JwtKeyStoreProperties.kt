@@ -6,6 +6,6 @@ import org.springframework.core.io.Resource
 @ConfigurationProperties("blifood.jwt-keystore")
 data class JwtKeyStoreProperties(
     val jksLocation: Resource,
-    val keypairAlias: String,
-    val password: String
+    val keypairAlias: Resource,
+    val password: Resource
 )
