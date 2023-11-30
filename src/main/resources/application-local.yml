@@ -2,8 +2,15 @@ server:
   port: 8081
 
 spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgresDb
+    username: local/blifood/databaseUser
+    password: local/blifood/databasePassword
   jpa:
     show-sql: true
   flyway:
     locations: classpath:db/migration,classpath:db/testdata
 
+blifood:
+  jwt-keystore:
+    jks-location: secretsManager:local/blifood/jwtKey

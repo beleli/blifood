@@ -40,6 +40,7 @@ dependencies {
     implementation("io.jsonwebtoken:jjwt-jackson:0.11.2")
 
     implementation("com.amazonaws:aws-java-sdk-s3:1.12.520")
+    implementation("software.amazon.awssdk:secretsmanager:2.21.29")
 
     implementation("org.jetbrains.kotlin:kotlin-reflect")
 

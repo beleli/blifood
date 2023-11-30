@@ -1,4 +1,8 @@
 spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgresDb
+    username: prod/blifood/databaseUser
+    password: prod/blifood/databasePassword
   mail:
     host: smtp.sendgrid.net
     port: 587
