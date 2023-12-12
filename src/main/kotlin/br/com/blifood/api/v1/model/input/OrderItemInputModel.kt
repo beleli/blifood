@@ -1,5 +1,6 @@
 package br.com.blifood.api.v1.model.input
 
+import br.com.blifood.core.log.MaskProperty
 import br.com.blifood.domain.entity.OrderItem
 import br.com.blifood.domain.entity.Product
 import io.swagger.v3.oas.annotations.media.Schema
@@ -19,6 +20,7 @@ data class OrderItemInputModel(
     val amount: Int?,
 
     @Schema(example = "Sem pimenta")
+    @MaskProperty
     val observation: String?
 )
 fun OrderItemInputModel.toEntity() = OrderItem(

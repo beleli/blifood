@@ -1,5 +1,7 @@
 package br.com.blifood.api.v1.model.input
 
+import br.com.blifood.core.log.LogMaskFormat
+import br.com.blifood.core.log.MaskProperty
 import br.com.blifood.domain.entity.Address
 import br.com.blifood.domain.entity.City
 import io.swagger.v3.oas.annotations.media.Schema
@@ -16,25 +18,30 @@ data class AddressInputModel(
     val cityId: Long?,
 
     @Schema(example = "38400-000")
+    @MaskProperty
     @field:NotBlank
     @field:Size(max = 9)
     val zipCode: String?,
 
     @Schema(example = "Rua Floriano Peixoto")
+    @MaskProperty(LogMaskFormat.ADDRESS)
     @field:NotBlank
     @field:Size(max = 100)
     val street: String?,
 
     @Schema(example = "1500")
+    @MaskProperty
     @field:NotBlank
     @field:Size(max = 20)
     val number: String?,
 
     @Schema(example = "Apto 901")
+    @MaskProperty
     @field:Size(max = 60)
     val complement: String?,
 
     @Schema(example = "Centro")
+    @MaskProperty
     @field:NotBlank
     @field:Size(max = 60)
     val district: String?

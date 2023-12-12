@@ -12,15 +12,3 @@ spring:
       hibernate:
         default_schema: blifood
 
-blifood:
-  email:
-    impl: fake
-    from: bliFood <noreply@blifood.com.br>
-  storage:
-    type: local
-    local:
-      path: ./catalog
-  jwt-keystore:
-    jks-location: secretsManager:local/blifood/jwtKey
-    password: secretsManager:local/blifood/jwtPassword
-    keypair-alias: secretsManager:local/blifood/jwtAlias

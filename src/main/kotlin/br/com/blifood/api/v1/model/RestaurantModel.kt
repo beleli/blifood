@@ -3,6 +3,9 @@ package br.com.blifood.api.v1.model
 import br.com.blifood.api.v1.DEFAULT_PAGE_SIZE
 import br.com.blifood.api.v1.controller.RestaurantController
 import br.com.blifood.api.v1.controller.RestaurantPaymentMethodController
+import br.com.blifood.core.log.LogMaskFormat
+import br.com.blifood.core.log.MaskObject
+import br.com.blifood.core.log.MaskProperty
 import br.com.blifood.domain.entity.Restaurant
 import io.swagger.v3.oas.annotations.media.Schema
 import org.springframework.data.domain.Pageable
@@ -22,6 +25,7 @@ open class RestaurantModel(
     val id: Long,
 
     @Schema(example = "Celina")
+    @MaskProperty(LogMaskFormat.NAME)
     val name: String,
 
     @Schema(example = "10.00")
@@ -33,6 +37,7 @@ open class RestaurantModel(
     @Schema(example = "true")
     val open: Boolean,
 
+    @MaskObject
     val address: AddressModel,
 
     val culinary: CulinaryModel,

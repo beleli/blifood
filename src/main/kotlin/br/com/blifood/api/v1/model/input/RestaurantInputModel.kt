@@ -1,5 +1,8 @@
 package br.com.blifood.api.v1.model.input
 
+import br.com.blifood.core.log.LogMaskFormat
+import br.com.blifood.core.log.MaskObject
+import br.com.blifood.core.log.MaskProperty
 import br.com.blifood.domain.entity.Culinary
 import br.com.blifood.domain.entity.Restaurant
 import io.swagger.v3.oas.annotations.media.Schema
@@ -14,6 +17,7 @@ import java.math.BigDecimal
 data class RestaurantInputModel(
 
     @Schema(example = "Celina")
+    @MaskProperty(LogMaskFormat.NAME)
     @field:NotBlank
     @field:Size(max = 80)
     val name: String?,
@@ -28,6 +32,7 @@ data class RestaurantInputModel(
     @field:Positive
     val culinaryId: Long?,
 
+    @MaskObject
     @field:NotNull
     @field:Valid
     val address: AddressInputModel?

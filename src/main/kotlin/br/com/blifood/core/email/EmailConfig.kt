@@ -17,9 +17,9 @@ class EmailConfig(
     @Bean
     fun emailService(): EmailService {
         return when (emailProperties.impl) {
-            EmailImpl.FAKE -> FakeEmailService(templateProcessor)
-            EmailImpl.SMTP -> SmtpEmailService(templateProcessor, JavaMailSenderImpl(), emailProperties.from)
-            EmailImpl.SANDBOX -> SmtpEmailService(templateProcessor, JavaMailSenderImpl(), emailProperties.from, emailProperties.to!!)
+            EmailProperties.Impl.FAKE -> FakeEmailService(templateProcessor)
+            EmailProperties.Impl.SMTP -> SmtpEmailService(templateProcessor, JavaMailSenderImpl(), emailProperties.from)
+            EmailProperties.Impl.SANDBOX -> SmtpEmailService(templateProcessor, JavaMailSenderImpl(), emailProperties.from, emailProperties.to!!)
         }
     }
 }

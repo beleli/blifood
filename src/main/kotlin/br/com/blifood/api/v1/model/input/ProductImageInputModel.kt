@@ -1,5 +1,6 @@
 package br.com.blifood.api.v1.model.input
 
+import br.com.blifood.core.log.MaskProperty
 import br.com.blifood.core.validation.FileContentType
 import br.com.blifood.core.validation.FileSize
 import br.com.blifood.domain.entity.Product
@@ -20,6 +21,7 @@ data class ProductImageInputModel(
     val file: MultipartFile?,
 
     @Schema(example = "Foto do produto")
+    @MaskProperty
     @field:NotBlank
     @field:Size(max = 150)
     val description: String?

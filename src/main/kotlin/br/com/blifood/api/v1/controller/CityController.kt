@@ -8,12 +8,15 @@ import br.com.blifood.api.v1.model.input.applyModel
 import br.com.blifood.api.v1.model.input.toEntity
 import br.com.blifood.api.v1.model.toModel
 import br.com.blifood.api.v1.openapi.CityControllerOpenApi
+import br.com.blifood.core.log.logRequest
+import br.com.blifood.core.log.logResponse
 import br.com.blifood.domain.entity.Authority
 import br.com.blifood.domain.entity.City
 import br.com.blifood.domain.exception.BusinessException
 import br.com.blifood.domain.exception.EntityNotFoundException
 import br.com.blifood.domain.service.CityService
 import jakarta.validation.Valid
+import org.slf4j.LoggerFactory
 import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PageableDefault
 import org.springframework.hateoas.PagedModel
@@ -35,6 +38,8 @@ import org.springframework.web.bind.annotation.RestController
 class CityController(
     private val cityService: CityService
 ) : CityControllerOpenApi {
+
+    private val logger = LoggerFactory.getLogger(this.javaClass)
 
     @PreAuthorize("hasAuthority('${Authority.CITY_READ}')")
     @GetMapping
@@ -60,9 +65,10 @@ class CityController(
         @Valid @RequestBody
         cityInputModel: CityInputModel
     ): CityModel {
-        val city = cityInputModel.toEntity()
-        return save(city).toModel().also {
+        logger.logRequest("create", cityInputModel)
+        return save(cityInputModel.toEntity()).toModel().also {
             addUriInResponseHeader(it.id)
+            logger.logResponse("create", it)
         }
     }
 
@@ -73,8 +79,9 @@ class CityController(
         @Valid @RequestBody
         cityInputModel: CityInputModel
     ): CityModel {
+        logger.logRequest("alter", cityInputModel)
         val city = cityService.findOrThrow(cityId).applyModel(cityInputModel)
-        return save(city).toModel()
+        return save(city).toModel().also { logger.logResponse("alter", it) }
     }
 
     @PreAuthorize("hasAuthority('${Authority.CITY_WRITE}')")

@@ -8,9 +8,12 @@ import br.com.blifood.api.v1.model.input.applyModel
 import br.com.blifood.api.v1.model.input.toEntity
 import br.com.blifood.api.v1.model.toModel
 import br.com.blifood.api.v1.openapi.StateControllerOpenApi
+import br.com.blifood.core.log.logRequest
+import br.com.blifood.core.log.logResponse
 import br.com.blifood.domain.entity.Authority
 import br.com.blifood.domain.service.StateService
 import jakarta.validation.Valid
+import org.slf4j.LoggerFactory
 import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PageableDefault
 import org.springframework.hateoas.PagedModel
@@ -32,6 +35,8 @@ import org.springframework.web.bind.annotation.RestController
 class StateController(
     private val stateService: StateService
 ) : StateControllerOpenApi {
+
+    private val logger = LoggerFactory.getLogger(this.javaClass)
 
     @PreAuthorize("hasAuthority('${Authority.STATE_READ}')")
     @GetMapping
@@ -57,8 +62,10 @@ class StateController(
         @Valid @RequestBody
         stateInputModel: StateInputModel
     ): StateModel {
+        logger.logRequest("create", stateInputModel)
         return stateService.save(stateInputModel.toEntity()).toModel().also {
             addUriInResponseHeader(it.id)
+            logger.logResponse("create", it)
         }
     }
 
@@ -69,8 +76,9 @@ class StateController(
         @Valid @RequestBody
         stateInputModel: StateInputModel
     ): StateModel {
+        logger.logRequest("alter", stateInputModel)
         val state = stateService.findOrThrow(stateId).applyModel(stateInputModel)
-        return stateService.save(state).toModel()
+        return stateService.save(state).toModel().also { logger.logResponse("alter", it) }
     }
 
     @PreAuthorize("hasAuthority('${Authority.STATE_WRITE}')")

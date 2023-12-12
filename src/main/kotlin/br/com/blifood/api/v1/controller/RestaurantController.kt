@@ -9,12 +9,15 @@ import br.com.blifood.api.v1.model.input.applyModel
 import br.com.blifood.api.v1.model.input.toEntity
 import br.com.blifood.api.v1.model.toModel
 import br.com.blifood.api.v1.openapi.RestaurantControllerOpenApi
+import br.com.blifood.core.log.logRequest
+import br.com.blifood.core.log.logResponse
 import br.com.blifood.domain.entity.Authority
 import br.com.blifood.domain.entity.Restaurant
 import br.com.blifood.domain.exception.BusinessException
 import br.com.blifood.domain.exception.EntityNotFoundException
 import br.com.blifood.domain.service.RestaurantService
 import jakarta.validation.Valid
+import org.slf4j.LoggerFactory
 import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PageableDefault
 import org.springframework.hateoas.PagedModel
@@ -37,6 +40,8 @@ import org.springframework.web.bind.annotation.RestController
 class RestaurantController(
     private val restaurantService: RestaurantService
 ) : RestaurantControllerOpenApi {
+
+    private val logger = LoggerFactory.getLogger(this.javaClass)
 
     @PreAuthorize("hasAuthority('${Authority.RESTAURANT_READ}')")
     @GetMapping
@@ -62,8 +67,10 @@ class RestaurantController(
         @Valid @RequestBody
         restaurantInputModel: RestaurantInputModel
     ): RestaurantModel {
+        logger.logRequest("create", restaurantInputModel)
         return save(restaurantInputModel.toEntity()).toModel().also {
             addUriInResponseHeader(it.id)
+            logger.logResponse("create", it)
         }
     }
 
@@ -74,8 +81,9 @@ class RestaurantController(
         @Valid @RequestBody
         restaurantInputModel: RestaurantInputModel
     ): RestaurantModel {
+        logger.logRequest("alter", restaurantInputModel)
         val restaurant = restaurantService.findOrThrow(restaurantId).applyModel(restaurantInputModel)
-        return save(restaurant).toModel()
+        return save(restaurant).toModel().also { logger.logResponse("alter", it) }
     }
 
     @PreAuthorize("hasAuthority('${Authority.RESTAURANT_WRITE}')")

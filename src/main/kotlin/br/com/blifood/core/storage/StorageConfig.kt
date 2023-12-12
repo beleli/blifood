@@ -33,7 +33,7 @@ class StorageConfig(
 
     @Bean
     fun imageStorageService(): ImageStorageService {
-        return if (storageProperties.type == StorageType.LOCAL) {
+        return if (storageProperties.type == StorageProperties.Type.LOCAL) {
             val localProperties = storageProperties.local!!
             LocalImageStorageService(localProperties.path)
         } else {

@@ -2,6 +2,7 @@ package br.com.blifood.api.v1.model
 
 import br.com.blifood.api.v1.DEFAULT_PAGE_SIZE
 import br.com.blifood.api.v1.controller.RestaurantProductController
+import br.com.blifood.core.log.MaskProperty
 import br.com.blifood.domain.entity.Product
 import io.swagger.v3.oas.annotations.media.Schema
 import org.springframework.data.domain.Pageable
@@ -24,9 +25,11 @@ open class ProductModel(
     val restaurantId: Long,
 
     @Schema(example = "Marmita")
+    @MaskProperty
     val name: String,
 
     @Schema(example = "Marmita com 2 carnes")
+    @MaskProperty
     val description: String,
 
     @Schema(example = "10.00")

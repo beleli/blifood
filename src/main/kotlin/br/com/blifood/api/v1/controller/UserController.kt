@@ -11,10 +11,14 @@ import br.com.blifood.api.v1.model.input.applyModel
 import br.com.blifood.api.v1.model.input.toEntity
 import br.com.blifood.api.v1.model.toModel
 import br.com.blifood.api.v1.openapi.UserControllerOpenApi
+import br.com.blifood.core.log.logRequest
+import br.com.blifood.core.log.logResponse
+import br.com.blifood.core.log.toLog
 import br.com.blifood.domain.entity.Authority
 import br.com.blifood.domain.entity.UserProfile
 import br.com.blifood.domain.service.UserService
 import jakarta.validation.Valid
+import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.security.access.prepost.PreAuthorize
@@ -33,6 +37,8 @@ class UserController(
     private val userService: UserService
 ) : UserControllerOpenApi {
 
+    private val logger = LoggerFactory.getLogger(this.javaClass)
+
     @PreAuthorize("hasAuthority('${Authority.USER_READ}')")
     @GetMapping("/{userId}")
     override fun findById(@PathVariable userId: Long): UserModel {
@@ -46,8 +52,10 @@ class UserController(
         @RequestBody @Valid
         userWithPasswordInputModel: UserWithPasswordInputModel
     ): UserModel {
+        logger.logRequest("create", userWithPasswordInputModel)
         return userService.save(userWithPasswordInputModel.toEntity()).toModel().also {
             addUriInResponseHeader(it.id)
+            logger.logResponse("create", it)
         }
     }
 
@@ -58,8 +66,9 @@ class UserController(
         @Valid @RequestBody
         userInputModel: UserInputModel
     ): UserModel {
+        logger.logRequest("alter", userInputModel)
         val user = userService.findOrThrow(userId).applyModel(userInputModel)
-        return userService.save(user).toModel()
+        return userService.save(user).toModel().also { logger.logResponse("alter", it) }
     }
 
     @PreAuthorize("hasAuthority('${Authority.USER_WRITE}')")
@@ -70,6 +79,7 @@ class UserController(
         @Valid @RequestBody
         userChangePasswordModel: UserChangePasswordModel
     ) {
+        logger.info(userChangePasswordModel.toLog())
         userService.changePassword(userId, userChangePasswordModel.password!!, userChangePasswordModel.newPassword!!)
     }
 
@@ -81,6 +91,7 @@ class UserController(
         @Valid @RequestBody
         changeProfileInputModel: ChangeProfileInputModel
     ) {
+        logger.info(changeProfileInputModel.toLog())
         userService.changeProfile(getSecurityContextHolderUserId(), userId, UserProfile.valueOf(changeProfileInputModel.profile!!.uppercase()))
     }
 }

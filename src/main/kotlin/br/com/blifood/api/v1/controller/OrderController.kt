@@ -7,12 +7,15 @@ import br.com.blifood.api.v1.model.input.OrderInputModel
 import br.com.blifood.api.v1.model.input.toEntity
 import br.com.blifood.api.v1.model.toModel
 import br.com.blifood.api.v1.openapi.OrderControllerOpenApi
+import br.com.blifood.core.log.logRequest
+import br.com.blifood.core.log.logResponse
 import br.com.blifood.domain.entity.Authority
 import br.com.blifood.domain.entity.Order
 import br.com.blifood.domain.exception.BusinessException
 import br.com.blifood.domain.exception.EntityNotFoundException
 import br.com.blifood.domain.service.OrderService
 import jakarta.validation.Valid
+import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -32,6 +35,8 @@ class OrderController(
     private val orderService: OrderService
 ) : OrderControllerOpenApi {
 
+    private val logger = LoggerFactory.getLogger(this.javaClass)
+
     @PreAuthorize("hasAuthority('${Authority.ORDER_READ}')")
     @GetMapping("/{orderCode}")
     override fun findByCode(@PathVariable orderCode: String): OrderModel {
@@ -45,10 +50,12 @@ class OrderController(
         @Valid @RequestBody
         orderInputModel: OrderInputModel
     ): OrderModel {
+        logger.logRequest("create", orderInputModel)
         val userId = getSecurityContextHolderUserId()
         val order = orderInputModel.toEntity(userId)
         return issue(order).toModel().also {
             addUriInResponseHeader(it.code)
+            logger.logResponse("create", it)
         }
     }
 

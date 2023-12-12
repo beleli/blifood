@@ -8,12 +8,15 @@ import br.com.blifood.api.v1.model.input.applyModel
 import br.com.blifood.api.v1.model.input.toEntity
 import br.com.blifood.api.v1.model.toModel
 import br.com.blifood.api.v1.openapi.RestaurantProductControllerOpenApi
+import br.com.blifood.core.log.logRequest
+import br.com.blifood.core.log.logResponse
 import br.com.blifood.domain.entity.Authority
 import br.com.blifood.domain.entity.Product
 import br.com.blifood.domain.exception.BusinessException
 import br.com.blifood.domain.exception.EntityNotFoundException
 import br.com.blifood.domain.service.ProductService
 import jakarta.validation.Valid
+import org.slf4j.LoggerFactory
 import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PageableDefault
 import org.springframework.hateoas.PagedModel
@@ -35,6 +38,8 @@ import org.springframework.web.bind.annotation.RestController
 class RestaurantProductController(
     private val productService: ProductService
 ) : RestaurantProductControllerOpenApi {
+
+    private val logger = LoggerFactory.getLogger(this.javaClass)
 
     @PreAuthorize("hasAuthority('${Authority.RESTAURANT_READ}')")
     @GetMapping
@@ -61,8 +66,10 @@ class RestaurantProductController(
         @Valid @RequestBody
         productInputModel: ProductInputModel
     ): ProductModel {
+        logger.logRequest("create", productInputModel)
         return save(productInputModel.toEntity(restaurantId)).toModel().also {
             addUriInResponseHeader(it.id)
+            logger.logResponse("create", it)
         }
     }
 
@@ -74,8 +81,9 @@ class RestaurantProductController(
         @Valid @RequestBody
         productInputModel: ProductInputModel
     ): ProductModel {
+        logger.logRequest("alter", productInputModel)
         val product = productService.findOrThrow(restaurantId, productId).applyModel(productInputModel)
-        return save(product).toModel()
+        return save(product).toModel().also { logger.logResponse("alter", it) }
     }
 
     @PreAuthorize("hasAuthority('${Authority.RESTAURANT_WRITE}')")

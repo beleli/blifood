@@ -8,9 +8,12 @@ import br.com.blifood.api.v1.model.input.applyModel
 import br.com.blifood.api.v1.model.input.toEntity
 import br.com.blifood.api.v1.model.toModel
 import br.com.blifood.api.v1.openapi.PaymentMethodControllerOpenApi
+import br.com.blifood.core.log.logRequest
+import br.com.blifood.core.log.logResponse
 import br.com.blifood.domain.entity.Authority
 import br.com.blifood.domain.service.PaymentMethodService
 import jakarta.validation.Valid
+import org.slf4j.LoggerFactory
 import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PageableDefault
 import org.springframework.hateoas.PagedModel
@@ -32,6 +35,8 @@ import org.springframework.web.bind.annotation.RestController
 class PaymentMethodController(
     private val paymentMethodService: PaymentMethodService
 ) : PaymentMethodControllerOpenApi {
+
+    private val logger = LoggerFactory.getLogger(this.javaClass)
 
     @PreAuthorize("hasAuthority('${Authority.PAYMENT_METHOD_READ}')")
     @GetMapping
@@ -57,8 +62,10 @@ class PaymentMethodController(
         @Valid @RequestBody
         paymentMethodInputModel: PaymentMethodInputModel
     ): PaymentMethodModel {
+        logger.logRequest("create", paymentMethodInputModel)
         return paymentMethodService.save(paymentMethodInputModel.toEntity()).toModel().also {
             addUriInResponseHeader(it.id)
+            logger.logResponse("create", it)
         }
     }
 
@@ -69,8 +76,9 @@ class PaymentMethodController(
         @Valid @RequestBody
         paymentMethodInputModel: PaymentMethodInputModel
     ): PaymentMethodModel {
+        logger.logRequest("alter", paymentMethodInputModel)
         val paymentMethod = paymentMethodService.findOrThrow(paymentMethodId).applyModel(paymentMethodInputModel)
-        return paymentMethodService.save(paymentMethod).toModel()
+        return paymentMethodService.save(paymentMethod).toModel().also { logger.logResponse("alter", it) }
     }
 
     @PreAuthorize("hasAuthority('${Authority.PAYMENT_METHOD_WRITE}')")

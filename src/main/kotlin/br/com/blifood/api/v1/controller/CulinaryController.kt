@@ -8,9 +8,12 @@ import br.com.blifood.api.v1.model.input.applyModel
 import br.com.blifood.api.v1.model.input.toEntity
 import br.com.blifood.api.v1.model.toModel
 import br.com.blifood.api.v1.openapi.CulinaryControllerOpenApi
+import br.com.blifood.core.log.logRequest
+import br.com.blifood.core.log.logResponse
 import br.com.blifood.domain.entity.Authority
 import br.com.blifood.domain.service.CulinaryService
 import jakarta.validation.Valid
+import org.slf4j.LoggerFactory
 import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PageableDefault
 import org.springframework.hateoas.PagedModel
@@ -32,6 +35,8 @@ import org.springframework.web.bind.annotation.RestController
 class CulinaryController(
     private val culinaryService: CulinaryService
 ) : CulinaryControllerOpenApi {
+
+    private val logger = LoggerFactory.getLogger(this.javaClass)
 
     @PreAuthorize("hasAuthority('${Authority.CULINARY_READ}')")
     @GetMapping
@@ -57,8 +62,10 @@ class CulinaryController(
         @Valid @RequestBody
         culinaryInputModel: CulinaryInputModel
     ): CulinaryModel {
+        logger.logRequest("create", culinaryInputModel)
         return culinaryService.save(culinaryInputModel.toEntity()).toModel().also {
             addUriInResponseHeader(it.id)
+            logger.logResponse("create", it)
         }
     }
 
@@ -69,8 +76,9 @@ class CulinaryController(
         @Valid @RequestBody
         culinaryInputModel: CulinaryInputModel
     ): CulinaryModel {
+        logger.logRequest("alter", culinaryInputModel)
         val culinary = culinaryService.findOrThrow(culinaryId).applyModel(culinaryInputModel)
-        return culinaryService.save(culinary).toModel()
+        return culinaryService.save(culinary).toModel().also { logger.logResponse("alter", it) }
     }
 
     @PreAuthorize("hasAuthority('${Authority.CULINARY_WRITE}')")
