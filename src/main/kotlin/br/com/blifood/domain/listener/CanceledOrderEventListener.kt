@@ -15,7 +15,7 @@ class CanceledOrderEventListener(
     fun notifyCanceledOrder(event: CanceledOrderEvent) {
         val order: Order = event.order
         val message = EmailService.Message(
-            setOf(""),
+            setOf(order.user.email),
             order.restaurant.name,
             "emails/order-canceled.html",
             mapOf(Pair("order", order))

@@ -15,7 +15,7 @@ class ConfirmedOrderEventListener(
     fun notifyConfirmedOrder(event: ConfirmedOrderEvent) {
         val order: Order = event.order
         val message = EmailService.Message(
-            setOf(""),
+            setOf(order.user.email),
             order.restaurant.name,
             "emails/order-confirmed.html",
             mapOf(Pair("order", order))

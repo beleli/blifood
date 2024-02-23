@@ -39,12 +39,12 @@ dependencies {
     implementation("io.jsonwebtoken:jjwt-impl:0.11.2")
     implementation("io.jsonwebtoken:jjwt-jackson:0.11.2")
 
-    implementation("com.amazonaws:aws-java-sdk-s3:1.12.520")
+    implementation("com.amazonaws:aws-java-sdk-s3:1.12.664")
     implementation("software.amazon.awssdk:secretsmanager:2.21.29")
 
     implementation("org.jetbrains.kotlin:kotlin-reflect")
 
-    implementation("org.postgresql:postgresql:42.6.0")
+    implementation("org.postgresql:postgresql:42.7.2")
     implementation("org.flywaydb:flyway-core:9.0.0")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
