@@ -16,7 +16,6 @@ class CityService(
     private val cityRepository: CityRepository,
     private val stateService: StateService
 ) {
-
     @Transactional(readOnly = true)
     fun findAll(pageable: Pageable): Page<City> {
         return cityRepository.findAll(pageable)
@@ -41,7 +40,7 @@ class CityService(
         runCatching {
             cityRepository.delete(findOrThrow(id))
             cityRepository.flush()
-        }.onFailure { // it: Throwable ->
+        }.onFailure {
             when (it) {
                 is DataIntegrityViolationException -> throw CityInUseException()
                 else -> throw it

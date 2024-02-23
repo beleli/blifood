@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional
 class PaymentMethodService(
     private val paymentMethodRepository: PaymentMethodRepository
 ) {
-
     @Transactional(readOnly = true)
     fun findAll(pageable: Pageable): Page<PaymentMethod> {
         return paymentMethodRepository.findAll(pageable)
@@ -39,7 +38,7 @@ class PaymentMethodService(
         runCatching {
             paymentMethodRepository.delete(findOrThrow(id))
             paymentMethodRepository.flush()
-        }.onFailure { // it: Throwable ->
+        }.onFailure {
             when (it) {
                 is DataIntegrityViolationException -> throw PaymentMethodInUseException()
                 else -> throw it

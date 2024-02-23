@@ -17,6 +17,6 @@ fun addUriInResponseHeader(resourceId: Any) {
 }
 
 fun getSecurityContextHolderUserId(): Long {
-    val details: Map<String, Any> = SecurityContextHolder.getContext().authentication.details as Map<String, Any>
-    return details["user_id"].toString().toLong()
+    val details = SecurityContextHolder.getContext().authentication.details
+    return if (details is Map<*, *>) details["user_id"].toString().toLong() else 0
 }

@@ -8,6 +8,7 @@ import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.Table
+import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.Size
 import org.hibernate.annotations.CreationTimestamp
 import java.time.OffsetDateTime
@@ -26,6 +27,7 @@ data class User(
     var name: String = "",
 
     @field:Size(min = 1, max = 255)
+    @field:Email
     @Column(name = "ds_email", nullable = false)
     var email: String = "",
 
@@ -39,5 +41,5 @@ data class User(
 
     @CreationTimestamp
     @Column(name = "dt_create", nullable = false)
-    val create: OffsetDateTime? = null
+    val create: OffsetDateTime = OffsetDateTime.now()
 )

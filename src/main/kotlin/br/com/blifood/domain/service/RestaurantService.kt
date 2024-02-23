@@ -23,7 +23,6 @@ class RestaurantService(
     private val paymentMethodService: PaymentMethodService,
     private val userService: UserService
 ) {
-
     @Transactional(readOnly = true)
     fun findAll(pageable: Pageable): Page<Restaurant> {
         return restaurantRepository.findAll(pageable)
@@ -35,7 +34,10 @@ class RestaurantService(
     }
 
     @Transactional
-    fun save(restaurant: Restaurant, userId: Long): Restaurant {
+    fun save(
+        restaurant: Restaurant,
+        userId: Long
+    ): Restaurant {
         validateManager(restaurant, userId)
         restaurant.culinary = culinaryService.findOrThrow(restaurant.culinary.id)
         restaurant.address.city = cityService.findOrThrow(restaurant.address.city.id)
@@ -46,12 +48,15 @@ class RestaurantService(
     }
 
     @Transactional(rollbackFor = [RestaurantInUseException::class])
-    fun delete(restaurantId: Long, userId: Long) {
-        validateManager(restaurantId, userId)
+    fun delete(
+        restaurantId: Long,
+        userId: Long
+    ) {
+        validateManager(findOrThrow(restaurantId), userId)
         runCatching {
-            restaurantRepository.delete(findOrThrow(restaurantId))
+            restaurantRepository.deleteById(restaurantId)
             restaurantRepository.flush()
-        }.onFailure { // it: Throwable ->
+        }.onFailure {
             when (it) {
                 is DataIntegrityViolationException -> throw RestaurantInUseException()
                 else -> throw it
@@ -60,21 +65,30 @@ class RestaurantService(
     }
 
     @Transactional
-    fun activate(restaurantId: Long, userId: Long) {
+    fun activate(
+        restaurantId: Long,
+        userId: Long
+    ) {
         val restaurant = findOrThrow(restaurantId)
         validateManager(restaurant, userId)
         restaurantRepository.save(restaurant.activate())
     }
 
     @Transactional
-    fun inactivate(restaurantId: Long, userId: Long) {
+    fun inactivate(
+        restaurantId: Long,
+        userId: Long
+    ) {
         val restaurant = findOrThrow(restaurantId)
         validateManager(restaurant, userId)
         restaurantRepository.save(restaurant.inactivate())
     }
 
     @Transactional
-    fun open(restaurantId: Long, userId: Long) {
+    fun open(
+        restaurantId: Long,
+        userId: Long
+    ) {
         val restaurant = findOrThrow(restaurantId)
         validateManager(restaurant, userId)
         restaurantRepository.save(restaurant.open())
@@ -87,7 +101,11 @@ class RestaurantService(
     }
 
     @Transactional
-    fun addPaymentMethod(restaurantId: Long, userId: Long, paymentMethodId: Long) {
+    fun addPaymentMethod(
+        restaurantId: Long,
+        userId: Long,
+        paymentMethodId: Long
+    ) {
         val restaurant = findOrThrow(restaurantId)
         validateManager(restaurant, userId)
         val paymentMethod = paymentMethodService.findOrThrow(paymentMethodId)
@@ -95,7 +113,11 @@ class RestaurantService(
     }
 
     @Transactional
-    fun removePaymentMethod(restaurantId: Long, userId: Long, paymentMethodId: Long) {
+    fun removePaymentMethod(
+        restaurantId: Long,
+        userId: Long,
+        paymentMethodId: Long
+    ) {
         val restaurant = findOrThrow(restaurantId)
         validateManager(restaurant, userId)
         val paymentMethod = paymentMethodService.findOrThrow(paymentMethodId)
@@ -103,7 +125,10 @@ class RestaurantService(
     }
 
     @Transactional
-    fun addManager(restaurantId: Long, userId: Long) {
+    fun addManager(
+        restaurantId: Long,
+        userId: Long
+    ) {
         val restaurant = findOrThrow(restaurantId)
         val user = userService.findOrThrow(userId)
         validateManager(restaurant, user)
@@ -111,7 +136,10 @@ class RestaurantService(
     }
 
     @Transactional
-    fun removeManager(restaurantId: Long, userId: Long) {
+    fun removeManager(
+        restaurantId: Long,
+        userId: Long
+    ) {
         val restaurant = findOrThrow(restaurantId)
         val user = userService.findOrThrow(userId)
         validateManager(restaurant, user)
@@ -128,18 +156,18 @@ class RestaurantService(
         return findOrThrow(restaurantId).managers
     }
 
-    private fun validateManager(restaurantId: Long, userId: Long) {
-        val restaurant = findOrThrow(restaurantId)
+    private fun validateManager(
+        restaurant: Restaurant,
+        userId: Long
+    ) {
         val user = userService.findOrThrow(userId)
         return validateManager(restaurant, user)
     }
 
-    private fun validateManager(restaurant: Restaurant, userId: Long) {
-        val user = userService.findOrThrow(userId)
-        return validateManager(restaurant, user)
-    }
-
-    private fun validateManager(restaurant: Restaurant, user: User) {
+    private fun validateManager(
+        restaurant: Restaurant,
+        user: User
+    ) {
         val isManager = user.profile == UserProfile.ADMIN || (user.profile == UserProfile.MANAGER && restaurant.managers.contains(user))
         if (!isManager) throw UserNotAuthorizedException()
     }

@@ -53,7 +53,7 @@ data class Restaurant(
 
     @CreationTimestamp
     @Column(name = "dt_create", nullable = false)
-    val create: OffsetDateTime? = null,
+    val create: OffsetDateTime = OffsetDateTime.now(),
 
     @UpdateTimestamp
     @Column(name = "dt_update")

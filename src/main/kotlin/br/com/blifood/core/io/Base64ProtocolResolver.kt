@@ -8,9 +8,11 @@ import org.springframework.core.io.Resource
 import org.springframework.core.io.ResourceLoader
 import java.util.Base64
 
+private const val BASE64_PREFIX = "base64:"
+
 class Base64ProtocolResolver : ProtocolResolver, ApplicationListener<ApplicationContextInitializedEvent> {
     override fun resolve(location: String, resourceLoader: ResourceLoader): Resource? {
-        if (location.startsWith("base64:")) {
+        if (location.startsWith(BASE64_PREFIX)) {
             val decodedResource = Base64.getDecoder().decode(location.substring(7))
             return ByteArrayResource(decodedResource)
         }

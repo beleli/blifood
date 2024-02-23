@@ -37,7 +37,7 @@ data class OrderItem(
     private var total: BigDecimal = BigDecimal.ZERO,
 
     @Column(name = "ds_observation")
-    val observation: String?
+    val observation: String? = null
 ) {
     fun total() = total
     fun calculateTotal() {

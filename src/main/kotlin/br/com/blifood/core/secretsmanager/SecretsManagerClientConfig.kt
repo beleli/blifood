@@ -13,13 +13,13 @@ import java.net.URI
 class SecretsManagerClientConfig {
 
     @Bean
-    @Profile("!local")
+    @Profile("!local & !test")
     fun secretsManager(): SecretsManagerClient {
         return SecretsManagerClient.create()
     }
 
+    @Profile("local || test")
     @Bean
-    @Profile("local")
     fun secretsManagerLocal(): SecretsManagerClient {
         return SecretsManagerClient.builder()
             .endpointOverride(URI.create("http://localhost:4566"))

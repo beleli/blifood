@@ -82,10 +82,7 @@ fun String.maskEmail() = this.replace("(?<=.)[^@](?=[^@]*?@)|(?:(?<=@.)|(?!^)\\G
 
 fun String.maskAfter(lastDigit: Int) = this.replaceRange(lastDigit, length, "*".repeat(length - lastDigit))
 
-fun String.maskName(): String {
-    val names = this.split(" ")
-    return names.map { it.maskAfter(2) }.reduce { acc, s -> "$acc $s" }
-}
+fun String.maskName() = this.split(" ").map { it.maskAfter(2) }.reduce { acc, s -> "$acc $s" }
 
 fun Logger.logRequest(method: String, request: Any?) {
     this.info("method: $method, request: ${request?.toJsonLog()}")

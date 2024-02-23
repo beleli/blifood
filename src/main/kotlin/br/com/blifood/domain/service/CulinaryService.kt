@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional
 class CulinaryService(
     private val culinaryRepository: CulinaryRepository
 ) {
-
     @Transactional(readOnly = true)
     fun findAll(pageable: Pageable): Page<Culinary> {
         return culinaryRepository.findAll(pageable)
@@ -39,7 +38,7 @@ class CulinaryService(
         runCatching {
             culinaryRepository.delete(findOrThrow(id))
             culinaryRepository.flush()
-        }.onFailure { // it: Throwable ->
+        }.onFailure {
             when (it) {
                 is DataIntegrityViolationException -> throw CulinaryInUseException()
                 else -> throw it

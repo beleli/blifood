@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional
 class StateService(
     private val stateRepository: StateRepository
 ) {
-
     @Transactional(readOnly = true)
     fun findAll(pageable: Pageable): Page<State> {
         return stateRepository.findAll(pageable)
@@ -39,7 +38,7 @@ class StateService(
         runCatching {
             stateRepository.delete(findOrThrow(id))
             stateRepository.flush()
-        }.onFailure { // it: Throwable ->
+        }.onFailure {
             when (it) {
                 is DataIntegrityViolationException -> throw StateInUseException()
                 else -> throw it

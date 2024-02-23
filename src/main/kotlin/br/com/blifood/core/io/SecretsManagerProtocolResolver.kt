@@ -10,7 +10,7 @@ import org.springframework.core.io.Resource
 import org.springframework.core.io.ResourceLoader
 import software.amazon.awssdk.services.secretsmanager.SecretsManagerClient
 
-private const val SECRETS_MANAGER_PREFIX = "secretsManager:"
+private const val SECRETS_MANAGER_PREFIX = "secretsmanager:"
 
 class SecretsManagerProtocolResolver : ProtocolResolver, ApplicationListener<ApplicationContextInitializedEvent> {
 
@@ -33,7 +33,7 @@ class SecretsManagerProtocolResolver : ProtocolResolver, ApplicationListener<App
 
     private fun setSecretsManagerClient(): SecretsManagerClient {
         val profiles = System.getenv()["spring.profiles.active"]?.lowercase()?.split(",")
-        val isLocalProfile = profiles?.contains("local") ?: false
+        val isLocalProfile = profiles?.any { it == "local" || it == "test" } ?: true
         return if (isLocalProfile) {
             SecretsManagerClientConfig().secretsManagerLocal()
         } else {
