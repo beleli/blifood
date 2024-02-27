@@ -67,7 +67,7 @@ class UserController(
         userInputModel: UserInputModel
     ): UserModel {
         logger.logRequest("alter", userInputModel)
-        val user = userService.findOrThrow(userId).applyModel(userInputModel)
+        val user = userService.findOrThrow(userId).copy().applyModel(userInputModel)
         return userService.save(user).toModel().also { logger.logResponse("alter", it) }
     }
 

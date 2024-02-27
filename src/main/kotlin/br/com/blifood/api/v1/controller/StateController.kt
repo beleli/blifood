@@ -77,7 +77,7 @@ class StateController(
         stateInputModel: StateInputModel
     ): StateModel {
         logger.logRequest("alter", stateInputModel)
-        val state = stateService.findOrThrow(stateId).applyModel(stateInputModel)
+        val state = stateService.findOrThrow(stateId).copy().applyModel(stateInputModel)
         return stateService.save(state).toModel().also { logger.logResponse("alter", it) }
     }
 

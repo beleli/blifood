@@ -20,6 +20,8 @@ enum class LogMaskFormat {
     NAME
 }
 
+private const val MASK_LENGTH = 5
+
 fun Any.toLog(): String {
     val propertiesMap = this::class.declaredMemberProperties
         .associateWith { prop ->
@@ -74,15 +76,37 @@ fun String?.applyMask(format: LogMaskFormat): String? {
     }
 }
 
-fun String.maskAll() = this.replace(Regex("[\\s\\S]"), "*")
+fun String.maskAll(): String {
+    return if (this.length < MASK_LENGTH) {
+        "*".repeat(this.length)
+    } else {
+        "*".repeat(MASK_LENGTH)
+    }
+}
 
-fun String.maskCPF() = this.take(3) + "***.***." + this.takeLast(2)
+fun String.maskCPF(): String {
+    return this.take(3) + MASK_LENGTH + this.takeLast(2)
+}
 
-fun String.maskEmail() = this.replace("(?<=.)[^@](?=[^@]*?@)|(?:(?<=@.)|(?!^)\\G(?=[^@]*$)).(?=.*\\.)".toRegex()) { "*" }
+fun String.maskEmail(): String {
+    return this.replace("(?<=.)[^@](?=[^@]*?@)|(?:(?<=@.)|(?!^)\\G(?=[^@]*$)).(?=.*\\.)".toRegex()) { "*" }
+}
 
-fun String.maskAfter(lastDigit: Int) = this.replaceRange(lastDigit, length, "*".repeat(length - lastDigit))
+fun String.maskAfter(lastDigit: Int): String {
+    return if (this.length > lastDigit) {
+        if (this.length > lastDigit + MASK_LENGTH) {
+            this.replaceRange(lastDigit, length, "*".repeat(MASK_LENGTH))
+        } else {
+            this.replaceRange(lastDigit, length, "*".repeat(length - lastDigit))
+        }
+    } else {
+        this
+    }
+}
 
-fun String.maskName() = this.split(" ").map { it.maskAfter(2) }.reduce { acc, s -> "$acc $s" }
+fun String.maskName(): String {
+    return this.split(" ").map { it.maskAfter(2) }.reduce { acc, s -> "$acc $s" }
+}
 
 fun Logger.logRequest(method: String, request: Any?) {
     this.info("method: $method, request: ${request?.toJsonLog()}")

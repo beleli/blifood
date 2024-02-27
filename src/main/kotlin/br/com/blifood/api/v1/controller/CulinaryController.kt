@@ -77,7 +77,7 @@ class CulinaryController(
         culinaryInputModel: CulinaryInputModel
     ): CulinaryModel {
         logger.logRequest("alter", culinaryInputModel)
-        val culinary = culinaryService.findOrThrow(culinaryId).applyModel(culinaryInputModel)
+        val culinary = culinaryService.findOrThrow(culinaryId).copy().applyModel(culinaryInputModel)
         return culinaryService.save(culinary).toModel().also { logger.logResponse("alter", it) }
     }
 

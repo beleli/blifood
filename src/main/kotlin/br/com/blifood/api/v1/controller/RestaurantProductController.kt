@@ -82,7 +82,7 @@ class RestaurantProductController(
         productInputModel: ProductInputModel
     ): ProductModel {
         logger.logRequest("alter", productInputModel)
-        val product = productService.findOrThrow(restaurantId, productId).applyModel(productInputModel)
+        val product = productService.findOrThrow(restaurantId, productId).copy().applyModel(productInputModel)
         return save(product).toModel().also { logger.logResponse("alter", it) }
     }
 

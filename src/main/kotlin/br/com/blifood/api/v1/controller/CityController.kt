@@ -80,7 +80,7 @@ class CityController(
         cityInputModel: CityInputModel
     ): CityModel {
         logger.logRequest("alter", cityInputModel)
-        val city = cityService.findOrThrow(cityId).applyModel(cityInputModel)
+        val city = cityService.findOrThrow(cityId).copy().applyModel(cityInputModel)
         return save(city).toModel().also { logger.logResponse("alter", it) }
     }
 

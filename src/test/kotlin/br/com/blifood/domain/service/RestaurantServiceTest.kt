@@ -201,7 +201,7 @@ class RestaurantServiceTest : DescribeSpec({
             every { userService.findOrThrow(any()) } returns user
             every { restaurantRepository.save(any()) } returns restaurant
 
-            restaurantService.close(restaurantId)
+            restaurantService.close(restaurantId, userId)
 
             restaurant.isOpen() shouldBe false
             verify { restaurantRepository.save(restaurant) }

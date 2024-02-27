@@ -32,6 +32,7 @@ class CityService(
         cityRepository.findByNameAndStateId(city.name, city.state.id)?.let {
             if (it.id != city.id) throw CityAlreadyExistsException()
         }
+
         return cityRepository.save(city)
     }
 

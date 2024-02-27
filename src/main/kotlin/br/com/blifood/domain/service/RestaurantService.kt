@@ -95,8 +95,12 @@ class RestaurantService(
     }
 
     @Transactional
-    fun close(restaurantId: Long) {
+    fun close(
+        restaurantId: Long,
+        userId: Long
+    ) {
         val restaurant = findOrThrow(restaurantId)
+        validateManager(restaurant, userId)
         restaurantRepository.save(restaurant.close())
     }
 

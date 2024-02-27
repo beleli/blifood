@@ -77,7 +77,7 @@ class PaymentMethodController(
         paymentMethodInputModel: PaymentMethodInputModel
     ): PaymentMethodModel {
         logger.logRequest("alter", paymentMethodInputModel)
-        val paymentMethod = paymentMethodService.findOrThrow(paymentMethodId).applyModel(paymentMethodInputModel)
+        val paymentMethod = paymentMethodService.findOrThrow(paymentMethodId).copy().applyModel(paymentMethodInputModel)
         return paymentMethodService.save(paymentMethod).toModel().also { logger.logResponse("alter", it) }
     }
 

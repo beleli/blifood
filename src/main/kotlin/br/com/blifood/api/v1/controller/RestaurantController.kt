@@ -82,7 +82,7 @@ class RestaurantController(
         restaurantInputModel: RestaurantInputModel
     ): RestaurantModel {
         logger.logRequest("alter", restaurantInputModel)
-        val restaurant = restaurantService.findOrThrow(restaurantId).applyModel(restaurantInputModel)
+        val restaurant = restaurantService.findOrThrow(restaurantId).copy().applyModel(restaurantInputModel)
         return save(restaurant).toModel().also { logger.logResponse("alter", it) }
     }
 
@@ -122,7 +122,7 @@ class RestaurantController(
     @PutMapping("/{restaurantId}/close")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     override fun close(@PathVariable restaurantId: Long): ResponseEntity<Void> {
-        restaurantService.close(restaurantId)
+        restaurantService.close(restaurantId, getSecurityContextHolderUserId())
         return ResponseEntity.noContent().build()
     }
 
