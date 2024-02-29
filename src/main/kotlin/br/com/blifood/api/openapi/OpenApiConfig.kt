@@ -1,4 +1,4 @@
-package br.com.blifood.core.openapi
+package br.com.blifood.api.openapi
 
 import br.com.blifood.api.exceptionhandler.ApiProblemDetail
 import br.com.blifood.api.exceptionhandler.ApiProblemDetail.ApiFieldError

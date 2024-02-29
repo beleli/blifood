@@ -1,5 +1,6 @@
-package br.com.blifood.core.email
+package br.com.blifood.core.config
 
+import br.com.blifood.core.properties.EmailProperties
 import br.com.blifood.domain.service.EmailService
 import br.com.blifood.infrastructure.email.FakeEmailService
 import br.com.blifood.infrastructure.email.SmtpEmailService

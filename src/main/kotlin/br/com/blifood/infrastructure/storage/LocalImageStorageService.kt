@@ -1,6 +1,7 @@
 package br.com.blifood.infrastructure.storage
 
 import br.com.blifood.core.message.Messages
+import br.com.blifood.domain.exception.StorageException
 import br.com.blifood.domain.service.ImageStorageService
 import java.io.InputStream
 import java.nio.file.Files

@@ -1,4 +1,4 @@
-package br.com.blifood.core.email
+package br.com.blifood.core.properties
 
 import org.springframework.boot.context.properties.ConfigurationProperties
 

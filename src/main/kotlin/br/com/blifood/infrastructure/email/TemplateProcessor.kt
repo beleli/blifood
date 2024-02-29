@@ -1,6 +1,7 @@
 package br.com.blifood.infrastructure.email
 
 import br.com.blifood.core.message.Messages
+import br.com.blifood.domain.exception.EmailException
 import freemarker.template.Configuration
 import freemarker.template.Template
 import org.springframework.stereotype.Component

@@ -1,5 +1,6 @@
-package br.com.blifood.core.storage
+package br.com.blifood.core.config
 
+import br.com.blifood.core.properties.StorageProperties
 import br.com.blifood.domain.service.ImageStorageService
 import br.com.blifood.infrastructure.storage.LocalImageStorageService
 import br.com.blifood.infrastructure.storage.S3ImageStorageService

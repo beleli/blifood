@@ -1,8 +1,8 @@
 package br.com.blifood.api.controller
 
+import br.com.blifood.api.security.JwtKeyProvider
 import br.com.blifood.api.v1.controller.LoginController
 import br.com.blifood.api.v1.model.input.LoginInputModel
-import br.com.blifood.core.security.JwtKeyProvider
 import br.com.blifood.domain.createUser
 import br.com.blifood.domain.entity.User
 import br.com.blifood.domain.exception.UserNotAuthorizedException

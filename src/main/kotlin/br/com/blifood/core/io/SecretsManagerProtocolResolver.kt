@@ -1,7 +1,7 @@
 package br.com.blifood.core.io
 
-import br.com.blifood.core.secretsmanager.SecretsManagerClientConfig
-import br.com.blifood.core.secretsmanager.getSecretValue
+import br.com.blifood.core.config.SecretsManagerClientConfig
+import br.com.blifood.core.config.getSecretValue
 import org.springframework.boot.context.event.ApplicationContextInitializedEvent
 import org.springframework.context.ApplicationListener
 import org.springframework.core.io.ByteArrayResource

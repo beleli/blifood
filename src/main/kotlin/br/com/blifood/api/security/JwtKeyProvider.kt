@@ -1,5 +1,6 @@
-package br.com.blifood.core.security
+package br.com.blifood.api.security
 
+import br.com.blifood.core.properties.JwtKeyStoreProperties
 import org.springframework.stereotype.Component
 import java.nio.charset.Charset
 import java.security.Key

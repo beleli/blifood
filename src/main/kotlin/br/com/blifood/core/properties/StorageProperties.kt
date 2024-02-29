@@ -1,4 +1,4 @@
-package br.com.blifood.core.storage
+package br.com.blifood.core.properties
 
 import com.amazonaws.regions.Regions
 import org.springframework.boot.context.properties.ConfigurationProperties

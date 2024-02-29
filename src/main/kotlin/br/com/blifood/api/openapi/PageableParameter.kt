@@ -1,4 +1,4 @@
-package br.com.blifood.core.openapi
+package br.com.blifood.api.openapi
 
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.enums.ParameterIn

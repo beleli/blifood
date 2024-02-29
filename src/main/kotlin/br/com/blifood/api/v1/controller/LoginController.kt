@@ -1,10 +1,10 @@
 package br.com.blifood.api.v1.controller
 
+import br.com.blifood.api.security.JwtKeyProvider
 import br.com.blifood.api.v1.model.LoginModel
 import br.com.blifood.api.v1.model.input.LoginInputModel
 import br.com.blifood.api.v1.openapi.LoginControllerOpenApi
 import br.com.blifood.core.log.logRequest
-import br.com.blifood.core.security.JwtKeyProvider
 import br.com.blifood.domain.entity.UserProfile
 import br.com.blifood.domain.exception.UserNotAuthorizedException
 import br.com.blifood.domain.exception.UserNotFoundException

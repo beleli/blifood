@@ -1,6 +1,7 @@
 package br.com.blifood.infrastructure.storage
 
 import br.com.blifood.core.message.Messages
+import br.com.blifood.domain.exception.StorageException
 import br.com.blifood.domain.service.ImageStorageService
 import com.amazonaws.services.s3.AmazonS3
 import com.amazonaws.services.s3.model.CannedAccessControlList

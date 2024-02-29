@@ -1,6 +1,5 @@
 package br.com.blifood.core.config
 
-import br.com.blifood.core.secretsmanager.getSecretValue
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile

@@ -1,6 +1,7 @@
 package br.com.blifood.infrastructure.email
 
 import br.com.blifood.core.message.Messages
+import br.com.blifood.domain.exception.EmailException
 import br.com.blifood.domain.service.EmailService
 import jakarta.mail.internet.MimeMessage
 import org.springframework.mail.javamail.JavaMailSender

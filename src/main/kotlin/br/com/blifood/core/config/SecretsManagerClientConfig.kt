@@ -1,4 +1,4 @@
-package br.com.blifood.core.secretsmanager
+package br.com.blifood.core.config
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration

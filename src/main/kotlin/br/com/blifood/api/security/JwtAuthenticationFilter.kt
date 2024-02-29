@@ -1,4 +1,4 @@
-package br.com.blifood.core.security
+package br.com.blifood.api.security
 
 import io.jsonwebtoken.Jwts
 import jakarta.servlet.FilterChain

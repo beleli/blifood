@@ -1,8 +1,8 @@
 package br.com.blifood.api.v1.openapi
 
+import br.com.blifood.api.openapi.PageableParameter
 import br.com.blifood.api.v1.model.CulinaryModel
 import br.com.blifood.api.v1.model.input.CulinaryInputModel
-import br.com.blifood.core.openapi.PageableParameter
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.media.Content
