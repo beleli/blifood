@@ -1,12 +1,15 @@
 package br.com.blifood.api.exceptionhandler
 
 import br.com.blifood.api.exceptionhandler.ApiProblemDetail.ApiFieldError
+import br.com.blifood.core.log.logResponse
 import br.com.blifood.core.message.Messages
 import br.com.blifood.domain.exception.BusinessException
 import br.com.blifood.domain.exception.EntityNotFoundException
 import br.com.blifood.domain.exception.UserNotAuthorizedException
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException
 import jakarta.validation.ConstraintViolationException
+import org.jboss.logging.MDC
+import org.slf4j.LoggerFactory
 import org.springframework.data.mapping.PropertyReferenceException
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
@@ -26,6 +29,7 @@ import java.net.URI
 
 @ControllerAdvice
 class ExceptionHandler : ResponseEntityExceptionHandler() {
+    private val apiLogger = LoggerFactory.getLogger(this.javaClass)
 
     @ExceptionHandler(Exception::class)
     fun handleUnscathedException(ex: Exception, request: WebRequest): ResponseEntity<Any>? {
@@ -114,6 +118,7 @@ class ExceptionHandler : ResponseEntityExceptionHandler() {
             is String -> buildProblem(statusCode, body, request)
             else -> body
         }
+        apiLogger.logResponse("handleExceptionInternal", newBody)
         return super.handleExceptionInternal(ex, newBody, headers, statusCode, request)
     }
 
@@ -128,6 +133,7 @@ class ExceptionHandler : ResponseEntityExceptionHandler() {
             status = statusCode.value(),
             detail = message,
             instance = URI.create((request as ServletWebRequest).request.requestURI),
+            traceId = MDC.get("traceId").toString(),
             errors = fieldErrors
         )
     }

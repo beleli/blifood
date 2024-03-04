@@ -20,6 +20,9 @@ class ApiProblemDetail(
     @Schema(example = "/v1/cities")
     val instance: URI,
 
+    @Schema(example = "65e256b2eb1809d91a8313d412374fd6")
+    val traceId: String?,
+
     @Schema(description = "List of objects or fields that generated the error")
     val errors: Set<ApiFieldError>? = null
 ) {

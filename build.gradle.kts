@@ -32,6 +32,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-freemarker")
     implementation("org.springframework.boot:spring-boot-starter-hateoas")
     implementation("org.springframework.boot:spring-boot-starter-security")
+    implementation("io.micrometer:micrometer-tracing-bridge-brave:1.2.3")
 
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0")
 
@@ -52,7 +53,6 @@ dependencies {
     testImplementation("io.kotest:kotest-assertions-core:5.8.0")
     testImplementation("io.kotest:kotest-property:5.8.0")
     testImplementation("io.mockk:mockk:1.13.9")
-
     testImplementation("com.h2database:h2")
 }
 

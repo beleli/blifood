@@ -12,3 +12,6 @@ spring:
       hibernate:
         default_schema: blifood
 
+logging:
+  pattern:
+    level: '[traceId:%X{traceId} spanId:%X{spanId}] %level'
