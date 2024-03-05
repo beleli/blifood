@@ -7,8 +7,8 @@ import br.com.blifood.domain.exception.BusinessException
 import br.com.blifood.domain.exception.EntityNotFoundException
 import br.com.blifood.domain.exception.UserNotAuthorizedException
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException
+import io.micrometer.tracing.Tracer
 import jakarta.validation.ConstraintViolationException
-import org.jboss.logging.MDC
 import org.slf4j.LoggerFactory
 import org.springframework.data.mapping.PropertyReferenceException
 import org.springframework.http.HttpHeaders
@@ -28,11 +28,12 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import java.net.URI
 
 @ControllerAdvice
-class ExceptionHandler : ResponseEntityExceptionHandler() {
+class ExceptionHandler(private val tracer: Tracer) : ResponseEntityExceptionHandler() {
+
     private val apiLogger = LoggerFactory.getLogger(this.javaClass)
 
     @ExceptionHandler(Exception::class)
-    fun handleUnscathedException(ex: Exception, request: WebRequest): ResponseEntity<Any>? {
+    fun handleUncaughtException(ex: Exception, request: WebRequest): ResponseEntity<Any>? {
         logger.error(ex)
         return this.handleExceptionInternal(ex, Messages.get("system.unscathedException"), HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request)
     }
@@ -54,7 +55,7 @@ class ExceptionHandler : ResponseEntityExceptionHandler() {
 
     @ExceptionHandler(UserNotAuthorizedException::class)
     fun handleUserNotAuthorizedException(ex: UserNotAuthorizedException, request: WebRequest): ResponseEntity<Any>? {
-        return ResponseEntity(HttpStatus.FORBIDDEN)
+        return this.handleExceptionInternal(ex, null, HttpHeaders(), HttpStatus.FORBIDDEN, request)
     }
 
     @ExceptionHandler(BusinessException::class)
@@ -133,7 +134,7 @@ class ExceptionHandler : ResponseEntityExceptionHandler() {
             status = statusCode.value(),
             detail = message,
             instance = URI.create((request as ServletWebRequest).request.requestURI),
-            traceId = MDC.get("traceId").toString(),
+            traceId = tracer.currentTraceContext().context()?.traceId(),
             errors = fieldErrors
         )
     }
