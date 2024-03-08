@@ -45,7 +45,7 @@ class ExceptionHandler(private val tracer: Tracer) : ResponseEntityExceptionHand
 
     @ExceptionHandler(AccessDeniedException::class)
     fun handleAccessDeniedException(ex: AccessDeniedException, request: WebRequest): ResponseEntity<Any>? {
-        return ResponseEntity(HttpStatus.FORBIDDEN)
+        return this.handleExceptionInternal(ex, null, HttpHeaders(), HttpStatus.FORBIDDEN, request)
     }
 
     @ExceptionHandler(EntityNotFoundException::class)

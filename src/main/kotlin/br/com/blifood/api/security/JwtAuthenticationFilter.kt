@@ -21,7 +21,7 @@ class JwtAuthenticationFilter(private val jwtKeyProvider: JwtKeyProvider) : Gene
             filterChain.doFilter(request, response)
         }.onFailure {
             response as HttpServletResponse
-            response.status = HttpStatus.FORBIDDEN.value()
+            response.status = HttpStatus.UNAUTHORIZED.value()
         }
     }
 
