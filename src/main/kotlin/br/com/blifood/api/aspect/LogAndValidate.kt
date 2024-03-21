@@ -39,7 +39,7 @@ class LogAndValidateAspect {
         if (requestBody is Pageable) {
             getLogger(joinPoint).info("request uri:${request.requestURI}, httpMethod:${request.method}, $requestBody")
         } else if (isRequestBody(joinPoint)) {
-            getLogger(joinPoint).info("request uri:${request.requestURI}, httpMethod:${request.method}, body:${requestBody?.toLog()}")
+            getLogger(joinPoint).info("request uri:${request.requestURI}, httpMethod:${request.method}, body:${requestBody?.toJsonLog()}")
             if (logAnnotation.validateRequest) validateRequestBody(requestBody)
         } else {
             getLogger(joinPoint).info("request uri:${request.requestURI}, httpMethod:${request.method}, body:null}")
