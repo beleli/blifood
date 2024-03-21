@@ -1,6 +1,6 @@
 package br.com.blifood.api.v1.controller
 
-import br.com.blifood.api.log.LogAndValidate
+import br.com.blifood.api.aspect.LogAndValidate
 import br.com.blifood.api.v1.addUriInResponseHeader
 import br.com.blifood.api.v1.getSecurityContextHolderUserId
 import br.com.blifood.api.v1.model.OrderModel

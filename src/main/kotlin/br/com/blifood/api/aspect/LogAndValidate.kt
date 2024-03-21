@@ -1,4 +1,4 @@
-package br.com.blifood.api.log
+package br.com.blifood.api.aspect
 
 import br.com.blifood.core.log.toJsonLog
 import br.com.blifood.core.log.toLog

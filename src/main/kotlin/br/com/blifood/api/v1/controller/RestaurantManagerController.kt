@@ -1,6 +1,6 @@
 package br.com.blifood.api.v1.controller
 
-import br.com.blifood.api.log.LogAndValidate
+import br.com.blifood.api.aspect.LogAndValidate
 import br.com.blifood.api.v1.model.UserModel
 import br.com.blifood.api.v1.model.toModel
 import br.com.blifood.api.v1.openapi.RestaurantManagerControllerOpenApi

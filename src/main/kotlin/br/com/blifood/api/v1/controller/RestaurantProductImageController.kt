@@ -1,6 +1,6 @@
 package br.com.blifood.api.v1.controller
 
-import br.com.blifood.api.log.LogAndValidate
+import br.com.blifood.api.aspect.LogAndValidate
 import br.com.blifood.api.v1.model.ProductImageModel
 import br.com.blifood.api.v1.model.input.ProductImageInputModel
 import br.com.blifood.api.v1.model.input.toEntity
