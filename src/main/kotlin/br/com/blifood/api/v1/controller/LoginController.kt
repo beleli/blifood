@@ -25,7 +25,7 @@ class LoginController(
     private val jwtKeyProvider: JwtKeyProvider
 ) : LoginControllerOpenApi {
 
-    @LogAndValidate
+    @LogAndValidate(logResponse = false)
     @PostMapping
     override fun login(
         @RequestBody
