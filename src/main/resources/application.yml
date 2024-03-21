@@ -14,4 +14,4 @@ spring:
 
 logging:
   pattern:
-    level: '[traceId:%X{traceId} spanId:%X{spanId}] %level'
+    level: '[traceId:%X{traceId} spanId:%X{spanId}] %6level'

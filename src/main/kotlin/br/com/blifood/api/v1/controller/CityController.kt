@@ -1,5 +1,6 @@
 package br.com.blifood.api.v1.controller
 
+import br.com.blifood.api.log.LogAndValidate
 import br.com.blifood.api.v1.DEFAULT_PAGE_SIZE
 import br.com.blifood.api.v1.addUriInResponseHeader
 import br.com.blifood.api.v1.model.CityModel
@@ -8,15 +9,11 @@ import br.com.blifood.api.v1.model.input.applyModel
 import br.com.blifood.api.v1.model.input.toEntity
 import br.com.blifood.api.v1.model.toModel
 import br.com.blifood.api.v1.openapi.CityControllerOpenApi
-import br.com.blifood.core.log.logRequest
-import br.com.blifood.core.log.logResponse
 import br.com.blifood.domain.entity.Authority
 import br.com.blifood.domain.entity.City
 import br.com.blifood.domain.exception.BusinessException
 import br.com.blifood.domain.exception.EntityNotFoundException
 import br.com.blifood.domain.service.CityService
-import jakarta.validation.Valid
-import org.slf4j.LoggerFactory
 import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PageableDefault
 import org.springframework.hateoas.PagedModel
@@ -39,8 +36,7 @@ class CityController(
     private val cityService: CityService
 ) : CityControllerOpenApi {
 
-    private val logger = LoggerFactory.getLogger(this.javaClass)
-
+    @LogAndValidate(validateRequest = false, logResponse = false)
     @PreAuthorize("hasAuthority('${Authority.CITY_READ}')")
     @GetMapping
     override fun findAll(@PageableDefault(size = DEFAULT_PAGE_SIZE) pageable: Pageable): PagedModel<CityModel> {
@@ -52,38 +48,39 @@ class CityController(
         )
     }
 
+    @LogAndValidate(validateRequest = false)
     @PreAuthorize("hasAuthority('${Authority.CITY_READ}')")
     @GetMapping("/{cityId}")
     override fun findById(@PathVariable cityId: Long): CityModel {
         return cityService.findOrThrow(cityId).toModel()
     }
 
+    @LogAndValidate
     @PreAuthorize("hasAuthority('${Authority.CITY_WRITE}')")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     override fun create(
-        @Valid @RequestBody
+        @RequestBody
         cityInputModel: CityInputModel
     ): CityModel {
-        logger.logRequest("create", cityInputModel)
         return save(cityInputModel.toEntity()).toModel().also {
             addUriInResponseHeader(it.id)
-            logger.logResponse("create", it)
         }
     }
 
+    @LogAndValidate
     @PreAuthorize("hasAuthority('${Authority.CITY_WRITE}')")
     @PutMapping("/{cityId}")
     override fun alter(
         @PathVariable cityId: Long,
-        @Valid @RequestBody
+        @RequestBody
         cityInputModel: CityInputModel
     ): CityModel {
-        logger.logRequest("alter", cityInputModel)
         val city = cityService.findOrThrow(cityId).copy().applyModel(cityInputModel)
-        return save(city).toModel().also { logger.logResponse("alter", it) }
+        return save(city).toModel()
     }
 
+    @LogAndValidate(validateRequest = false)
     @PreAuthorize("hasAuthority('${Authority.CITY_WRITE}')")
     @DeleteMapping("/{cityId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)

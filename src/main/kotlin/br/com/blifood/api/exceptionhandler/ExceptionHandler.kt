@@ -1,7 +1,7 @@
 package br.com.blifood.api.exceptionhandler
 
 import br.com.blifood.api.exceptionhandler.ApiProblemDetail.ApiFieldError
-import br.com.blifood.core.log.logResponse
+import br.com.blifood.core.log.toJsonLog
 import br.com.blifood.core.message.Messages
 import br.com.blifood.domain.exception.BusinessException
 import br.com.blifood.domain.exception.EntityNotFoundException
@@ -9,6 +9,7 @@ import br.com.blifood.domain.exception.UserNotAuthorizedException
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException
 import io.micrometer.tracing.Tracer
 import jakarta.validation.ConstraintViolationException
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.data.mapping.PropertyReferenceException
 import org.springframework.http.HttpHeaders
@@ -119,7 +120,7 @@ class ExceptionHandler(private val tracer: Tracer) : ResponseEntityExceptionHand
             is String -> buildProblem(statusCode, body, request)
             else -> body
         }
-        apiLogger.logResponse("handleExceptionInternal", newBody)
+        apiLogger.logErrorResponse(statusCode.value(), newBody)
         return super.handleExceptionInternal(ex, newBody, headers, statusCode, request)
     }
 
@@ -137,5 +138,9 @@ class ExceptionHandler(private val tracer: Tracer) : ResponseEntityExceptionHand
             traceId = tracer.currentTraceContext().context()?.traceId(),
             errors = fieldErrors
         )
+    }
+
+    private fun Logger.logErrorResponse(status: Int, response: Any) {
+        this.error("response httpStatus:$status, body:${response.toJsonLog()}")
     }
 }

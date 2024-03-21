@@ -1,5 +1,6 @@
 package br.com.blifood.api.v1.controller
 
+import br.com.blifood.api.log.LogAndValidate
 import br.com.blifood.api.v1.DEFAULT_PAGE_SIZE
 import br.com.blifood.api.v1.addUriInResponseHeader
 import br.com.blifood.api.v1.model.StateModel
@@ -8,12 +9,8 @@ import br.com.blifood.api.v1.model.input.applyModel
 import br.com.blifood.api.v1.model.input.toEntity
 import br.com.blifood.api.v1.model.toModel
 import br.com.blifood.api.v1.openapi.StateControllerOpenApi
-import br.com.blifood.core.log.logRequest
-import br.com.blifood.core.log.logResponse
 import br.com.blifood.domain.entity.Authority
 import br.com.blifood.domain.service.StateService
-import jakarta.validation.Valid
-import org.slf4j.LoggerFactory
 import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PageableDefault
 import org.springframework.hateoas.PagedModel
@@ -36,8 +33,7 @@ class StateController(
     private val stateService: StateService
 ) : StateControllerOpenApi {
 
-    private val logger = LoggerFactory.getLogger(this.javaClass)
-
+    @LogAndValidate(validateRequest = false, logResponse = false)
     @PreAuthorize("hasAuthority('${Authority.STATE_READ}')")
     @GetMapping
     override fun findAll(@PageableDefault(size = DEFAULT_PAGE_SIZE) pageable: Pageable): PagedModel<StateModel> {
@@ -49,38 +45,39 @@ class StateController(
         )
     }
 
+    @LogAndValidate(validateRequest = false)
     @PreAuthorize("hasAuthority('${Authority.STATE_READ}')")
     @GetMapping("/{stateId}")
     override fun findById(@PathVariable stateId: Long): StateModel {
         return stateService.findOrThrow(stateId).toModel()
     }
 
+    @LogAndValidate
     @PreAuthorize("hasAuthority('${Authority.STATE_WRITE}')")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     override fun create(
-        @Valid @RequestBody
+        @RequestBody
         stateInputModel: StateInputModel
     ): StateModel {
-        logger.logRequest("create", stateInputModel)
         return stateService.save(stateInputModel.toEntity()).toModel().also {
             addUriInResponseHeader(it.id)
-            logger.logResponse("create", it)
         }
     }
 
+    @LogAndValidate
     @PreAuthorize("hasAuthority('${Authority.STATE_WRITE}')")
     @PutMapping("/{stateId}")
     override fun alter(
         @PathVariable stateId: Long,
-        @Valid @RequestBody
+        @RequestBody
         stateInputModel: StateInputModel
     ): StateModel {
-        logger.logRequest("alter", stateInputModel)
         val state = stateService.findOrThrow(stateId).copy().applyModel(stateInputModel)
-        return stateService.save(state).toModel().also { logger.logResponse("alter", it) }
+        return stateService.save(state).toModel()
     }
 
+    @LogAndValidate(validateRequest = false)
     @PreAuthorize("hasAuthority('${Authority.STATE_WRITE}')")
     @DeleteMapping("/{stateId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)

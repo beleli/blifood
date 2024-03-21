@@ -1,5 +1,6 @@
 package br.com.blifood.api.v1.controller
 
+import br.com.blifood.api.log.LogAndValidate
 import br.com.blifood.api.v1.DEFAULT_PAGE_SIZE
 import br.com.blifood.api.v1.addUriInResponseHeader
 import br.com.blifood.api.v1.getSecurityContextHolderUserId
@@ -9,15 +10,11 @@ import br.com.blifood.api.v1.model.input.applyModel
 import br.com.blifood.api.v1.model.input.toEntity
 import br.com.blifood.api.v1.model.toModel
 import br.com.blifood.api.v1.openapi.RestaurantControllerOpenApi
-import br.com.blifood.core.log.logRequest
-import br.com.blifood.core.log.logResponse
 import br.com.blifood.domain.entity.Authority
 import br.com.blifood.domain.entity.Restaurant
 import br.com.blifood.domain.exception.BusinessException
 import br.com.blifood.domain.exception.EntityNotFoundException
 import br.com.blifood.domain.service.RestaurantService
-import jakarta.validation.Valid
-import org.slf4j.LoggerFactory
 import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PageableDefault
 import org.springframework.hateoas.PagedModel
@@ -41,8 +38,7 @@ class RestaurantController(
     private val restaurantService: RestaurantService
 ) : RestaurantControllerOpenApi {
 
-    private val logger = LoggerFactory.getLogger(this.javaClass)
-
+    @LogAndValidate(validateRequest = false, logResponse = false)
     @PreAuthorize("hasAuthority('${Authority.RESTAURANT_READ}')")
     @GetMapping
     override fun findAll(@PageableDefault(size = DEFAULT_PAGE_SIZE) pageable: Pageable): PagedModel<RestaurantModel> {
@@ -54,38 +50,39 @@ class RestaurantController(
         )
     }
 
+    @LogAndValidate(validateRequest = false)
     @PreAuthorize("hasAuthority('${Authority.RESTAURANT_READ}')")
     @GetMapping("/{restaurantId}")
     override fun findById(@PathVariable restaurantId: Long): RestaurantModel {
         return restaurantService.findOrThrow(restaurantId).toModel()
     }
 
+    @LogAndValidate
     @PreAuthorize("hasAuthority('${Authority.RESTAURANT_WRITE}')")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     override fun create(
-        @Valid @RequestBody
+        @RequestBody
         restaurantInputModel: RestaurantInputModel
     ): RestaurantModel {
-        logger.logRequest("create", restaurantInputModel)
         return save(restaurantInputModel.toEntity()).toModel().also {
             addUriInResponseHeader(it.id)
-            logger.logResponse("create", it)
         }
     }
 
+    @LogAndValidate
     @PreAuthorize("hasAuthority('${Authority.RESTAURANT_WRITE}')")
     @PutMapping("/{restaurantId}")
     override fun alter(
         @PathVariable restaurantId: Long,
-        @Valid @RequestBody
+        @RequestBody
         restaurantInputModel: RestaurantInputModel
     ): RestaurantModel {
-        logger.logRequest("alter", restaurantInputModel)
         val restaurant = restaurantService.findOrThrow(restaurantId).copy().applyModel(restaurantInputModel)
-        return save(restaurant).toModel().also { logger.logResponse("alter", it) }
+        return save(restaurant).toModel()
     }
 
+    @LogAndValidate(validateRequest = false)
     @PreAuthorize("hasAuthority('${Authority.RESTAURANT_WRITE}')")
     @DeleteMapping("/{restaurantId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -94,6 +91,7 @@ class RestaurantController(
         return ResponseEntity.noContent().build()
     }
 
+    @LogAndValidate(validateRequest = false)
     @PreAuthorize("hasAuthority('${Authority.RESTAURANT_WRITE}')")
     @PutMapping("/{restaurantId}/activate")
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -102,6 +100,7 @@ class RestaurantController(
         return ResponseEntity.noContent().build()
     }
 
+    @LogAndValidate(validateRequest = false)
     @PreAuthorize("hasAuthority('${Authority.RESTAURANT_WRITE}')")
     @PutMapping("/{restaurantId}/inactivate")
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -110,6 +109,7 @@ class RestaurantController(
         return ResponseEntity.noContent().build()
     }
 
+    @LogAndValidate(validateRequest = false)
     @PreAuthorize("hasAuthority('${Authority.RESTAURANT_WRITE}')")
     @PutMapping("/{restaurantId}/open")
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -118,6 +118,7 @@ class RestaurantController(
         return ResponseEntity.noContent().build()
     }
 
+    @LogAndValidate(validateRequest = false)
     @PreAuthorize("hasAuthority('${Authority.RESTAURANT_WRITE}')")
     @PutMapping("/{restaurantId}/close")
     @ResponseStatus(HttpStatus.NO_CONTENT)

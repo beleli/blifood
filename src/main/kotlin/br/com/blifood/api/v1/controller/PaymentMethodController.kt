@@ -1,5 +1,6 @@
 package br.com.blifood.api.v1.controller
 
+import br.com.blifood.api.log.LogAndValidate
 import br.com.blifood.api.v1.DEFAULT_PAGE_SIZE
 import br.com.blifood.api.v1.addUriInResponseHeader
 import br.com.blifood.api.v1.model.PaymentMethodModel
@@ -8,12 +9,8 @@ import br.com.blifood.api.v1.model.input.applyModel
 import br.com.blifood.api.v1.model.input.toEntity
 import br.com.blifood.api.v1.model.toModel
 import br.com.blifood.api.v1.openapi.PaymentMethodControllerOpenApi
-import br.com.blifood.core.log.logRequest
-import br.com.blifood.core.log.logResponse
 import br.com.blifood.domain.entity.Authority
 import br.com.blifood.domain.service.PaymentMethodService
-import jakarta.validation.Valid
-import org.slf4j.LoggerFactory
 import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PageableDefault
 import org.springframework.hateoas.PagedModel
@@ -36,8 +33,7 @@ class PaymentMethodController(
     private val paymentMethodService: PaymentMethodService
 ) : PaymentMethodControllerOpenApi {
 
-    private val logger = LoggerFactory.getLogger(this.javaClass)
-
+    @LogAndValidate(validateRequest = false, logResponse = false)
     @PreAuthorize("hasAuthority('${Authority.PAYMENT_METHOD_READ}')")
     @GetMapping
     override fun findAll(@PageableDefault(size = DEFAULT_PAGE_SIZE) pageable: Pageable): PagedModel<PaymentMethodModel> {
@@ -49,38 +45,39 @@ class PaymentMethodController(
         )
     }
 
+    @LogAndValidate(validateRequest = false)
     @PreAuthorize("hasAuthority('${Authority.PAYMENT_METHOD_READ}')")
     @GetMapping("/{paymentMethodId}")
     override fun findById(@PathVariable paymentMethodId: Long): PaymentMethodModel {
         return paymentMethodService.findOrThrow(paymentMethodId).toModel()
     }
 
+    @LogAndValidate
     @PreAuthorize("hasAuthority('${Authority.PAYMENT_METHOD_WRITE}')")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     override fun create(
-        @Valid @RequestBody
+        @RequestBody
         paymentMethodInputModel: PaymentMethodInputModel
     ): PaymentMethodModel {
-        logger.logRequest("create", paymentMethodInputModel)
         return paymentMethodService.save(paymentMethodInputModel.toEntity()).toModel().also {
             addUriInResponseHeader(it.id)
-            logger.logResponse("create", it)
         }
     }
 
+    @LogAndValidate
     @PreAuthorize("hasAuthority('${Authority.PAYMENT_METHOD_WRITE}')")
     @PutMapping("/{paymentMethodId}")
     override fun alter(
         @PathVariable paymentMethodId: Long,
-        @Valid @RequestBody
+        @RequestBody
         paymentMethodInputModel: PaymentMethodInputModel
     ): PaymentMethodModel {
-        logger.logRequest("alter", paymentMethodInputModel)
         val paymentMethod = paymentMethodService.findOrThrow(paymentMethodId).copy().applyModel(paymentMethodInputModel)
-        return paymentMethodService.save(paymentMethod).toModel().also { logger.logResponse("alter", it) }
+        return paymentMethodService.save(paymentMethod).toModel()
     }
 
+    @LogAndValidate(validateRequest = false)
     @PreAuthorize("hasAuthority('${Authority.PAYMENT_METHOD_WRITE}')")
     @DeleteMapping("/{paymentMethodId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)

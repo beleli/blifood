@@ -1,5 +1,6 @@
 package br.com.blifood.api.v1.controller
 
+import br.com.blifood.api.log.LogAndValidate
 import br.com.blifood.api.v1.DEFAULT_PAGE_SIZE
 import br.com.blifood.api.v1.addUriInResponseHeader
 import br.com.blifood.api.v1.model.ProductModel
@@ -8,15 +9,11 @@ import br.com.blifood.api.v1.model.input.applyModel
 import br.com.blifood.api.v1.model.input.toEntity
 import br.com.blifood.api.v1.model.toModel
 import br.com.blifood.api.v1.openapi.RestaurantProductControllerOpenApi
-import br.com.blifood.core.log.logRequest
-import br.com.blifood.core.log.logResponse
 import br.com.blifood.domain.entity.Authority
 import br.com.blifood.domain.entity.Product
 import br.com.blifood.domain.exception.BusinessException
 import br.com.blifood.domain.exception.EntityNotFoundException
 import br.com.blifood.domain.service.ProductService
-import jakarta.validation.Valid
-import org.slf4j.LoggerFactory
 import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PageableDefault
 import org.springframework.hateoas.PagedModel
@@ -39,8 +36,7 @@ class RestaurantProductController(
     private val productService: ProductService
 ) : RestaurantProductControllerOpenApi {
 
-    private val logger = LoggerFactory.getLogger(this.javaClass)
-
+    @LogAndValidate(validateRequest = false, logResponse = false)
     @PreAuthorize("hasAuthority('${Authority.RESTAURANT_READ}')")
     @GetMapping
     override fun findAll(@PathVariable restaurantId: Long, @PageableDefault(size = DEFAULT_PAGE_SIZE) pageable: Pageable): PagedModel<ProductModel> {
@@ -52,40 +48,41 @@ class RestaurantProductController(
         )
     }
 
+    @LogAndValidate(validateRequest = false)
     @PreAuthorize("hasAuthority('${Authority.RESTAURANT_READ}')")
     @GetMapping("/{productId}")
     override fun findById(@PathVariable restaurantId: Long, @PathVariable productId: Long): ProductModel {
         return productService.findOrThrow(restaurantId, productId).toModel()
     }
 
+    @LogAndValidate
     @PreAuthorize("hasAuthority('${Authority.RESTAURANT_WRITE}')")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     override fun create(
         @PathVariable restaurantId: Long,
-        @Valid @RequestBody
+        @RequestBody
         productInputModel: ProductInputModel
     ): ProductModel {
-        logger.logRequest("create", productInputModel)
         return save(productInputModel.toEntity(restaurantId)).toModel().also {
             addUriInResponseHeader(it.id)
-            logger.logResponse("create", it)
         }
     }
 
+    @LogAndValidate
     @PreAuthorize("hasAuthority('${Authority.RESTAURANT_WRITE}')")
     @PutMapping("/{productId}")
     override fun alter(
         @PathVariable restaurantId: Long,
         @PathVariable productId: Long,
-        @Valid @RequestBody
+        @RequestBody
         productInputModel: ProductInputModel
     ): ProductModel {
-        logger.logRequest("alter", productInputModel)
         val product = productService.findOrThrow(restaurantId, productId).copy().applyModel(productInputModel)
-        return save(product).toModel().also { logger.logResponse("alter", it) }
+        return save(product).toModel()
     }
 
+    @LogAndValidate(validateRequest = false)
     @PreAuthorize("hasAuthority('${Authority.RESTAURANT_WRITE}')")
     @DeleteMapping("/{productId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)

@@ -1,5 +1,6 @@
 package br.com.blifood.api.v1.controller
 
+import br.com.blifood.api.log.LogAndValidate
 import br.com.blifood.api.v1.model.UserModel
 import br.com.blifood.api.v1.model.toModel
 import br.com.blifood.api.v1.openapi.RestaurantManagerControllerOpenApi
@@ -26,6 +27,7 @@ class RestaurantManagerController(
     private val restaurantService: RestaurantService
 ) : RestaurantManagerControllerOpenApi {
 
+    @LogAndValidate(validateRequest = false, logResponse = false)
     @PreAuthorize("hasAuthority('${Authority.RESTAURANT_WRITE}')")
     @GetMapping
     override fun findAll(
@@ -42,6 +44,7 @@ class RestaurantManagerController(
         }
     }
 
+    @LogAndValidate(validateRequest = false)
     @PreAuthorize("hasAuthority('${Authority.RESTAURANT_WRITE}')")
     @PutMapping("/{userId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -59,6 +62,7 @@ class RestaurantManagerController(
         }
     }
 
+    @LogAndValidate(validateRequest = false)
     @PreAuthorize("hasAuthority('${Authority.RESTAURANT_WRITE}')")
     @DeleteMapping("/{userId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)

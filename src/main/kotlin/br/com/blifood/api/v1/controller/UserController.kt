@@ -1,5 +1,6 @@
 package br.com.blifood.api.v1.controller
 
+import br.com.blifood.api.log.LogAndValidate
 import br.com.blifood.api.v1.addUriInResponseHeader
 import br.com.blifood.api.v1.getSecurityContextHolderUserId
 import br.com.blifood.api.v1.model.UserModel
@@ -11,14 +12,9 @@ import br.com.blifood.api.v1.model.input.applyModel
 import br.com.blifood.api.v1.model.input.toEntity
 import br.com.blifood.api.v1.model.toModel
 import br.com.blifood.api.v1.openapi.UserControllerOpenApi
-import br.com.blifood.core.log.logRequest
-import br.com.blifood.core.log.logResponse
-import br.com.blifood.core.log.toLog
 import br.com.blifood.domain.entity.Authority
 import br.com.blifood.domain.entity.UserProfile
 import br.com.blifood.domain.service.UserService
-import jakarta.validation.Valid
-import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.security.access.prepost.PreAuthorize
@@ -37,61 +33,59 @@ class UserController(
     private val userService: UserService
 ) : UserControllerOpenApi {
 
-    private val logger = LoggerFactory.getLogger(this.javaClass)
-
+    @LogAndValidate(validateRequest = false)
     @PreAuthorize("hasAuthority('${Authority.USER_READ}')")
     @GetMapping("/{userId}")
     override fun findById(@PathVariable userId: Long): UserModel {
         return userService.findOrThrow(userId).toModel()
     }
 
+    @LogAndValidate
     @PreAuthorize("hasAuthority('${Authority.USER_WRITE}')")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     override fun create(
-        @RequestBody @Valid
+        @RequestBody
         userWithPasswordInputModel: UserWithPasswordInputModel
     ): UserModel {
-        logger.logRequest("create", userWithPasswordInputModel)
         return userService.save(userWithPasswordInputModel.toEntity()).toModel().also {
             addUriInResponseHeader(it.id)
-            logger.logResponse("create", it)
         }
     }
 
+    @LogAndValidate
     @PreAuthorize("hasAuthority('${Authority.USER_WRITE}')")
     @PutMapping("/{userId}")
     override fun alter(
         @PathVariable userId: Long,
-        @Valid @RequestBody
+        @RequestBody
         userInputModel: UserInputModel
     ): UserModel {
-        logger.logRequest("alter", userInputModel)
         val user = userService.findOrThrow(userId).copy().applyModel(userInputModel)
-        return userService.save(user).toModel().also { logger.logResponse("alter", it) }
+        return userService.save(user).toModel()
     }
 
+    @LogAndValidate
     @PreAuthorize("hasAuthority('${Authority.USER_WRITE}')")
     @PutMapping("/{userId}/password")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     override fun changePassword(
         @PathVariable userId: Long,
-        @Valid @RequestBody
+        @RequestBody
         userChangePasswordModel: UserChangePasswordModel
     ) {
-        logger.info(userChangePasswordModel.toLog())
         userService.changePassword(userId, userChangePasswordModel.password!!, userChangePasswordModel.newPassword!!)
     }
 
+    @LogAndValidate
     @PreAuthorize("hasAuthority('${Authority.USER_WRITE}')")
     @PutMapping("/{userId}/profile")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     override fun changeProfile(
         @PathVariable userId: Long,
-        @Valid @RequestBody
+        @RequestBody
         changeProfileInputModel: ChangeProfileInputModel
     ) {
-        logger.info(changeProfileInputModel.toLog())
         userService.changeProfile(getSecurityContextHolderUserId(), userId, UserProfile.valueOf(changeProfileInputModel.profile!!.uppercase()))
     }
 }

@@ -1,7 +1,7 @@
 package br.com.blifood.core.log
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import org.slf4j.Logger
+import org.springframework.data.domain.Pageable
 import java.time.OffsetDateTime
 import kotlin.reflect.full.declaredMemberProperties
 import kotlin.reflect.full.findAnnotation
@@ -26,7 +26,7 @@ fun Any.toLog(): String {
     val propertiesMap = this::class.declaredMemberProperties
         .associateWith { prop ->
             val value = prop.getter.call(this)
-            if (prop.annotations.any { it is MaskObject }) {
+            if (prop.annotations.any { it is MaskObject || it is Pageable }) {
                 if (value is Iterable<*>) value.map { it?.toLog() } else value?.toLog()
             } else if (prop.annotations.any { it is MaskProperty }) {
                 value.toString().applyMask(prop.findAnnotation<MaskProperty>()!!.format)
@@ -106,12 +106,4 @@ fun String.maskAfter(lastDigit: Int): String {
 
 fun String.maskName(): String {
     return this.split(" ").map { it.maskAfter(2) }.reduce { acc, s -> "$acc $s" }
-}
-
-fun Logger.logRequest(method: String, request: Any?) {
-    this.info("method: $method, request: ${request?.toJsonLog()}")
-}
-
-fun Logger.logResponse(method: String, response: Any?) {
-    this.info("method: $method, response: ${response?.toJsonLog()}")
 }

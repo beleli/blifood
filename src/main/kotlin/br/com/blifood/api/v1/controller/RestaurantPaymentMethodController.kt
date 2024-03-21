@@ -1,5 +1,6 @@
 package br.com.blifood.api.v1.controller
 
+import br.com.blifood.api.log.LogAndValidate
 import br.com.blifood.api.v1.DEFAULT_PAGE_SIZE
 import br.com.blifood.api.v1.getSecurityContextHolderUserId
 import br.com.blifood.api.v1.model.PaymentMethodModel
@@ -29,6 +30,7 @@ class RestaurantPaymentMethodController(
     private val restaurantService: RestaurantService
 ) : RestaurantPaymentMethodControllerOpenApi {
 
+    @LogAndValidate(validateRequest = false, logResponse = false)
     @PreAuthorize("hasAuthority('${Authority.RESTAURANT_WRITE}')")
     @GetMapping
     override fun findAll(
@@ -46,6 +48,7 @@ class RestaurantPaymentMethodController(
         }
     }
 
+    @LogAndValidate(validateRequest = false)
     @PreAuthorize("hasAuthority('${Authority.RESTAURANT_WRITE}')")
     @PutMapping("/{paymentMethodId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -63,6 +66,7 @@ class RestaurantPaymentMethodController(
         }
     }
 
+    @LogAndValidate(validateRequest = false)
     @PreAuthorize("hasAuthority('${Authority.RESTAURANT_WRITE}')")
     @DeleteMapping("/{paymentMethodId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)

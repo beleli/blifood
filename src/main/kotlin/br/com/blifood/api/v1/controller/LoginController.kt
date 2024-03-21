@@ -1,18 +1,16 @@
 package br.com.blifood.api.v1.controller
 
+import br.com.blifood.api.log.LogAndValidate
 import br.com.blifood.api.security.JwtKeyProvider
 import br.com.blifood.api.v1.model.LoginModel
 import br.com.blifood.api.v1.model.input.LoginInputModel
 import br.com.blifood.api.v1.openapi.LoginControllerOpenApi
-import br.com.blifood.core.log.logRequest
 import br.com.blifood.domain.entity.UserProfile
 import br.com.blifood.domain.exception.UserNotAuthorizedException
 import br.com.blifood.domain.exception.UserNotFoundException
 import br.com.blifood.domain.service.UserService
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
-import jakarta.validation.Valid
-import org.slf4j.LoggerFactory
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -27,14 +25,12 @@ class LoginController(
     private val jwtKeyProvider: JwtKeyProvider
 ) : LoginControllerOpenApi {
 
-    private val logger = LoggerFactory.getLogger(this.javaClass)
-
+    @LogAndValidate
     @PostMapping
     override fun login(
-        @Valid @RequestBody
+        @RequestBody
         loginInputModel: LoginInputModel
     ): LoginModel {
-        logger.logRequest("login", loginInputModel)
         try {
             val user = userService.validateLogin(loginInputModel.username!!, loginInputModel.password!!)
             return LoginModel(generateToken(user.email, user.id, user.profile))

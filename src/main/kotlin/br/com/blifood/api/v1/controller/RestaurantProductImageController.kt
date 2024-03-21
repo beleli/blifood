@@ -1,5 +1,6 @@
 package br.com.blifood.api.v1.controller
 
+import br.com.blifood.api.log.LogAndValidate
 import br.com.blifood.api.v1.model.ProductImageModel
 import br.com.blifood.api.v1.model.input.ProductImageInputModel
 import br.com.blifood.api.v1.model.input.toEntity
@@ -11,7 +12,6 @@ import br.com.blifood.domain.exception.BusinessException
 import br.com.blifood.domain.exception.EntityNotFoundException
 import br.com.blifood.domain.service.ProductImageService
 import br.com.blifood.domain.service.ProductService
-import jakarta.validation.Valid
 import org.springframework.core.io.InputStreamResource
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
@@ -35,12 +35,14 @@ class RestaurantProductImageController(
     private val productImageService: ProductImageService
 ) : RestaurantProductImageControllerOpenApi {
 
+    @LogAndValidate(validateRequest = false)
     @PreAuthorize("hasAuthority('${Authority.RESTAURANT_READ}')")
     @GetMapping
     override fun findById(@PathVariable restaurantId: Long, @PathVariable productId: Long): ProductImageModel {
         return productImageService.findOrThrow(productId).toModel(restaurantId)
     }
 
+    @LogAndValidate(validateRequest = false)
     @PreAuthorize("hasAuthority('${Authority.RESTAURANT_READ}')")
     @GetMapping(produces = [MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE])
     fun download(@PathVariable restaurantId: Long, @PathVariable productId: Long): Any {
@@ -59,18 +61,20 @@ class RestaurantProductImageController(
         }
     }
 
+    @LogAndValidate
     @PreAuthorize("hasAuthority('${Authority.RESTAURANT_WRITE}')")
     @PutMapping(consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
     override fun upload(
         @PathVariable restaurantId: Long,
         @PathVariable productId: Long,
-        @Valid productImageInput: ProductImageInputModel
+        productImageInput: ProductImageInputModel
     ): ProductImageModel {
         val product = findProductOrThrow(restaurantId, productId)
         val productImage = productImageInput.toEntity(product)
         return productImageService.save(productImage, productImageInput.file!!.inputStream).toModel(restaurantId)
     }
 
+    @LogAndValidate(validateRequest = false)
     @PreAuthorize("hasAuthority('${Authority.RESTAURANT_WRITE}')")
     @DeleteMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)

@@ -1,5 +1,6 @@
 package br.com.blifood.api.v1.controller
 
+import br.com.blifood.api.log.LogAndValidate
 import br.com.blifood.api.v1.DEFAULT_PAGE_SIZE
 import br.com.blifood.api.v1.addUriInResponseHeader
 import br.com.blifood.api.v1.model.CulinaryModel
@@ -8,12 +9,8 @@ import br.com.blifood.api.v1.model.input.applyModel
 import br.com.blifood.api.v1.model.input.toEntity
 import br.com.blifood.api.v1.model.toModel
 import br.com.blifood.api.v1.openapi.CulinaryControllerOpenApi
-import br.com.blifood.core.log.logRequest
-import br.com.blifood.core.log.logResponse
 import br.com.blifood.domain.entity.Authority
 import br.com.blifood.domain.service.CulinaryService
-import jakarta.validation.Valid
-import org.slf4j.LoggerFactory
 import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PageableDefault
 import org.springframework.hateoas.PagedModel
@@ -36,8 +33,7 @@ class CulinaryController(
     private val culinaryService: CulinaryService
 ) : CulinaryControllerOpenApi {
 
-    private val logger = LoggerFactory.getLogger(this.javaClass)
-
+    @LogAndValidate(validateRequest = false, logResponse = false)
     @PreAuthorize("hasAuthority('${Authority.CULINARY_READ}')")
     @GetMapping
     override fun findAll(@PageableDefault(size = DEFAULT_PAGE_SIZE) pageable: Pageable): PagedModel<CulinaryModel> {
@@ -49,38 +45,39 @@ class CulinaryController(
         )
     }
 
+    @LogAndValidate
     @PreAuthorize("hasAuthority('${Authority.CULINARY_READ}')")
     @GetMapping("/{culinaryId}")
     override fun findById(@PathVariable culinaryId: Long): CulinaryModel {
         return culinaryService.findOrThrow(culinaryId).toModel()
     }
 
+    @LogAndValidate
     @PreAuthorize("hasAuthority('${Authority.CULINARY_WRITE}')")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     override fun create(
-        @Valid @RequestBody
+        @RequestBody
         culinaryInputModel: CulinaryInputModel
     ): CulinaryModel {
-        logger.logRequest("create", culinaryInputModel)
         return culinaryService.save(culinaryInputModel.toEntity()).toModel().also {
             addUriInResponseHeader(it.id)
-            logger.logResponse("create", it)
         }
     }
 
+    @LogAndValidate
     @PreAuthorize("hasAuthority('${Authority.CULINARY_WRITE}')")
     @PutMapping("/{culinaryId}")
     override fun alter(
         @PathVariable culinaryId: Long,
-        @Valid @RequestBody
+        @RequestBody
         culinaryInputModel: CulinaryInputModel
     ): CulinaryModel {
-        logger.logRequest("alter", culinaryInputModel)
         val culinary = culinaryService.findOrThrow(culinaryId).copy().applyModel(culinaryInputModel)
-        return culinaryService.save(culinary).toModel().also { logger.logResponse("alter", it) }
+        return culinaryService.save(culinary).toModel()
     }
 
+    @LogAndValidate
     @PreAuthorize("hasAuthority('${Authority.CULINARY_WRITE}')")
     @DeleteMapping("/{culinaryId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
