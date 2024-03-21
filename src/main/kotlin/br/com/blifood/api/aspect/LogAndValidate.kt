@@ -1,7 +1,6 @@
 package br.com.blifood.api.aspect
 
 import br.com.blifood.core.log.toJsonLog
-import br.com.blifood.core.log.toLog
 import jakarta.validation.ConstraintViolationException
 import jakarta.validation.Validation
 import org.aspectj.lang.JoinPoint
