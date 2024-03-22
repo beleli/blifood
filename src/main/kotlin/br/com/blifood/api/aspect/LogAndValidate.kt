@@ -18,15 +18,21 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.context.request.RequestContextHolder
 import org.springframework.web.context.request.ServletRequestAttributes
+import kotlin.reflect.KClass
 
 @Target(AnnotationTarget.FUNCTION)
-annotation class LogAndValidate(val validateRequest: Boolean = true, val logResponse: Boolean = true)
+annotation class LogAndValidate(
+    val validateRequest: Boolean = true,
+    val logResponse: Boolean = true,
+    vararg val validationGroups: KClass<*> = []
+)
 
 @Aspect
 @Component
 class LogAndValidateAspect {
 
     private val loggers = mutableMapOf<Class<*>, Logger>()
+    private val validator = Validation.buildDefaultValidatorFactory().validator
 
     @Pointcut("@annotation(logAnnotation)")
     fun logMethods(logAnnotation: LogAndValidate) {
@@ -35,20 +41,21 @@ class LogAndValidateAspect {
     @Before("logMethods(logAnnotation)")
     fun logRequest(joinPoint: JoinPoint, logAnnotation: LogAndValidate) {
         val request = (RequestContextHolder.getRequestAttributes() as ServletRequestAttributes).request
-        val requestBody = joinPoint.args.lastOrNull()
-        if (requestBody is Pageable) {
-            getLogger(joinPoint).info("request uri:${request.requestURI}, httpMethod:${request.method}, $requestBody")
-        } else if (isRequestBody(joinPoint)) {
-            getLogger(joinPoint).info("request uri:${request.requestURI}, httpMethod:${request.method}, body:${requestBody?.toJsonLog()}")
-            if (logAnnotation.validateRequest) validateRequestBody(requestBody)
-        } else {
-            getLogger(joinPoint).info("request uri:${request.requestURI}, httpMethod:${request.method}, body:null}")
+        val requestBody = getRequestBody(joinPoint)
+        requestBody?.let {
+            getLogger(joinPoint).info("request uri:${request.requestURI}, httpMethod:${request.method}, body:${it.toJsonLog()}")
+            if (logAnnotation.validateRequest) validateRequestBody(it, *logAnnotation.validationGroups)
+        } ?: {
+            val parameter = joinPoint.args.firstOrNull()
+            val log = if (parameter is Pageable) parameter else "body:null"
+            getLogger(joinPoint).info("request uri:${request.requestURI}, httpMethod:${request.method}, $log}")
         }
     }
 
     @AfterReturning(value = "logMethods(logAnnotation)", returning = "returnValue")
     fun logResponse(joinPoint: JoinPoint, logAnnotation: LogAndValidate, returnValue: Any?) {
-        val status = if (returnValue is ResponseEntity<*>) returnValue.statusCode.value() else getResponseStatus(joinPoint)
+        val status =
+            if (returnValue is ResponseEntity<*>) returnValue.statusCode.value() else getResponseStatus(joinPoint)
         val body = if (returnValue is ResponseEntity<*>) returnValue.body else returnValue
         getLogger(joinPoint).info("response httpStatus:$status, body:${if (logAnnotation.logResponse) body?.toJsonLog() else "not logged"}")
     }
@@ -64,16 +71,19 @@ class LogAndValidateAspect {
         return responseStatusAnnotation?.value?.value() ?: 200
     }
 
-    private fun isRequestBody(joinPoint: JoinPoint): Boolean {
+    private fun getRequestBody(joinPoint: JoinPoint): Any? {
         val methodSignature = joinPoint.signature as MethodSignature
-        return methodSignature.method.parameters.any { it.isAnnotationPresent(RequestBody::class.java) }
+        val parameters = methodSignature.method.parameters
+        for ((index, parameter) in parameters.withIndex()) {
+            if (parameter.isAnnotationPresent(RequestBody::class.java)) {
+                return joinPoint.args[index]
+            }
+        }
+        return null
     }
 
-    private fun validateRequestBody(requestBody: Any?) {
-        requestBody?.let {
-            val validator = Validation.buildDefaultValidatorFactory().validator
-            val violations = validator.validate(it)
-            if (violations.isNotEmpty()) throw ConstraintViolationException(violations)
-        }
+    private fun validateRequestBody(requestBody: Any, vararg validationGroups: KClass<*>) {
+        val violations = validator.validate(requestBody, *validationGroups.map { it.java }.toTypedArray())
+        if (violations.isNotEmpty()) throw ConstraintViolationException(violations)
     }
 }
