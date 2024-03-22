@@ -42,13 +42,13 @@ class LogAndValidateAspect {
     fun logRequest(joinPoint: JoinPoint, logAnnotation: LogAndValidate) {
         val request = (RequestContextHolder.getRequestAttributes() as ServletRequestAttributes).request
         val requestBody = getRequestBody(joinPoint)
-        requestBody?.let {
-            getLogger(joinPoint).info("request uri:${request.requestURI}, httpMethod:${request.method}, body:${it.toJsonLog()}")
-            if (logAnnotation.validateRequest) validateRequestBody(it, *logAnnotation.validationGroups)
-        } ?: {
+        if (requestBody == null) {
             val parameter = joinPoint.args.firstOrNull()
             val log = if (parameter is Pageable) parameter else "body:null"
             getLogger(joinPoint).info("request uri:${request.requestURI}, httpMethod:${request.method}, $log}")
+        } else {
+            getLogger(joinPoint).info("request uri:${request.requestURI}, httpMethod:${request.method}, body:${requestBody.toJsonLog()}")
+            if (logAnnotation.validateRequest) validateRequestBody(requestBody, *logAnnotation.validationGroups)
         }
     }
 
