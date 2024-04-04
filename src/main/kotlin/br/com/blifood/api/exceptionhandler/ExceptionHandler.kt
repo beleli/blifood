@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.context.request.ServletWebRequest
 import org.springframework.web.context.request.WebRequest
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler
+import org.springframework.web.util.ContentCachingRequestWrapper
 import java.net.URI
 
 @ControllerAdvice
@@ -67,6 +68,7 @@ class ExceptionHandler(private val tracer: Tracer) : ResponseEntityExceptionHand
 
     @ExceptionHandler(ConstraintViolationException::class)
     fun handleConstraintViolationException(ex: ConstraintViolationException, request: WebRequest): ResponseEntity<Any>? {
+        apiLogger.logRequest(request)
         val errors = mutableSetOf<ApiFieldError>()
         ex.constraintViolations.map {
             errors.add(ApiFieldError(it.propertyPath.toString(), Messages.get(it.message)))
@@ -81,6 +83,7 @@ class ExceptionHandler(private val tracer: Tracer) : ResponseEntityExceptionHand
         status: HttpStatusCode,
         request: WebRequest
     ): ResponseEntity<Any>? {
+        apiLogger.logRequest(request)
         val errors = mutableSetOf<ApiFieldError>()
         ex.bindingResult.allErrors.map {
             when (it) {
@@ -99,6 +102,7 @@ class ExceptionHandler(private val tracer: Tracer) : ResponseEntityExceptionHand
         status: HttpStatusCode,
         request: WebRequest
     ): ResponseEntity<Any>? {
+        apiLogger.logRequest(request)
         val errors = mutableSetOf<ApiFieldError>()
         val rootCause = ex.rootCause
         when (rootCause) {
@@ -142,6 +146,16 @@ class ExceptionHandler(private val tracer: Tracer) : ResponseEntityExceptionHand
     }
 
     private fun Logger.logErrorResponse(status: Int, response: Any) {
-        this.error("response userId:${getRequestContextHolderUserId()}, httpStatus:$status, body:${response.toJsonLog()}")
+        this.error("response httpStatus:$status, body:${response.toJsonLog()}")
+    }
+
+    private fun getRequestBody(request: WebRequest): String {
+        val nativeRequest = (request as ServletWebRequest).nativeRequest as ContentCachingRequestWrapper
+        return String(nativeRequest.contentAsByteArray).trimIndent()
+    }
+
+    private fun Logger.logRequest(request: WebRequest) {
+        request as ServletWebRequest
+        this.info("request userId:${getRequestContextHolderUserId()}, uri:${request.request.requestURI}, httpMethod:${request.request.method}, body:${getRequestBody(request)}")
     }
 }
