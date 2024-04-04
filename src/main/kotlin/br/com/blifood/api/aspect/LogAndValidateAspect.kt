@@ -12,6 +12,7 @@ import org.aspectj.lang.reflect.MethodSignature
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.data.domain.Pageable
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Component
 import org.springframework.web.bind.annotation.RequestBody
@@ -68,7 +69,7 @@ class LogAndValidateAspect {
     private fun getResponseStatus(joinPoint: JoinPoint): Int {
         val methodSignature = joinPoint.signature as MethodSignature
         val responseStatusAnnotation = methodSignature.method.getAnnotation(ResponseStatus::class.java)
-        return responseStatusAnnotation?.value?.value() ?: 200
+        return responseStatusAnnotation?.value?.value() ?: HttpStatus.OK.value()
     }
 
     private fun getRequestBody(joinPoint: JoinPoint): Any? {

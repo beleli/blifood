@@ -1,5 +1,6 @@
 package br.com.blifood.api.security
 
+import br.com.blifood.api.filter.JwtAuthenticationFilter
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
@@ -14,7 +15,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableMethodSecurity
 class JwtResourceConfig(private val jwtKeyProvider: JwtKeyProvider) {
 
-    private val authorizationWhiteList = arrayOf(
+    private val whiteList = arrayOf(
         "/v3/api-docs/**",
         "/swagger-ui/**",
         "/actuator/**",
@@ -29,7 +30,7 @@ class JwtResourceConfig(private val jwtKeyProvider: JwtKeyProvider) {
             .cors { }
             .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
             .authorizeHttpRequests {
-                it.requestMatchers(*authorizationWhiteList).permitAll()
+                it.requestMatchers(*whiteList).permitAll()
                 it.anyRequest().authenticated()
             }
             .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter::class.java)

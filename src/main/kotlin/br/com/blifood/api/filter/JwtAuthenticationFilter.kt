@@ -1,5 +1,6 @@
-package br.com.blifood.api.security
+package br.com.blifood.api.filter
 
+import br.com.blifood.api.security.JwtKeyProvider
 import io.jsonwebtoken.Jwts
 import jakarta.servlet.FilterChain
 import jakarta.servlet.ServletRequest
