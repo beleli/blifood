@@ -2,7 +2,7 @@ package br.com.blifood.api.v1.controller
 
 import br.com.blifood.api.aspect.LogAndValidate
 import br.com.blifood.api.v1.addUriInResponseHeader
-import br.com.blifood.api.v1.getSecurityContextHolderUserId
+import br.com.blifood.api.v1.getRequestContextHolderUserId
 import br.com.blifood.api.v1.model.UserModel
 import br.com.blifood.api.v1.model.input.ChangeProfileInputModel
 import br.com.blifood.api.v1.model.input.UserChangePasswordModel
@@ -86,6 +86,6 @@ class UserController(
         @RequestBody
         changeProfileInputModel: ChangeProfileInputModel
     ) {
-        userService.changeProfile(getSecurityContextHolderUserId(), userId, UserProfile.valueOf(changeProfileInputModel.profile!!.uppercase()))
+        userService.changeProfile(getRequestContextHolderUserId(), userId, UserProfile.valueOf(changeProfileInputModel.profile!!.uppercase()))
     }
 }

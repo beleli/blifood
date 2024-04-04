@@ -2,7 +2,7 @@ package br.com.blifood.api.controller
 
 import br.com.blifood.api.v1.addUriInResponseHeader
 import br.com.blifood.api.v1.controller.CulinaryController
-import br.com.blifood.api.v1.getSecurityContextHolderUserId
+import br.com.blifood.api.v1.getRequestContextHolderUserId
 import br.com.blifood.api.v1.model.CulinaryModel
 import br.com.blifood.api.v1.model.input.CulinaryInputModel
 import br.com.blifood.api.v1.model.toModel
@@ -31,7 +31,7 @@ class CulinaryControllerTest : StringSpec({
 
     mockkStatic("br.com.blifood.api.v1.ResourceUtilsKt")
     every { addUriInResponseHeader(any()) } just runs
-    every { getSecurityContextHolderUserId() } returns 1L
+    every { getRequestContextHolderUserId() } returns 1L
 
     "findAll should return PagedModel of CulinaryModel" {
         val pageable: Pageable = mockk()

@@ -3,7 +3,7 @@ package br.com.blifood.api.v1.controller
 import br.com.blifood.api.aspect.LogAndValidate
 import br.com.blifood.api.v1.DEFAULT_PAGE_SIZE
 import br.com.blifood.api.v1.addUriInResponseHeader
-import br.com.blifood.api.v1.getSecurityContextHolderUserId
+import br.com.blifood.api.v1.getRequestContextHolderUserId
 import br.com.blifood.api.v1.model.RestaurantModel
 import br.com.blifood.api.v1.model.input.RestaurantInputModel
 import br.com.blifood.api.v1.model.input.applyModel
@@ -87,7 +87,7 @@ class RestaurantController(
     @DeleteMapping("/{restaurantId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     override fun delete(@PathVariable restaurantId: Long): ResponseEntity<Void> {
-        restaurantService.delete(restaurantId, getSecurityContextHolderUserId())
+        restaurantService.delete(restaurantId, getRequestContextHolderUserId())
         return ResponseEntity.noContent().build()
     }
 
@@ -96,7 +96,7 @@ class RestaurantController(
     @PutMapping("/{restaurantId}/activate")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     override fun activate(@PathVariable restaurantId: Long): ResponseEntity<Void> {
-        restaurantService.activate(restaurantId, getSecurityContextHolderUserId())
+        restaurantService.activate(restaurantId, getRequestContextHolderUserId())
         return ResponseEntity.noContent().build()
     }
 
@@ -105,7 +105,7 @@ class RestaurantController(
     @PutMapping("/{restaurantId}/inactivate")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     override fun inactivate(@PathVariable restaurantId: Long): ResponseEntity<Void> {
-        restaurantService.inactivate(restaurantId, getSecurityContextHolderUserId())
+        restaurantService.inactivate(restaurantId, getRequestContextHolderUserId())
         return ResponseEntity.noContent().build()
     }
 
@@ -114,7 +114,7 @@ class RestaurantController(
     @PutMapping("/{restaurantId}/open")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     override fun open(@PathVariable restaurantId: Long): ResponseEntity<Void> {
-        restaurantService.open(restaurantId, getSecurityContextHolderUserId())
+        restaurantService.open(restaurantId, getRequestContextHolderUserId())
         return ResponseEntity.noContent().build()
     }
 
@@ -123,13 +123,13 @@ class RestaurantController(
     @PutMapping("/{restaurantId}/close")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     override fun close(@PathVariable restaurantId: Long): ResponseEntity<Void> {
-        restaurantService.close(restaurantId, getSecurityContextHolderUserId())
+        restaurantService.close(restaurantId, getRequestContextHolderUserId())
         return ResponseEntity.noContent().build()
     }
 
     private fun save(restaurant: Restaurant): Restaurant {
         return try {
-            restaurantService.save(restaurant, getSecurityContextHolderUserId())
+            restaurantService.save(restaurant, getRequestContextHolderUserId())
         } catch (ex: EntityNotFoundException) {
             throw throw BusinessException(ex.message)
         } catch (ex: Throwable) {

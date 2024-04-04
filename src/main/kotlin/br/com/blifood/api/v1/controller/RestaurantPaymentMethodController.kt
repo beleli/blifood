@@ -2,7 +2,7 @@ package br.com.blifood.api.v1.controller
 
 import br.com.blifood.api.aspect.LogAndValidate
 import br.com.blifood.api.v1.DEFAULT_PAGE_SIZE
-import br.com.blifood.api.v1.getSecurityContextHolderUserId
+import br.com.blifood.api.v1.getRequestContextHolderUserId
 import br.com.blifood.api.v1.model.PaymentMethodModel
 import br.com.blifood.api.v1.model.toModel
 import br.com.blifood.api.v1.openapi.RestaurantPaymentMethodControllerOpenApi
@@ -57,7 +57,7 @@ class RestaurantPaymentMethodController(
         @PathVariable paymentMethodId: Long?
     ): ResponseEntity<Void> {
         try {
-            restaurantService.addPaymentMethod(restaurantId, getSecurityContextHolderUserId(), paymentMethodId!!)
+            restaurantService.addPaymentMethod(restaurantId, getRequestContextHolderUserId(), paymentMethodId!!)
             return ResponseEntity.noContent().build()
         } catch (ex: EntityNotFoundException) {
             throw throw BusinessException(ex.message)
@@ -75,7 +75,7 @@ class RestaurantPaymentMethodController(
         @PathVariable paymentMethodId: Long
     ): ResponseEntity<Void> {
         try {
-            restaurantService.removePaymentMethod(restaurantId, getSecurityContextHolderUserId(), paymentMethodId)
+            restaurantService.removePaymentMethod(restaurantId, getRequestContextHolderUserId(), paymentMethodId)
             return ResponseEntity.noContent().build()
         } catch (ex: EntityNotFoundException) {
             throw throw BusinessException(ex.message)

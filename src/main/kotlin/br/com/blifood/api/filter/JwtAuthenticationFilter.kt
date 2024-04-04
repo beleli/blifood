@@ -40,7 +40,7 @@ class JwtAuthenticationFilter(private val jwtKeyProvider: JwtKeyProvider) : Gene
 
         val authentication = UsernamePasswordAuthenticationToken(userName, null, authorities)
         val userId = claimsJws.parseClaimsJws(token).body["user_id"]
-        userId.let { authentication.details = mapOf("user_id" to userId) }
+        userId.let { request.setAttribute("userId", userId) }
 
         return authentication
     }

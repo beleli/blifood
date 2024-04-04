@@ -2,7 +2,7 @@ package br.com.blifood.api.controller
 
 import br.com.blifood.api.v1.addUriInResponseHeader
 import br.com.blifood.api.v1.controller.OrderController
-import br.com.blifood.api.v1.getSecurityContextHolderUserId
+import br.com.blifood.api.v1.getRequestContextHolderUserId
 import br.com.blifood.api.v1.model.input.AddressInputModel
 import br.com.blifood.api.v1.model.input.OrderInputModel
 import br.com.blifood.api.v1.model.toModel
@@ -44,7 +44,7 @@ class OrderControllerTest : StringSpec({
 
     mockkStatic("br.com.blifood.api.v1.ResourceUtilsKt")
     every { addUriInResponseHeader(any()) } just runs
-    every { getSecurityContextHolderUserId() } returns 1L
+    every { getRequestContextHolderUserId() } returns 1L
 
     "findByCode should return OrderModel" {
         every { orderService.findOrThrow(orderCode) } returns order

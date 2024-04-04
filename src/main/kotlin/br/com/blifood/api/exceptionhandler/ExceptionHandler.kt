@@ -1,6 +1,7 @@
 package br.com.blifood.api.exceptionhandler
 
 import br.com.blifood.api.exceptionhandler.ApiProblemDetail.ApiFieldError
+import br.com.blifood.api.v1.getRequestContextHolderUserId
 import br.com.blifood.core.log.toJsonLog
 import br.com.blifood.core.message.Messages
 import br.com.blifood.domain.exception.BusinessException
@@ -141,6 +142,6 @@ class ExceptionHandler(private val tracer: Tracer) : ResponseEntityExceptionHand
     }
 
     private fun Logger.logErrorResponse(status: Int, response: Any) {
-        this.error("response httpStatus:$status, body:${response.toJsonLog()}")
+        this.error("response userId:${getRequestContextHolderUserId()}, httpStatus:$status, body:${response.toJsonLog()}")
     }
 }

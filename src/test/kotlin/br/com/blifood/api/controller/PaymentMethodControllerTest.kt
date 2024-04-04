@@ -2,7 +2,7 @@ package br.com.blifood.api.controller
 
 import br.com.blifood.api.v1.addUriInResponseHeader
 import br.com.blifood.api.v1.controller.PaymentMethodController
-import br.com.blifood.api.v1.getSecurityContextHolderUserId
+import br.com.blifood.api.v1.getRequestContextHolderUserId
 import br.com.blifood.api.v1.model.PaymentMethodModel
 import br.com.blifood.api.v1.model.input.PaymentMethodInputModel
 import br.com.blifood.api.v1.model.toModel
@@ -31,7 +31,7 @@ class PaymentMethodControllerTest : StringSpec({
 
     mockkStatic("br.com.blifood.api.v1.ResourceUtilsKt")
     every { addUriInResponseHeader(any()) } just runs
-    every { getSecurityContextHolderUserId() } returns 1L
+    every { getRequestContextHolderUserId() } returns 1L
 
     "findAll should return PagedModel of PaymentMethodModel" {
         val pageable: Pageable = mockk()

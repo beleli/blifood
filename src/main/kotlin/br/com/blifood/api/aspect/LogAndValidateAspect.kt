@@ -1,5 +1,6 @@
 package br.com.blifood.api.aspect
 
+import br.com.blifood.api.v1.getUserId
 import br.com.blifood.core.log.toJsonLog
 import jakarta.validation.ConstraintViolationException
 import jakarta.validation.Validation
@@ -46,19 +47,20 @@ class LogAndValidateAspect {
         if (requestBody == null) {
             val parameter = joinPoint.args.firstOrNull()
             val log = if (parameter is Pageable) parameter else "body:null"
-            getLogger(joinPoint).info("request uri:${request.requestURI}, httpMethod:${request.method}, $log}")
+            getLogger(joinPoint).info("request userId:${request.getUserId()}, uri:${request.requestURI}, httpMethod:${request.method}, $log}")
         } else {
-            getLogger(joinPoint).info("request uri:${request.requestURI}, httpMethod:${request.method}, body:${requestBody.toJsonLog()}")
+            getLogger(joinPoint).info("request userId:${request.getUserId()}, uri:${request.requestURI}, httpMethod:${request.method}, body:${requestBody.toJsonLog()}")
             if (logAnnotation.validateRequest) validateRequestBody(requestBody, *logAnnotation.validationGroups)
         }
     }
 
     @AfterReturning(value = "logMethods(logAnnotation)", returning = "returnValue")
     fun logResponse(joinPoint: JoinPoint, logAnnotation: LogAndValidate, returnValue: Any?) {
+        val request = (RequestContextHolder.getRequestAttributes() as ServletRequestAttributes).request
         val status =
             if (returnValue is ResponseEntity<*>) returnValue.statusCode.value() else getResponseStatus(joinPoint)
         val body = if (returnValue is ResponseEntity<*>) returnValue.body else returnValue
-        getLogger(joinPoint).info("response httpStatus:$status, body:${if (logAnnotation.logResponse) body?.toJsonLog() else "not logged"}")
+        getLogger(joinPoint).info("response userId:${request.getUserId()}, httpStatus:$status, body:${if (logAnnotation.logResponse) body?.toJsonLog() else "not logged"}")
     }
 
     private fun getLogger(joinPoint: JoinPoint): Logger {

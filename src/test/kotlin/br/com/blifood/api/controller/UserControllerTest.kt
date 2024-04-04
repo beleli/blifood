@@ -2,7 +2,7 @@ package br.com.blifood.api.controller
 
 import br.com.blifood.api.v1.addUriInResponseHeader
 import br.com.blifood.api.v1.controller.UserController
-import br.com.blifood.api.v1.getSecurityContextHolderUserId
+import br.com.blifood.api.v1.getRequestContextHolderUserId
 import br.com.blifood.api.v1.model.input.ChangeProfileInputModel
 import br.com.blifood.api.v1.model.input.UserChangePasswordModel
 import br.com.blifood.api.v1.model.input.UserInputModel
@@ -37,7 +37,7 @@ class UserControllerTest : StringSpec({
 
     mockkStatic("br.com.blifood.api.v1.ResourceUtilsKt")
     every { addUriInResponseHeader(any()) } just runs
-    every { getSecurityContextHolderUserId() } returns requesterId
+    every { getRequestContextHolderUserId() } returns requesterId
 
     "findById should return UserModel" {
         every { userService.findOrThrow(any()) } returns user

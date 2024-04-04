@@ -2,7 +2,7 @@ package br.com.blifood.api.v1.controller
 
 import br.com.blifood.api.aspect.LogAndValidate
 import br.com.blifood.api.v1.addUriInResponseHeader
-import br.com.blifood.api.v1.getSecurityContextHolderUserId
+import br.com.blifood.api.v1.getRequestContextHolderUserId
 import br.com.blifood.api.v1.model.OrderModel
 import br.com.blifood.api.v1.model.input.OrderInputModel
 import br.com.blifood.api.v1.model.input.toEntity
@@ -47,7 +47,7 @@ class OrderController(
         @RequestBody
         orderInputModel: OrderInputModel
     ): OrderModel {
-        val userId = getSecurityContextHolderUserId()
+        val userId = getRequestContextHolderUserId()
         val order = orderInputModel.toEntity(userId)
         return issue(order).toModel().also {
             addUriInResponseHeader(it.code)

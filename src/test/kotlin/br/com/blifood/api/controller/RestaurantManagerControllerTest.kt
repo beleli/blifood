@@ -2,7 +2,7 @@ package br.com.blifood.api.controller
 
 import br.com.blifood.api.v1.addUriInResponseHeader
 import br.com.blifood.api.v1.controller.RestaurantManagerController
-import br.com.blifood.api.v1.getSecurityContextHolderUserId
+import br.com.blifood.api.v1.getRequestContextHolderUserId
 import br.com.blifood.api.v1.model.UserModel
 import br.com.blifood.domain.createUser
 import br.com.blifood.domain.service.RestaurantService
@@ -26,7 +26,7 @@ class RestaurantManagerControllerTest : StringSpec({
 
     mockkStatic("br.com.blifood.api.v1.ResourceUtilsKt")
     every { addUriInResponseHeader(any()) } just runs
-    every { getSecurityContextHolderUserId() } returns 1L
+    every { getRequestContextHolderUserId() } returns 1L
 
     "findAll should return CollectionModel of ManagerModel" {
         val managers = setOf(createUser())
