@@ -107,3 +107,16 @@ fun String.maskAfter(lastDigit: Int): String {
 fun String.maskName(): String {
     return this.split(" ").map { it.maskAfter(2) }.reduce { acc, s -> "$acc $s" }
 }
+
+fun String.compactJson(): String {
+    var isInQuotes = false
+    val result = StringBuilder()
+    for (char in this) {
+        when (char) {
+            '"' -> isInQuotes = !isInQuotes
+            ' ', '\r', '\n', '\t' -> if (!isInQuotes) continue
+        }
+        result.append(char)
+    }
+    return result.toString()
+}

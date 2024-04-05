@@ -2,6 +2,7 @@ package br.com.blifood.api.exceptionhandler
 
 import br.com.blifood.api.exceptionhandler.ApiProblemDetail.ApiFieldError
 import br.com.blifood.api.v1.getRequestContextHolderUserId
+import br.com.blifood.core.log.compactJson
 import br.com.blifood.core.log.toJsonLog
 import br.com.blifood.core.message.Messages
 import br.com.blifood.domain.exception.BusinessException
@@ -38,12 +39,14 @@ class ExceptionHandler(private val tracer: Tracer) : ResponseEntityExceptionHand
     @ExceptionHandler(Exception::class)
     fun handleUncaughtException(ex: Exception, request: WebRequest): ResponseEntity<Any>? {
         logger.error(ex)
-        return this.handleExceptionInternal(ex, Messages.get("system.unscathedException"), HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request)
+        val message = Messages.get("system.unscathedException")
+        return this.handleExceptionInternal(ex, message, HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request)
     }
 
     @ExceptionHandler(PropertyReferenceException::class)
     fun handlePropertyReferenceException(ex: PropertyReferenceException, request: WebRequest): ResponseEntity<Any>? {
-        return this.handleExceptionInternal(ex, Messages.get("system.propertyReferenceException"), HttpHeaders(), HttpStatus.BAD_REQUEST, request)
+        val message = Messages.get("system.propertyReferenceException")
+        return this.handleExceptionInternal(ex, message, HttpHeaders(), HttpStatus.BAD_REQUEST, request)
     }
 
     @ExceptionHandler(AccessDeniedException::class)
@@ -67,8 +70,10 @@ class ExceptionHandler(private val tracer: Tracer) : ResponseEntityExceptionHand
     }
 
     @ExceptionHandler(ConstraintViolationException::class)
-    fun handleConstraintViolationException(ex: ConstraintViolationException, request: WebRequest): ResponseEntity<Any>? {
-        apiLogger.logRequest(request)
+    fun handleConstraintViolationException(
+        ex: ConstraintViolationException,
+        request: WebRequest
+    ): ResponseEntity<Any>? {
         val errors = mutableSetOf<ApiFieldError>()
         ex.constraintViolations.map {
             errors.add(ApiFieldError(it.propertyPath.toString(), Messages.get(it.message)))
@@ -92,7 +97,8 @@ class ExceptionHandler(private val tracer: Tracer) : ResponseEntityExceptionHand
                 else -> {}
             }
         }
-        val problemDetail = buildProblem(HttpStatus.BAD_REQUEST, message = Messages.get("validation.failed"), request, errors)
+        val problemDetail =
+            buildProblem(HttpStatus.BAD_REQUEST, message = Messages.get("validation.failed"), request, errors)
         return this.handleExceptionInternal(ex, problemDetail, headers, status, request)
     }
 
@@ -106,10 +112,17 @@ class ExceptionHandler(private val tracer: Tracer) : ResponseEntityExceptionHand
         val errors = mutableSetOf<ApiFieldError>()
         val rootCause = ex.rootCause
         when (rootCause) {
-            is UnrecognizedPropertyException -> errors.add(ApiFieldError(rootCause.propertyName, Messages.get("unrecognized.field")))
+            is UnrecognizedPropertyException -> errors.add(
+                ApiFieldError(
+                    rootCause.propertyName,
+                    Messages.get("unrecognized.field")
+                )
+            )
+
             else -> {}
         }
-        val problemDetail = buildProblem(HttpStatus.BAD_REQUEST, message = Messages.get("readRequest.failed"), request, errors)
+        val problemDetail =
+            buildProblem(HttpStatus.BAD_REQUEST, message = Messages.get("readRequest.failed"), request, errors)
         return this.handleExceptionInternal(Exception(rootCause), problemDetail, headers, status, request)
     }
 
@@ -151,11 +164,14 @@ class ExceptionHandler(private val tracer: Tracer) : ResponseEntityExceptionHand
 
     private fun getRequestBody(request: WebRequest): String {
         val nativeRequest = (request as ServletWebRequest).nativeRequest as ContentCachingRequestWrapper
-        return String(nativeRequest.contentAsByteArray).trimIndent()
+        return String(nativeRequest.contentAsByteArray).compactJson()
     }
 
     private fun Logger.logRequest(request: WebRequest) {
         request as ServletWebRequest
-        this.info("request userId:${getRequestContextHolderUserId()}, uri:${request.request.requestURI}, httpMethod:${request.request.method}, body:${getRequestBody(request)}")
+        this.info(
+            "request userId:${getRequestContextHolderUserId()}, uri:${request.request.requestURI}, " +
+                "httpMethod:${request.request.method}, body:${getRequestBody(request)}"
+        )
     }
 }
