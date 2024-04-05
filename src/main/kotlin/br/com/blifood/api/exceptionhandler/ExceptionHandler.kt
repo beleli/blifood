@@ -81,6 +81,7 @@ class ExceptionHandler(private val tracer: Tracer) : ResponseEntityExceptionHand
         status: HttpStatusCode,
         request: WebRequest
     ): ResponseEntity<Any>? {
+        apiLogger.logRequest(request)
         val errors = mutableSetOf<ApiFieldError>()
         ex.bindingResult.allErrors.map {
             when (it) {
@@ -99,6 +100,7 @@ class ExceptionHandler(private val tracer: Tracer) : ResponseEntityExceptionHand
         status: HttpStatusCode,
         request: WebRequest
     ): ResponseEntity<Any>? {
+        apiLogger.logRequest(request)
         val errors = mutableSetOf<ApiFieldError>()
         val rootCause = ex.rootCause
         when (rootCause) {
@@ -141,7 +143,11 @@ class ExceptionHandler(private val tracer: Tracer) : ResponseEntityExceptionHand
         )
     }
 
+    private fun Logger.logRequest(request: WebRequest) {
+        request as ServletWebRequest
+        this.info("request userId:${getRequestContextHolderUserId()}, uri:${request.request.requestURI}, httpMethod:${request.request.method}, body:not logged")
+    }
     private fun Logger.logErrorResponse(status: Int, response: Any) {
-        this.error("response userId:${getRequestContextHolderUserId()}, httpStatus:$status, body:${response.toJsonLog()}")
+        this.error("response httpStatus:$status, body:${response.toJsonLog()}")
     }
 }
