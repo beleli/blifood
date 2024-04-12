@@ -36,7 +36,7 @@ class ExceptionHandler(private val tracer: Tracer) : ResponseEntityExceptionHand
 
     @ExceptionHandler(Exception::class)
     fun handleUncaughtException(ex: Exception, request: WebRequest): ResponseEntity<Any>? {
-        logger.error(ex)
+        apiLogger.error(ex.message, ex)
         return this.handleExceptionInternal(ex, Messages.get("system.unscathedException"), HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request)
     }
 

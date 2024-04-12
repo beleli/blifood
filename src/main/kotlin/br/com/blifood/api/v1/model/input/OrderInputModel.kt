@@ -1,6 +1,5 @@
 package br.com.blifood.api.v1.model.input
 
-import br.com.blifood.core.log.MaskObject
 import br.com.blifood.domain.entity.Order
 import br.com.blifood.domain.entity.PaymentMethod
 import br.com.blifood.domain.entity.Restaurant
@@ -23,12 +22,10 @@ data class OrderInputModel(
     @field:Positive
     val paymentMethodId: Long?,
 
-    @MaskObject
     @field:NotNull
     @field:Valid
     val deliveryAddress: AddressInputModel?,
 
-    @MaskObject
     @field:NotNull
     @field:Size(min = 1)
     val items: List<OrderItemInputModel>?
