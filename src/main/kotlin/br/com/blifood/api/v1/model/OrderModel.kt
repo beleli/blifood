@@ -1,7 +1,6 @@
 package br.com.blifood.api.v1.model
 
 import br.com.blifood.api.v1.controller.OrderController
-import br.com.blifood.core.log.MaskObject
 import br.com.blifood.domain.entity.Order
 import br.com.blifood.domain.entity.OrderStatus
 import com.fasterxml.jackson.annotation.JsonInclude
@@ -46,15 +45,12 @@ open class OrderModel(
     @Schema(example = "2023-08-16T17:59:23.122338Z")
     val delivered: OffsetDateTime?,
 
-    @MaskObject
     val restaurant: RestaurantModel,
 
     val paymentMethod: PaymentMethodModel,
 
-    @MaskObject
     val deliveryAddress: AddressModel,
 
-    @MaskObject
     val items: List<OrderItemModel>
 ) : RepresentationModel<OrderModel>() {
     companion object {

@@ -56,10 +56,9 @@ class LogAndValidateAspect {
 
     @AfterReturning(value = "logMethods(logAnnotation)", returning = "returnValue")
     fun logResponse(joinPoint: JoinPoint, logAnnotation: LogAndValidate, returnValue: Any?) {
-        val status =
-            if (returnValue is ResponseEntity<*>) returnValue.statusCode.value() else getResponseStatus(joinPoint)
+        val status = if (returnValue is ResponseEntity<*>) returnValue.statusCode.value() else getResponseStatus(joinPoint)
         val body = if (returnValue is ResponseEntity<*>) returnValue.body else returnValue
-        getLogger(joinPoint).info("response httpStatus:$status, body:${if (logAnnotation.logResponse) body?.toJsonLog() else "not logged"}")
+        getLogger(joinPoint).info("response userId:${request.getUserId()}, httpStatus:$status, body:${if (logAnnotation.logResponse) body?.toJsonLog() else "not logged"}")
     }
 
     private fun getLogger(joinPoint: JoinPoint): Logger {

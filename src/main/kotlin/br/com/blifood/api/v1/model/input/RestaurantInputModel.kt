@@ -1,7 +1,6 @@
 package br.com.blifood.api.v1.model.input
 
 import br.com.blifood.core.log.LogMaskFormat
-import br.com.blifood.core.log.MaskObject
 import br.com.blifood.core.log.MaskProperty
 import br.com.blifood.domain.entity.Culinary
 import br.com.blifood.domain.entity.Restaurant
@@ -32,7 +31,6 @@ data class RestaurantInputModel(
     @field:Positive
     val culinaryId: Long?,
 
-    @MaskObject
     @field:NotNull
     @field:Valid
     val address: AddressInputModel?

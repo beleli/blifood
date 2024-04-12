@@ -1,13 +1,12 @@
 package br.com.blifood.core.log
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import org.springframework.data.domain.Pageable
 import java.time.OffsetDateTime
+import kotlin.reflect.KProperty1
 import kotlin.reflect.full.declaredMemberProperties
 import kotlin.reflect.full.findAnnotation
-
-@Target(AnnotationTarget.PROPERTY, AnnotationTarget.FIELD)
-annotation class MaskObject
+import kotlin.reflect.full.isSubtypeOf
+import kotlin.reflect.full.starProjectedType
 
 @Target(AnnotationTarget.PROPERTY, AnnotationTarget.FIELD)
 annotation class MaskProperty(val format: LogMaskFormat = LogMaskFormat.DEFAULT)
@@ -21,48 +20,38 @@ enum class LogMaskFormat {
 }
 
 private const val MASK_LENGTH = 5
+private const val APPLICATION_PACKAGED = "br.com.blifood"
 
 fun Any.toLog(): String {
-    val propertiesMap = this::class.declaredMemberProperties
-        .associateWith { prop ->
-            val value = prop.getter.call(this)
-            if (prop.annotations.any { it is MaskObject || it is Pageable }) {
-                if (value is Iterable<*>) value.map { it?.toLog() } else value?.toLog()
-            } else if (prop.annotations.any { it is MaskProperty }) {
-                value.toString().applyMask(prop.findAnnotation<MaskProperty>()!!.format)
-            } else {
-                value
-            }
-        }
-
-    val propertiesString = propertiesMap.map { (prop, value) ->
-        "${prop.name}=$value"
-    }.joinToString(", ")
-
+    val propertiesMap = this.getProperties { it?.toLog() }
+    val propertiesString = propertiesMap.map { (prop, value) -> "${prop.name}=$value" }.joinToString(", ")
     return "${this::class.simpleName}($propertiesString)"
 }
 
 fun Any.toJsonLog(): String {
+    val propertiesMap = this.getProperties { it?.toJsonLog() }
+    val propertiesJsonMap = propertiesMap.map { (prop, value) -> prop.name to value }.toMap()
+    return jacksonObjectMapper().writeValueAsString(propertiesJsonMap)
+        .replace("\"{", "{")
+        .replace("}\"", "}")
+        .replace("\\\"", "\"")
+}
+
+private fun Any.getProperties(logFunction: (Any?) -> String?): Map<KProperty1<out Any, *>, Any?> {
     val propertiesMap = this::class.declaredMemberProperties
         .associateWith { prop ->
             val value = prop.getter.call(this)
-            if (prop.annotations.any { it is MaskObject }) {
-                if (value is Iterable<*>) value.map { it?.toJsonLog() } else value?.toJsonLog()
+            if (value is Iterable<*>) {
+                value.map { logFunction(it) }
+            } else if (value?.javaClass?.name?.startsWith(APPLICATION_PACKAGED) == true) {
+                if (prop.returnType.isSubtypeOf(Enum::class.starProjectedType)) value.toString() else logFunction(value)
             } else if (prop.annotations.any { it is MaskProperty }) {
                 value.toString().applyMask(prop.findAnnotation<MaskProperty>()!!.format)
             } else {
                 if (value is OffsetDateTime) value.toString() else value
             }
         }
-
-    val propertiesJsonMap = propertiesMap.map { (prop, value) ->
-        prop.name to value
-    }.toMap()
-
-    return jacksonObjectMapper().writeValueAsString(propertiesJsonMap)
-        .replace("\"{", "{")
-        .replace("}\"", "}")
-        .replace("\\\"", "\"")
+    return propertiesMap
 }
 
 fun String?.applyMask(format: LogMaskFormat): String? {
