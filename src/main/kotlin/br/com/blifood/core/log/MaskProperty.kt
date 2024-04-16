@@ -19,12 +19,12 @@ enum class LogMaskFormat {
     NAME
 }
 
-private const val MASK_LENGTH = 5
+private const val MASK_MAX_LENGTH = 5
 private const val APPLICATION_PACKAGED = "br.com.blifood"
 
 fun Any.toLog(): String {
     val propertiesMap = this.getProperties { it?.toLog() }
-    val propertiesString = propertiesMap.map { (prop, value) -> "${prop.name}=$value" }.joinToString(", ")
+    val propertiesString = propertiesMap.map { (prop, value) -> "${prop.name}=$value" }.joinToString(",")
     return "${this::class.simpleName}($propertiesString)"
 }
 
@@ -66,15 +66,11 @@ fun String?.applyMask(format: LogMaskFormat): String? {
 }
 
 fun String.maskAll(): String {
-    return if (this.length < MASK_LENGTH) {
-        "*".repeat(this.length)
-    } else {
-        "*".repeat(MASK_LENGTH)
-    }
+    return if (this.length < MASK_MAX_LENGTH) "*".repeat(this.length) else "*".repeat(MASK_MAX_LENGTH)
 }
 
 fun String.maskCPF(): String {
-    return this.take(3) + MASK_LENGTH + this.takeLast(2)
+    return this.take(3) + MASK_MAX_LENGTH + this.takeLast(2)
 }
 
 fun String.maskEmail(): String {
@@ -83,8 +79,8 @@ fun String.maskEmail(): String {
 
 fun String.maskAfter(lastDigit: Int): String {
     return if (this.length > lastDigit) {
-        if (this.length > lastDigit + MASK_LENGTH) {
-            this.replaceRange(lastDigit, length, "*".repeat(MASK_LENGTH))
+        if (this.length > lastDigit + MASK_MAX_LENGTH) {
+            this.replaceRange(lastDigit, length, "*".repeat(MASK_MAX_LENGTH))
         } else {
             this.replaceRange(lastDigit, length, "*".repeat(length - lastDigit))
         }

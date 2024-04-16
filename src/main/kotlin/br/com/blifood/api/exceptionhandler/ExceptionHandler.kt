@@ -147,6 +147,7 @@ class ExceptionHandler(private val tracer: Tracer) : ResponseEntityExceptionHand
         request as ServletWebRequest
         this.info("request userId:${getRequestContextHolderUserId()}, uri:${request.request.requestURI}, httpMethod:${request.request.method}, body:not logged")
     }
+
     private fun Logger.logErrorResponse(status: Int, response: Any) {
         this.error("response httpStatus:$status, body:${response.toJsonLog()}")
     }
