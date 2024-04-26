@@ -3,7 +3,7 @@ package br.com.blifood.infrastructure.email
 import br.com.blifood.domain.service.EmailService
 import org.slf4j.LoggerFactory
 
-class FakeEmailService(
+class FakeEmailAdapter(
     private val templateProcessor: TemplateProcessor
 ) : EmailService {
 

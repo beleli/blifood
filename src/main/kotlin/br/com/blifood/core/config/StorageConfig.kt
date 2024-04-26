@@ -2,8 +2,8 @@ package br.com.blifood.core.config
 
 import br.com.blifood.core.properties.StorageProperties
 import br.com.blifood.domain.service.ImageStorageService
-import br.com.blifood.infrastructure.storage.LocalImageStorageService
-import br.com.blifood.infrastructure.storage.S3ImageStorageService
+import br.com.blifood.infrastructure.storage.LocalImageStorageAdapter
+import br.com.blifood.infrastructure.storage.S3ImageStorageAdapter
 import com.amazonaws.auth.AWSStaticCredentialsProvider
 import com.amazonaws.auth.BasicAWSCredentials
 import com.amazonaws.services.s3.AmazonS3
@@ -36,10 +36,10 @@ class StorageConfig(
     fun imageStorageService(): ImageStorageService {
         return if (storageProperties.type == StorageProperties.Type.LOCAL) {
             val localProperties = storageProperties.local!!
-            LocalImageStorageService(localProperties.path)
+            LocalImageStorageAdapter(localProperties.path)
         } else {
             val s3Properties = storageProperties.s3!!
-            S3ImageStorageService(amazonS3(), s3Properties.bucket, s3Properties.path)
+            S3ImageStorageAdapter(amazonS3(), s3Properties.bucket, s3Properties.path)
         }
     }
 }
