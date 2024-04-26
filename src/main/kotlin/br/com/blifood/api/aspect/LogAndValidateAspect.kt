@@ -74,8 +74,7 @@ class LogAndValidateAspect {
 
     private fun getRequestBody(joinPoint: JoinPoint): Any? {
         val methodSignature = joinPoint.signature as MethodSignature
-        val parameters = methodSignature.method.parameters
-        for ((index, parameter) in parameters.withIndex()) {
+        for ((index, parameter) in methodSignature.method.parameters.withIndex()) {
             if (parameter.isAnnotationPresent(RequestBody::class.java)) {
                 return joinPoint.args[index]
             }

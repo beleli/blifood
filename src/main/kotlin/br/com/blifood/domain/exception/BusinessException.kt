@@ -2,7 +2,7 @@ package br.com.blifood.domain.exception
 
 import br.com.blifood.core.message.Messages
 
-open class BusinessException(message: String?) : Exception(message)
+open class BusinessException(message: String) : Exception(message)
 
 class UserInvalidPasswordException(
     message: String = Messages.get("user.invalidPassword")
