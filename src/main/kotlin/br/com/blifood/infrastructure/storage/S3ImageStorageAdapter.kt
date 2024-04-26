@@ -10,7 +10,7 @@ import com.amazonaws.services.s3.model.ObjectMetadata
 import com.amazonaws.services.s3.model.PutObjectRequest
 import java.net.URL
 
-class S3ImageStorageService(
+class S3ImageStorageAdapter(
     private val amazonS3: AmazonS3,
     private val bucket: String,
     private val path: String?

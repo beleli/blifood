@@ -7,7 +7,7 @@ import java.io.InputStream
 import java.nio.file.Files
 import java.nio.file.Path
 
-class LocalImageStorageService(
+class LocalImageStorageAdapter(
     private val path: String
 ) : ImageStorageService {
 
