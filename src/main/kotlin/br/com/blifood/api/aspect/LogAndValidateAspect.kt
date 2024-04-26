@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.context.request.RequestContextHolder
 import org.springframework.web.context.request.ServletRequestAttributes
-import java.lang.reflect.Method
 import kotlin.reflect.KClass
 
 @Target(AnnotationTarget.FUNCTION)
@@ -35,7 +34,6 @@ annotation class LogAndValidate(
 class LogAndValidateAspect {
 
     private val loggers = mutableMapOf<Class<*>, Logger>()
-    private val methodBodyIndexMap = mutableMapOf<Method, Int>()
     private val validator = Validation.buildDefaultValidatorFactory().validator
 
     @Pointcut("@annotation(logAnnotation)")
@@ -76,13 +74,12 @@ class LogAndValidateAspect {
 
     private fun getRequestBody(joinPoint: JoinPoint): Any? {
         val methodSignature = joinPoint.signature as MethodSignature
-        val method = methodSignature.method
-        val index = methodBodyIndexMap.getOrPut(method) {
-            method.parameters.indexOfFirst { parameter ->
-                parameter.isAnnotationPresent(RequestBody::class.java)
+        for ((index, parameter) in methodSignature.method.parameters.withIndex()) {
+            if (parameter.isAnnotationPresent(RequestBody::class.java)) {
+                return joinPoint.args[index]
             }
         }
-        return if (index == -1) null else joinPoint.args[index]
+        return null
     }
 
     private fun validateRequestBody(requestBody: Any, vararg validationGroups: KClass<*>) {
