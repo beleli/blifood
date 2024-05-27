@@ -31,7 +31,7 @@ class JwtAuthenticationFilter(private val jwtKeyProvider: JwtKeyProvider) : Gene
         val token = header.removePrefix("Bearer").trim()
 
         val claimsJws = Jwts.parserBuilder()
-            .setSigningKey(jwtKeyProvider.getPublicKey())
+            .setSigningKey(jwtKeyProvider.publicKey)
             .build()
 
         val userName = claimsJws.parseClaimsJws(token).body.subject

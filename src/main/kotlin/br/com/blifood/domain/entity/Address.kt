@@ -14,7 +14,7 @@ data class Address(
     @JoinColumn(name = "id_address_city", nullable = false)
     var city: City = City(),
 
-    @field:Size(min = 1, max = 9)
+    @field:Size(min = 8, max = 8)
     @Column(name = "ds_address_zip_code", nullable = false)
     val zipCode: String = "",
 

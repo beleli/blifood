@@ -9,7 +9,7 @@ import javax.sql.DataSource
 
 @Configuration
 @Profile("!test")
-class BaseConfig(
+class DataSourceConfig(
     private val environment: Environment,
     private val secretsManagerClient: SecretsManagerClient
 ) {

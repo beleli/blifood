@@ -50,7 +50,7 @@ fun createPaymentMethod(
 
 fun createAddress(
     city: City = createCity(),
-    zipCode: String = "zip",
+    zipCode: String = "99999999",
     street: String = "Street",
     number: String = "1",
     complement: String? = null,
