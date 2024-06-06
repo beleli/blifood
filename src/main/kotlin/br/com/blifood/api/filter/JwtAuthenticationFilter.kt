@@ -26,8 +26,8 @@ class JwtAuthenticationFilter(private val jwtKeyProvider: JwtKeyProvider) : Gene
         }
     }
 
-    private fun getAuthentication(request: HttpServletRequest): Authentication {
-        val header = request.getHeader("Authorization")
+    private fun getAuthentication(request: HttpServletRequest): Authentication? {
+        val header = request.getHeader("Authorization") ?: return null
         val token = header.removePrefix("Bearer").trim()
 
         val claimsJws = Jwts.parserBuilder()

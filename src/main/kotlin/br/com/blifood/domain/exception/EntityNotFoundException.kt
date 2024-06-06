@@ -2,7 +2,7 @@ package br.com.blifood.domain.exception
 
 import br.com.blifood.core.message.Messages
 
-open class EntityNotFoundException(message: String) : BusinessException(message)
+open class EntityNotFoundException(message: String?) : BusinessException(message)
 
 class StateNotFoundException(
     message: String = Messages.get("state.notFound")

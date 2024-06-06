@@ -2,7 +2,7 @@ package br.com.blifood.domain.exception
 
 import br.com.blifood.core.message.Messages
 
-open class EntityAlreadyExistsException(message: String) : BusinessException(message)
+open class EntityAlreadyExistsException(message: String?) : BusinessException(message)
 
 class StateAlreadyExistsException(
     message: String = Messages.get("state.alreadyExists")
