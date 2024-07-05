@@ -13,7 +13,7 @@ class AddressModel(
     @MaskProperty
     val city: String,
 
-    @Schema(example = "38400-000")
+    @Schema(example = "38400000")
     @MaskProperty
     val zipCode: String,
 

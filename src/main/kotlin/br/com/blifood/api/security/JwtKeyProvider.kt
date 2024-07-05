@@ -11,8 +11,8 @@ import java.security.PublicKey
 class JwtKeyProvider(private val properties: JwtKeyStoreProperties) {
 
     private val keyStore: KeyStore = loadKeyStore()
-    private val key: Key = loadKey()
-    private val publicKey: PublicKey = loadPublicKey()
+    val key: Key = loadKey()
+    val publicKey: PublicKey = loadPublicKey()
 
     private fun loadKeyStore(): KeyStore {
         val keyStore = KeyStore.getInstance("JKS")
@@ -33,7 +33,4 @@ class JwtKeyProvider(private val properties: JwtKeyStoreProperties) {
     private fun loadPublicKey(): PublicKey {
         return keyStore.getCertificate(properties.keypairAlias.getContentAsString(Charset.defaultCharset())).publicKey
     }
-
-    fun getKey() = key
-    fun getPublicKey() = publicKey
 }

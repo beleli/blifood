@@ -61,7 +61,7 @@ class LoginController(
             .addClaims(claims)
             .setIssuedAt(date)
             .setExpiration(expiration)
-            .signWith(jwtKeyProvider.getKey(), SignatureAlgorithm.RS256)
+            .signWith(jwtKeyProvider.key, SignatureAlgorithm.RS256)
             .compact()
     }
 }

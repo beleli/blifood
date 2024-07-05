@@ -35,7 +35,7 @@ class LoginControllerTest : StringSpec({
 
     "login should return LoginModel with token" {
         every { userService.validateLogin(any(), any()) } returns user
-        every { jwtKeyProvider.getKey() } returns generateKeyPair().private
+        every { jwtKeyProvider.key } returns generateKeyPair().private
 
         val result = controller.login(createLoginInputModel(user))
         result.token shouldNotBe null

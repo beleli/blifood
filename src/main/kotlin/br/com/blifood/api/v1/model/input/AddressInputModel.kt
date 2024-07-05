@@ -1,5 +1,6 @@
 package br.com.blifood.api.v1.model.input
 
+import br.com.blifood.api.validation.NumericValue
 import br.com.blifood.core.log.LogMaskFormat
 import br.com.blifood.core.log.MaskProperty
 import br.com.blifood.domain.entity.Address
@@ -17,10 +18,11 @@ data class AddressInputModel(
     @field:Positive
     val cityId: Long?,
 
-    @Schema(example = "38400-000")
+    @Schema(example = "38400000")
     @MaskProperty
+    @field:NumericValue
     @field:NotBlank
-    @field:Size(max = 9)
+    @field:Size(min = 8, max = 8)
     val zipCode: String?,
 
     @Schema(example = "Rua Floriano Peixoto")
