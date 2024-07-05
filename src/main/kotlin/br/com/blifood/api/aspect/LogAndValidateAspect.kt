@@ -1,5 +1,6 @@
 package br.com.blifood.api.aspect
 
+import br.com.blifood.api.v1.getAnnotation
 import br.com.blifood.api.v1.getUserId
 import br.com.blifood.core.log.toJsonLog
 import jakarta.validation.ConstraintViolationException
@@ -37,8 +38,7 @@ class LogAndValidateAspect {
     private val validator = Validation.buildDefaultValidatorFactory().validator
 
     @Pointcut("@annotation(logAnnotation)")
-    fun logMethods(logAnnotation: LogAndValidate) {
-    }
+    fun logMethods(logAnnotation: LogAndValidate) { }
 
     @Before("logMethods(logAnnotation)")
     fun logRequest(joinPoint: JoinPoint, logAnnotation: LogAndValidate) {
@@ -67,8 +67,7 @@ class LogAndValidateAspect {
     }
 
     private fun getResponseStatus(joinPoint: JoinPoint): Int {
-        val methodSignature = joinPoint.signature as MethodSignature
-        val responseStatusAnnotation = methodSignature.method.getAnnotation(ResponseStatus::class.java)
+        val responseStatusAnnotation = joinPoint.getAnnotation(ResponseStatus::class)
         return responseStatusAnnotation?.value?.value() ?: HttpStatus.OK.value()
     }
 
