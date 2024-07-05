@@ -29,7 +29,7 @@ fun HttpServletRequest.getUserId(): Long {
     return if (userId is Int) userId.toLong() else 0L
 }
 
-fun <T: Annotation> JoinPoint.getAnnotation(annotation: KClass<T>): T? {
+fun <T : Annotation> JoinPoint.getAnnotation(annotation: KClass<T>): T? {
     val methodSignature = this.signature as? MethodSignature ?: return null
     return methodSignature.method.getAnnotation(annotation.java)
 }
