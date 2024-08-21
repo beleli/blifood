@@ -53,7 +53,7 @@ class OpenApiConfig {
         return Info()
             .title("BliFood API")
             .version("1.0.0")
-            .description("REST API do BliFood")
+            .description("REST API for BliFood")
     }
 
     private fun generateTags(): List<Tag> {
