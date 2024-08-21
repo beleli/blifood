@@ -131,7 +131,7 @@ class RestaurantController(
         return try {
             restaurantService.save(restaurant, getRequestContextHolderUserId())
         } catch (ex: EntityNotFoundException) {
-            throw throw BusinessException(ex.message)
+            throw BusinessException(ex.message)
         } catch (ex: Throwable) {
             throw ex
         }
