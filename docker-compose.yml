@@ -11,9 +11,9 @@ services:
       - POSTGRES_USER=postgresUser
       - POSTGRES_PASSWORD=postgresPassword
     volumes:
-      - ./postgres:/var/lib/postgresql/data
+      - ./postgres:/var/lib/postgresql
     networks:
-      - blifood_default
+      - blifood-net
 
   localstack:
     image: localstack/localstack
@@ -23,9 +23,9 @@ services:
     environment:
       - SERVICES=secretsmanager
     volumes:
-      - "${TMPDIR:-/tmp/localstack}:/tmp/localstack"
+      - ./localstack:/var/lib/localstack
     networks:
-      - blifood_default
+      - blifood-net
 
   create_secret:
     image: amazon/aws-cli
@@ -47,10 +47,10 @@ services:
         aws --endpoint-url=http://localstack:4566 secretsmanager create-secret --name local/blifood/jwtAlias --secret-string "algafood"
       "
     networks:
-      - blifood_default
+      - blifood-net
 
 networks:
-  blifood_default:
+  blifood-net:
     driver: bridge
     ipam:
       config:
