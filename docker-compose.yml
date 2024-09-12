@@ -49,6 +49,31 @@ services:
     networks:
       - blifood-net
 
+  prometheus:
+    image: prom/prometheus
+    container_name: blifood-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus:/etc/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    networks:
+      - blifood-net
+
+  otel-collector:
+    image: otel/opentelemetry-collector:latest
+    container_name: blifood-opentelemetry
+    ports:
+      - "4318:4318"  # Porta para recepção de métricas OTLP
+      - "9464:9464"  # Porta para exposição de métricas Prometheus
+    command:
+      - '--config=/etc/otel-collector-config.yml'
+    volumes:
+      - ./opentelemetry/otel-collector-config.yml:/etc/otel-collector-config.yml
+    networks:
+      - blifood-net
+
 networks:
   blifood-net:
     driver: bridge

@@ -23,3 +23,12 @@ blifood:
     jks-location: secretsmanager:local/blifood/jwtKey
     password: secretsmanager:local/blifood/jwtPassword
     keypair-alias: secretsmanager:local/blifood/jwtAlias
+
+otel:
+  exporter:
+    otlp:
+      endpoint: http://localhost:9464
+  metrics:
+    exporter: otlp
+  resource:
+    attributes: "service.name=blifood"
