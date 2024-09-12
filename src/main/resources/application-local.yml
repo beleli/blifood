@@ -34,4 +34,4 @@ management:
       export:
         url: "http://localhost:4318/v1/metrics"
         resourceAttributes:
-          service_name: blifood
+          service.name: blifood
