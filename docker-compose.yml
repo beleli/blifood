@@ -61,8 +61,8 @@ services:
     networks:
       - blifood-net
 
-  otel-collector:
-    image: otel/opentelemetry-collector:latest
+  open-telemetry:
+    image: otel/opentelemetry-collector
     container_name: blifood-opentelemetry
     ports:
       - "4318:4318"  # Porta para recepção de métricas OTLP

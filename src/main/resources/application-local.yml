@@ -24,11 +24,14 @@ blifood:
     password: secretsmanager:local/blifood/jwtPassword
     keypair-alias: secretsmanager:local/blifood/jwtAlias
 
-otel:
-  exporter:
-    otlp:
-      endpoint: http://localhost:9464
-  metrics:
-    exporter: otlp
-  resource:
-    attributes: "service.name=blifood"
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, metrics
+  otlp:
+    metrics:
+      export:
+        url: "http://localhost:4318/v1/metrics"
+        resourceAttributes:
+          service_name: blifood
