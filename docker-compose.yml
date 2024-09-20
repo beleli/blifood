@@ -1,6 +1,7 @@
 version: '3.3'
 
 services:
+
   psql:
     image: postgres:11.12
     container_name: blifood-postgres
@@ -11,7 +12,7 @@ services:
       - POSTGRES_USER=postgresUser
       - POSTGRES_PASSWORD=postgresPassword
     volumes:
-      - ./postgres:/var/lib/postgresql
+      - ./docker/postgres:/var/lib/postgresql
     networks:
       - blifood-net
 
@@ -23,7 +24,7 @@ services:
     environment:
       - SERVICES=secretsmanager
     volumes:
-      - ./localstack:/var/lib/localstack
+      - ./docker/localstack:/var/lib/localstack
     networks:
       - blifood-net
 
@@ -55,22 +56,38 @@ services:
     ports:
       - "9090:9090"
     volumes:
-      - ./prometheus:/etc/prometheus
+      - ./docker/prometheus:/etc/prometheus
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
     networks:
       - blifood-net
 
-  open-telemetry:
+  otel-collector:
     image: otel/opentelemetry-collector
-    container_name: blifood-opentelemetry
+    container_name: blifood-otel-collector
     ports:
       - "4318:4318"  # Porta para recepção de métricas OTLP
       - "9464:9464"  # Porta para exposição de métricas Prometheus
     command:
       - '--config=/etc/otel-collector-config.yml'
     volumes:
-      - ./opentelemetry/otel-collector-config.yml:/etc/otel-collector-config.yml
+      - ./docker/opentelemetry/otel-collector-config.yml:/etc/otel-collector-config.yml
+    networks:
+      - blifood-net
+
+  grafana:
+    image: grafana/grafana
+    container_name: blifood-grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin  # Senha padrão, altere conforme necessário
+      - GF_SECURITY_ADMIN_PASSWORD_IS_SECRET=true
+    volumes:
+      - ./docker/grafana:/var/lib/grafana
+      - ./docker/grafana/provisioning:/etc/grafana/provisioning  # Volume de provisionamento
+    depends_on:
+      - prometheus
     networks:
       - blifood-net
 
