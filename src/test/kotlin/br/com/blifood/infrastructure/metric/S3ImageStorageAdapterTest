@@ -1,0 +1,79 @@
+package br.com.blifood.infrastructure.storage
+
+import br.com.blifood.domain.createImage
+import br.com.blifood.domain.exception.StorageException
+import com.amazonaws.services.s3.AmazonS3
+import com.amazonaws.services.s3.model.CannedAccessControlList
+import com.amazonaws.services.s3.model.DeleteObjectRequest
+import com.amazonaws.services.s3.model.PutObjectRequest
+import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.shouldBe
+import io.mockk.Runs
+import io.mockk.every
+import io.mockk.just
+import io.mockk.mockk
+import io.mockk.slot
+import io.mockk.verify
+import java.net.URL
+
+class S3ImageStorageAdapterTest : StringSpec({
+
+    val amazonS3 = mockk<AmazonS3>(relaxed = true)
+    val bucket = "test-bucket"
+    val path = "test-path"
+    val s3ImageStorageAdapter = S3ImageStorageAdapter(amazonS3, bucket, path)
+
+    "upload should upload image to S3" {
+        val image = createImage()
+
+        s3ImageStorageAdapter.upload(image)
+
+        val captor = slot<PutObjectRequest>()
+        verify { amazonS3.putObject(capture(captor)) }
+        val request = captor.captured
+
+        request.bucketName shouldBe bucket
+        request.key shouldBe "$path/${image.fileName}"
+        request.metadata.contentType shouldBe "image/jpeg"
+        request.cannedAcl shouldBe CannedAccessControlList.PublicRead
+    }
+
+    "upload should throw StorageException on failure" {
+        val image = createImage()
+        every { amazonS3.putObject(any<PutObjectRequest>()) } throws RuntimeException()
+
+        shouldThrow<StorageException> { s3ImageStorageAdapter.upload(image) }
+    }
+
+    "remove should delete image from S3" {
+        val image = createImage()
+        every { amazonS3.deleteObject(any<DeleteObjectRequest>()) } just Runs
+
+        s3ImageStorageAdapter.remove(image.fileName)
+
+        val captor = slot<DeleteObjectRequest>()
+        verify { amazonS3.deleteObject(capture(captor)) }
+        val request = captor.captured
+
+        request.bucketName shouldBe bucket
+        request.key shouldBe "$path/${image.fileName}"
+    }
+
+    "remove should throw StorageException on failure" {
+        val image = createImage()
+        every { amazonS3.deleteObject(any<DeleteObjectRequest>()) } throws RuntimeException()
+
+        shouldThrow<StorageException> { s3ImageStorageAdapter.remove(image.fileName) }
+    }
+
+    "recover should return URL of the image" {
+        val image = createImage()
+        val url = URL("http://example.com/test.jpg")
+        every { amazonS3.getUrl(bucket, "$path/${image.fileName}") } returns url
+
+        val result = s3ImageStorageAdapter.recover(image.fileName)
+
+        result shouldBe url
+    }
+})
