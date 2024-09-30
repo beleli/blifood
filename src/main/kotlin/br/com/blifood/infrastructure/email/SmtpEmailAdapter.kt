@@ -7,7 +7,7 @@ import jakarta.mail.internet.MimeMessage
 import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.mail.javamail.MimeMessageHelper
 
-open class SmtpEmailAdapter(
+class SmtpEmailAdapter(
     private val templateProcessor: TemplateProcessor,
     private val mailSender: JavaMailSender,
     private val from: String,

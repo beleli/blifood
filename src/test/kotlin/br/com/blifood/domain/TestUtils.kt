@@ -12,6 +12,10 @@ import br.com.blifood.domain.entity.Restaurant
 import br.com.blifood.domain.entity.State
 import br.com.blifood.domain.entity.User
 import br.com.blifood.domain.entity.UserProfile
+import br.com.blifood.domain.service.EmailService
+import br.com.blifood.domain.service.ImageStorageService
+import io.mockk.mockk
+import java.io.InputStream
 import java.math.BigDecimal
 
 fun createState(
@@ -149,4 +153,26 @@ fun createOrderItem(
     amount = amount,
     unitPrice = unitPrice,
     observation = observation
+)
+
+fun createMessage(
+    to: Set<String> = setOf("user@example.com"),
+    subject: String = "Test Subject",
+    template: String = "test-template",
+    variables: Map<String, Any> = mapOf("key" to "value")
+) = EmailService.Message(
+    to = to,
+    subject = subject,
+    template = template,
+    variables = variables
+)
+
+fun createImage(
+    fileName: String = "test.jpg",
+    contentType: String = "jpg",
+    inputStream: InputStream = mockk<InputStream>(relaxed = true)
+) = ImageStorageService.Image(
+    fileName = fileName,
+    contentType = contentType,
+    inputStream = inputStream
 )

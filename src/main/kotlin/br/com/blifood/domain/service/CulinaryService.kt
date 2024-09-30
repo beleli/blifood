@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional
 class CulinaryService(
     private val culinaryRepository: CulinaryRepository
 ) {
+
     @Transactional(readOnly = true)
     fun findAll(pageable: Pageable): Page<Culinary> {
         return culinaryRepository.findAll(pageable)

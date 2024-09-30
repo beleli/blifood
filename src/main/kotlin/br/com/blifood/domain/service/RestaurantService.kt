@@ -23,6 +23,7 @@ class RestaurantService(
     private val paymentMethodService: PaymentMethodService,
     private val userService: UserService
 ) {
+
     @Transactional(readOnly = true)
     fun findAll(pageable: Pageable): Page<Restaurant> {
         return restaurantRepository.findAll(pageable)

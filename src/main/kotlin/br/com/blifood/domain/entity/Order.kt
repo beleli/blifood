@@ -1,10 +1,9 @@
 package br.com.blifood.domain.entity
 
-import br.com.blifood.domain.event.CanceledOrderEvent
-import br.com.blifood.domain.event.ConfirmedOrderEvent
 import br.com.blifood.domain.exception.OrderNotCanceledException
 import br.com.blifood.domain.exception.OrderNotConfirmedException
 import br.com.blifood.domain.exception.OrderNotDeliveredException
+import jakarta.persistence.Cacheable
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Embedded
@@ -29,6 +28,7 @@ import java.util.*
 
 @Entity
 @Table(name = "tb_order")
+@Cacheable(false)
 data class Order(
 
     @Id
@@ -87,6 +87,7 @@ data class Order(
     @OneToMany(mappedBy = "order", cascade = [CascadeType.ALL])
     val items: List<OrderItem> = mutableListOf()
 ) : AbstractAggregateRoot<Order>() {
+
     fun status() = status
     fun total() = total
     fun created() = created
@@ -104,14 +105,12 @@ data class Order(
         if (!status.isChangeableTo(OrderStatus.CONFIRMED)) throw OrderNotConfirmedException()
         status = OrderStatus.CONFIRMED
         confirmed = OffsetDateTime.now()
-        registerEvent(ConfirmedOrderEvent(this))
     }
 
     fun cancel() = apply {
         if (!status.isChangeableTo(OrderStatus.CANCELED)) throw OrderNotCanceledException()
         status = OrderStatus.CANCELED
         canceled = OffsetDateTime.now()
-        registerEvent(CanceledOrderEvent(this))
     }
 
     fun delivery() = apply {
