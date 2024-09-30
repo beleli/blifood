@@ -1,8 +1,8 @@
 package br.com.blifood.infrastructure.email
 
 import br.com.blifood.core.message.Messages
-import br.com.blifood.domain.createMessage
 import br.com.blifood.domain.exception.EmailException
+import br.com.blifood.infrastructure.createMessage
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe

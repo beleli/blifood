@@ -1,7 +1,7 @@
 package br.com.blifood.infrastructure.storage
 
-import br.com.blifood.domain.createImage
 import br.com.blifood.domain.exception.StorageException
+import br.com.blifood.infrastructure.createImage
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
