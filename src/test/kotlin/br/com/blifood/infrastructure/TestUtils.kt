@@ -2,7 +2,6 @@ package br.com.blifood.infrastructure
 
 import br.com.blifood.domain.service.EmailService
 import br.com.blifood.domain.service.ImageStorageService
-import io.mockk.mockk
 import java.io.InputStream
 
 fun createMessage(
@@ -20,7 +19,7 @@ fun createMessage(
 fun createImage(
     fileName: String = "test.jpg",
     contentType: String = "image/jpeg",
-    inputStream: InputStream = mockk<InputStream>(relaxed = true)
+    inputStream: InputStream = "Test content".byteInputStream()
 ) = ImageStorageService.Image(
     fileName = fileName,
     contentType = contentType,

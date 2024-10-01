@@ -1,71 +1,59 @@
 package br.com.blifood.infrastructure.storage
 
+import br.com.blifood.core.message.Messages
 import br.com.blifood.domain.exception.StorageException
 import br.com.blifood.infrastructure.createImage
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
-import io.mockk.every
-import io.mockk.mockkStatic
-import io.mockk.verify
-import java.io.ByteArrayInputStream
-import java.io.ByteArrayOutputStream
-import java.nio.file.Files
+import java.io.File
 import java.nio.file.Path
 
 class LocalImageStorageAdapterTest : StringSpec({
 
-    val path = "test-path"
-    val localImageStorageAdapter = LocalImageStorageAdapter(path)
-    beforeTest { mockkStatic(Files::class) }
+    val testDir = Path.of("./catalog").toFile()
+    val localImageStorageAdapter = LocalImageStorageAdapter(testDir.absolutePath)
 
-    "upload should upload image to local storage" {
+    afterTest { testDir.listFiles()?.forEach { it.delete() } }
+
+    "should upload image successfully" {
         val image = createImage()
-        val filePath = Path.of(path, image.fileName)
-        every { Files.exists(filePath) } returns false
-        every { Files.createFile(filePath) } returns filePath
-        every { Files.newOutputStream(filePath) } returns ByteArrayOutputStream()
+        val imageFile = File(testDir, image.fileName)
 
         localImageStorageAdapter.upload(image)
+
+        imageFile.exists() shouldBe true
+        imageFile.readText() shouldBe "Test content"
     }
 
-    "upload should throw StorageException on failure" {
+    "should throw StorageException when upload fails due to invalid directory" {
         val image = createImage()
-        val invalidPath = Path.of("test", image.fileName)
+        val invalidDir = File("./invalidDir")
+        val localAdapterWithInvalidPath = LocalImageStorageAdapter(invalidDir.absolutePath)
 
-        every { Files.createFile(invalidPath) } throws RuntimeException()
-
-        shouldThrow<StorageException> { localImageStorageAdapter.upload(image) }
+        val exception = shouldThrow<StorageException> { localAdapterWithInvalidPath.upload(image) }
+        exception.message shouldBe Messages.get("productImage.uploadException")
     }
 
-    "remove should delete image from local storage" {
-        val image = createImage()
-        val filePath = Path.of(path, image.fileName)
-        every { Files.deleteIfExists(filePath) } returns true
+    "should remove image successfully" {
+        val fileName = "test-image.jpg"
+        val imageFile = File(testDir, fileName)
+        imageFile.writeText("Test content")
 
-        localImageStorageAdapter.remove(image.fileName)
-
-        verify { Files.deleteIfExists(filePath) }
+        localImageStorageAdapter.remove(fileName)
+        imageFile.exists() shouldBe false
     }
 
-    "remove should throw StorageException on failure" {
-        val image = createImage()
-        val invalidPath = Path.of("test", image.fileName)
+    "should recover image successfully" {
+        val fileName = "test-image.jpg"
+        val imageFile = File(testDir, fileName)
+        imageFile.writeText("Test content")
 
-        every { Files.delete(invalidPath) } throws RuntimeException()
-
-        shouldThrow<StorageException> { localImageStorageAdapter.remove(image.fileName) }
+        val inputStream = localImageStorageAdapter.recover(fileName)
+        inputStream.bufferedReader().readText() shouldBe "Test content"
     }
 
-    "recover should return InputStream of the image" {
-        val image = createImage()
-        val filePath = Path.of(path, image.fileName)
-        val inputStream = ByteArrayInputStream("test".toByteArray())
-        every { Files.exists(filePath) } returns true
-        every { Files.newInputStream(filePath) } returns inputStream
-
-        val result = localImageStorageAdapter.recover(image.fileName)
-
-        result shouldBe inputStream
+    "isURL should return false" {
+        localImageStorageAdapter.isURL() shouldBe false
     }
 })
