@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional
 class StateService(
     private val stateRepository: StateRepository
 ) {
+
     @Transactional(readOnly = true)
     fun findAll(pageable: Pageable): Page<State> {
         return stateRepository.findAll(pageable)

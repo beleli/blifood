@@ -33,6 +33,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-hateoas")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("io.micrometer:micrometer-tracing-bridge-brave:1.2.3")
+    implementation("io.micrometer:micrometer-registry-otlp:1.13.4")
 
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0")
 

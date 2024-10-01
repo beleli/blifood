@@ -16,6 +16,7 @@ class CityService(
     private val cityRepository: CityRepository,
     private val stateService: StateService
 ) {
+
     @Transactional(readOnly = true)
     fun findAll(pageable: Pageable): Page<City> {
         return cityRepository.findAll(pageable)

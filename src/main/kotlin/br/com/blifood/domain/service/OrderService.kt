@@ -1,9 +1,11 @@
 package br.com.blifood.domain.service
 
 import br.com.blifood.domain.entity.Order
+import br.com.blifood.domain.event.OrderStatusChangedEvent
 import br.com.blifood.domain.exception.OrderInvalidPaymentMethodException
 import br.com.blifood.domain.exception.OrderNotFoundException
 import br.com.blifood.domain.repository.OrderRepository
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -13,7 +15,9 @@ class OrderService(
     private val cityService: CityService,
     private val restaurantService: RestaurantService,
     private val paymentMethodService: PaymentMethodService,
-    private val productService: ProductService
+    private val productService: ProductService,
+    private val eventPublisher: ApplicationEventPublisher
+
 ) {
 
     @Transactional(readOnly = true)
@@ -35,24 +39,30 @@ class OrderService(
         order.deliveryFee = order.restaurant.deliveryFee
         order.calculateTotal()
 
-        return orderRepository.save(order)
+        return saveAndPublishEvent(order)
     }
 
     @Transactional
     fun confirm(code: String) {
         val order = findOrThrow(code)
-        orderRepository.save(order.confirm())
+        saveAndPublishEvent(order.confirm())
     }
 
     @Transactional
     fun cancel(code: String) {
         val order = findOrThrow(code)
-        orderRepository.save(order.cancel())
+        saveAndPublishEvent(order.cancel())
     }
 
     @Transactional
     fun delivery(code: String) {
         val order = findOrThrow(code)
-        orderRepository.save(order.delivery())
+        saveAndPublishEvent(order.delivery())
+    }
+
+    private fun saveAndPublishEvent(order: Order): Order {
+        return orderRepository.save(order).also {
+            eventPublisher.publishEvent(OrderStatusChangedEvent(it))
+        }
     }
 }

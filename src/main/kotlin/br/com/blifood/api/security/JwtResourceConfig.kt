@@ -19,8 +19,7 @@ class JwtResourceConfig(private val jwtKeyProvider: JwtKeyProvider) {
         "/v3/api-docs/**",
         "/swagger-ui/**",
         "/actuator/**",
-        "/v1/login/**",
-        "/login.html"
+        "/v1/login/**"
     )
 
     @Bean

@@ -15,6 +15,7 @@ import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk
+import org.springframework.context.ApplicationEventPublisher
 import java.math.BigDecimal
 import java.util.Optional
 import java.util.UUID
@@ -25,8 +26,9 @@ class OrderServiceTest : DescribeSpec({
     val restaurantService = mockk<RestaurantService>()
     val paymentMethodService = mockk<PaymentMethodService>()
     val productService = mockk<ProductService>()
+    val eventPublisher = mockk<ApplicationEventPublisher>(relaxed = true)
 
-    val orderService = OrderService(orderRepository, cityService, restaurantService, paymentMethodService, productService)
+    val orderService = OrderService(orderRepository, cityService, restaurantService, paymentMethodService, productService, eventPublisher)
 
     val restaurant = createRestaurant().addPaymentMethod(createPaymentMethod())
     val paymentMethod = restaurant.paymentsMethods.first()
