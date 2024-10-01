@@ -18,9 +18,7 @@ class OtlpMetricAdapterTest : StringSpec({
     val metricName = "blifood.order"
     val otlpMetricAdapter = OtlpMetricAdapter(meterRegistry)
 
-    beforeTest {
-        clearMocks(counter)
-    }
+    beforeTest { clearMocks(counter) }
 
     "should send metric when order status changes" {
         val status = OrderStatus.CREATED
