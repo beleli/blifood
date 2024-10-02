@@ -24,7 +24,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 2,
+  "id": 1,
   "links": [],
   "panels": [
     {
@@ -77,7 +77,7 @@
       },
       "gridPos": {
         "h": 8,
-        "w": 5,
+        "w": 4,
         "x": 0,
         "y": 1
       },
@@ -178,8 +178,8 @@
       },
       "gridPos": {
         "h": 8,
-        "w": 7,
-        "x": 5,
+        "w": 8,
+        "x": 4,
         "y": 1
       },
       "id": 18,
@@ -188,7 +188,7 @@
           "calcs": [],
           "displayMode": "list",
           "placement": "bottom",
-          "showLegend": false
+          "showLegend": true
         },
         "tooltip": {
           "mode": "single",
@@ -205,9 +205,22 @@
           "exemplar": false,
           "expr": "system_cpu_usage{exported_job=\"blifood\"}",
           "instant": false,
-          "legendFormat": "__auto",
+          "legendFormat": "System CPU Usage",
           "range": true,
           "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "cdyh0tylop1j4d"
+          },
+          "editorMode": "code",
+          "expr": "process_cpu_usage{exported_job=\"blifood\"}",
+          "hide": false,
+          "instant": false,
+          "legendFormat": "Process CPU Usage",
+          "range": true,
+          "refId": "B"
         }
       ],
       "title": "CPU Usage",
@@ -225,7 +238,7 @@
             "mode": "thresholds"
           },
           "mappings": [],
-          "max": 2048,
+          "max": 805306368,
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -235,21 +248,21 @@
               },
               {
                 "color": "#EAB839",
-                "value": 1024
+                "value": 268435456
               },
               {
                 "color": "red",
-                "value": 1536
+                "value": 536870912
               }
             ]
           },
-          "unit": "decmbytes"
+          "unit": "bytes"
         },
         "overrides": []
       },
       "gridPos": {
         "h": 8,
-        "w": 5,
+        "w": 4,
         "x": 12,
         "y": 1
       },
@@ -277,7 +290,7 @@
             "uid": "cdyh0tylop1j4d"
           },
           "editorMode": "code",
-          "expr": "sum(jvm_memory_committed_bytes{exported_job=\"blifood\"})/1048576",
+          "expr": "jvm_gc_memory_allocated_bytes_total{exported_job=\"blifood\"}",
           "instant": false,
           "legendFormat": "__auto",
           "range": true,
@@ -344,14 +357,15 @@
                 "value": 80
               }
             ]
-          }
+          },
+          "unit": "bytes"
         },
         "overrides": []
       },
       "gridPos": {
         "h": 8,
-        "w": 7,
-        "x": 17,
+        "w": 8,
+        "x": 16,
         "y": 1
       },
       "id": 19,
@@ -360,7 +374,7 @@
           "calcs": [],
           "displayMode": "list",
           "placement": "bottom",
-          "showLegend": false
+          "showLegend": true
         },
         "tooltip": {
           "mode": "single",
@@ -374,14 +388,27 @@
             "uid": "cdyh0tylop1j4d"
           },
           "editorMode": "code",
-          "expr": "sum(jvm_memory_committed_bytes{exported_job=\"blifood\"})/1048576",
+          "expr": "irate(jvm_gc_memory_allocated_bytes_total{exported_job=\"blifood\"}[$__rate_interval])",
           "instant": false,
-          "legendFormat": "__auto",
+          "legendFormat": "allocated",
           "range": true,
           "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "cdyh0tylop1j4d"
+          },
+          "editorMode": "code",
+          "expr": "irate(jvm_gc_memory_promoted_bytes_total{exported_job=\"blifood\"}[$__rate_interval])",
+          "hide": false,
+          "instant": false,
+          "legendFormat": "promoted",
+          "range": true,
+          "refId": "B"
         }
       ],
-      "title": "Memory Usage",
+      "title": "Memory Allocate/Promote",
       "type": "timeseries"
     },
     {
@@ -602,7 +629,7 @@
             "uid": "cdyh0tylop1j4d"
           },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_requests_milliseconds_sum{exported_job=\"blifood\"}[$__rate_interval]))\r\n/\r\nsum(rate(http_server_requests_milliseconds_count{exported_job=\"blifood\"}[$__rate_interval]))",
+          "expr": "avg(rate(http_server_requests_milliseconds_sum{exported_job=\"blifood\"}[$__rate_interval]))\r\n/\r\navg(rate(http_server_requests_milliseconds_count{exported_job=\"blifood\"}[$__rate_interval]))",
           "instant": false,
           "legendFormat": "__auto",
           "range": true,
@@ -1179,7 +1206,7 @@
             "uid": "cdyh0tylop1j4d"
           },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_requests_milliseconds_sum{exported_job=\"blifood\"}[$__rate_interval]))\r\n/\r\nsum(rate(http_server_requests_milliseconds_count{exported_job=\"blifood\"}[$__rate_interval]))",
+          "expr": "avg(rate(http_server_requests_milliseconds_sum{exported_job=\"blifood\"}[$__rate_interval]))\r\n/\r\navg(rate(http_server_requests_milliseconds_count{exported_job=\"blifood\"}[$__rate_interval]))",
           "instant": false,
           "legendFormat": "Average Latency",
           "range": true,
@@ -1215,8 +1242,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   }
                 ]
               }
@@ -1315,8 +1341,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   }
                 ]
               }
@@ -1387,7 +1412,7 @@
           "type": "timeseries"
         }
       ],
-      "title": "Business",
+      "title": "Business Statistics",
       "type": "row"
     },
     {
@@ -1423,7 +1448,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   }
                 ]
               }
@@ -1510,7 +1536,7 @@
             "h": 10,
             "w": 24,
             "x": 0,
-            "y": 31
+            "y": 23
           },
           "id": 20,
           "options": {
@@ -1723,7 +1749,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -1738,7 +1765,7 @@
             "h": 10,
             "w": 24,
             "x": 0,
-            "y": 41
+            "y": 33
           },
           "id": 2,
           "options": {
@@ -1828,7 +1855,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -1843,7 +1871,7 @@
             "h": 11,
             "w": 24,
             "x": 0,
-            "y": 51
+            "y": 43
           },
           "id": 5,
           "options": {
@@ -1881,7 +1909,7 @@
           "type": "timeseries"
         }
       ],
-      "title": "Path Metrics",
+      "title": "Path Statistics",
       "type": "row"
     },
     {
@@ -1933,7 +1961,7 @@
             "h": 8,
             "w": 6,
             "x": 0,
-            "y": 63
+            "y": 24
           },
           "id": 25,
           "options": {
@@ -1992,7 +2020,7 @@
             "h": 8,
             "w": 6,
             "x": 6,
-            "y": 63
+            "y": 24
           },
           "id": 24,
           "options": {
@@ -2098,7 +2126,7 @@
             "h": 8,
             "w": 12,
             "x": 12,
-            "y": 63
+            "y": 24
           },
           "id": 27,
           "options": {
@@ -2133,22 +2161,292 @@
       ],
       "title": "Circuit Breaker",
       "type": "row"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 24
+      },
+      "id": 31,
+      "panels": [
+        {
+          "datasource": {
+            "default": true,
+            "type": "prometheus",
+            "uid": "cdyh0tylop1j4d"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 10,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "none"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 7,
+            "w": 12,
+            "x": 0,
+            "y": 56
+          },
+          "id": 29,
+          "options": {
+            "legend": {
+              "calcs": [
+                "mean",
+                "lastNotNull",
+                "max",
+                "min",
+                "sum"
+              ],
+              "displayMode": "table",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "none"
+            }
+          },
+          "targets": [
+            {
+              "alias": "",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "cdyh0tylop1j4d"
+              },
+              "editorMode": "code",
+              "expr": "sum(rate(logback_events_total{exported_job=\"blifood\", level=\"info\"}[$__rate_interval]))",
+              "format": "time_series",
+              "intervalFactor": 1,
+              "legendFormat": "info",
+              "range": true,
+              "rawSql": "SELECT\n  $__time(time_column),\n  value1\nFROM\n  metric_table\nWHERE\n  $__timeFilter(time_column)\n",
+              "refId": "A"
+            }
+          ],
+          "title": "INFO logs",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "default": true,
+            "type": "prometheus",
+            "uid": "cdyh0tylop1j4d"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 10,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "none"
+            },
+            "overrides": [
+              {
+                "__systemRef": "hideSeriesFrom",
+                "matcher": {
+                  "id": "byNames",
+                  "options": {
+                    "mode": "exclude",
+                    "names": [
+                      "error"
+                    ],
+                    "prefix": "All except:",
+                    "readOnly": true
+                  }
+                },
+                "properties": [
+                  {
+                    "id": "custom.hideFrom",
+                    "value": {
+                      "legend": false,
+                      "tooltip": false,
+                      "viz": true
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "error"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "red",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 7,
+            "w": 12,
+            "x": 12,
+            "y": 56
+          },
+          "id": 30,
+          "options": {
+            "legend": {
+              "calcs": [
+                "mean",
+                "lastNotNull",
+                "max",
+                "min",
+                "sum"
+              ],
+              "displayMode": "table",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "none"
+            }
+          },
+          "targets": [
+            {
+              "alias": "",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "cdyh0tylop1j4d"
+              },
+              "editorMode": "code",
+              "expr": "sum(rate(logback_events_total{exported_job=\"blifood\", level=\"error\"}[$__rate_interval]))",
+              "format": "time_series",
+              "intervalFactor": 1,
+              "legendFormat": "error",
+              "range": true,
+              "rawSql": "SELECT\n  $__time(time_column),\n  value1\nFROM\n  metric_table\nWHERE\n  $__timeFilter(time_column)\n",
+              "refId": "A"
+            }
+          ],
+          "title": "ERROR logs",
+          "type": "timeseries"
+        }
+      ],
+      "title": "Logback Statistics",
+      "type": "row"
     }
   ],
   "refresh": "auto",
   "schemaVersion": 39,
-  "tags": [],
+  "tags": [
+    "blifood"
+  ],
   "templating": {
     "list": []
   },
   "time": {
-    "from": "now-30m",
+    "from": "now-6h",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "browser",
-  "title": "bliFood dashboard Copy",
-  "uid": "fdz74o7lft1j4a",
-  "version": 1,
+  "title": "bliFood dashboard",
+  "uid": "fdyhxq5m2kr28e",
+  "version": 56,
   "weekStart": ""
 }

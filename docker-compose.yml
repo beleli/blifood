@@ -58,7 +58,7 @@ services:
     volumes:
       - ./docker/prometheus:/etc/prometheus
     command:
-      - '--config.file=/etc/prometheus/prometheus.yml'
+      - --config.file=/etc/prometheus/prometheus.yml
     networks:
       - blifood-net
 
@@ -69,7 +69,7 @@ services:
       - "4318:4318"  # Porta para recepção de métricas OTLP
       - "9464:9464"  # Porta para exposição de métricas Prometheus
     command:
-      - '--config=/etc/otel-collector-config.yml'
+      - --config=/etc/otel-collector-config.yml
     volumes:
       - ./docker/opentelemetry/otel-collector-config.yml:/etc/otel-collector-config.yml
     networks:
