@@ -66,6 +66,7 @@ tasks.withType<KotlinCompile> {
 }
 
 tasks.withType<Test> {
+    environment("BLIFOOD_SECRETS_MANAGER_IMPL", "localstack")
     useJUnitPlatform()
 }
 

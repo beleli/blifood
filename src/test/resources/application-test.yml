@@ -11,6 +11,8 @@ spring:
     database-platform: org.hibernate.dialect.H2Dialect
 
 blifood:
+  secrets-manager:
+    impl: ${BLIFOOD_SECRETS_MANAGER_IMPL:localstack}
   email:
     impl: fake
     from: bliFood <noreply@blifood.com.br>

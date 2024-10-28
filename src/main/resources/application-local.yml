@@ -12,6 +12,8 @@ spring:
     locations: classpath:db/migration,classpath:db/testdata
 
 blifood:
+  secrets-manager:
+    impl: ${BLIFOOD_SECRETS_MANAGER_IMPL:localstack}
   email:
     impl: fake
     from: bliFood <noreply@blifood.com.br>

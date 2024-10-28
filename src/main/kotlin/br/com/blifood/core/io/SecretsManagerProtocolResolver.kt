@@ -2,6 +2,7 @@ package br.com.blifood.core.io
 
 import br.com.blifood.core.config.SecretsManagerClientConfig
 import br.com.blifood.core.config.getSecretValue
+import br.com.blifood.core.properties.SecretsManagerProperties
 import org.springframework.boot.context.event.ApplicationContextInitializedEvent
 import org.springframework.context.ApplicationListener
 import org.springframework.core.io.ByteArrayResource
@@ -32,12 +33,8 @@ class SecretsManagerProtocolResolver : ProtocolResolver, ApplicationListener<App
     }
 
     private fun setSecretsManagerClient(): SecretsManagerClient {
-        val profiles = System.getenv()["spring.profiles.active"]?.lowercase()?.split(",")
-        val isLocalProfile = profiles?.any { it == "local" || it == "test" } ?: true
-        return if (isLocalProfile) {
-            SecretsManagerClientConfig().secretsManagerLocal()
-        } else {
-            SecretsManagerClientConfig().secretsManager()
-        }
+        val env = System.getenv()["BLIFOOD_SECRETS_MANAGER_IMPL"]
+        val impl = if (!env.isNullOrEmpty()) SecretsManagerProperties.Impl.valueOf(env.uppercase()) else SecretsManagerProperties.Impl.AWS
+        return SecretsManagerClientConfig.createWithImpl(impl).secretsManager()
     }
 }
