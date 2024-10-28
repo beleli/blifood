@@ -38,7 +38,7 @@ class RestaurantManagerController(
                 restaurantService.findAllManagers(restaurantId).map { it.toModel() }
             )
         } catch (ex: EntityNotFoundException) {
-            throw throw BusinessException(ex.message)
+            throw BusinessException(ex.message)
         } catch (ex: Throwable) {
             throw ex
         }
@@ -56,7 +56,7 @@ class RestaurantManagerController(
             restaurantService.addManager(restaurantId, userId!!)
             return ResponseEntity.noContent().build()
         } catch (ex: EntityNotFoundException) {
-            throw throw BusinessException(ex.message)
+            throw BusinessException(ex.message)
         } catch (ex: Throwable) {
             throw ex
         }
@@ -74,7 +74,7 @@ class RestaurantManagerController(
             restaurantService.removeManager(restaurantId, userId)
             return ResponseEntity.noContent().build()
         } catch (ex: EntityNotFoundException) {
-            throw throw BusinessException(ex.message)
+            throw BusinessException(ex.message)
         } catch (ex: Throwable) {
             throw ex
         }

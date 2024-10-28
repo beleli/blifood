@@ -12,6 +12,8 @@ spring:
     locations: classpath:db/migration,classpath:db/testdata
 
 blifood:
+  secrets-manager:
+    impl: ${BLIFOOD_SECRETS_MANAGER_IMPL:localstack}
   email:
     impl: fake
     from: bliFood <noreply@blifood.com.br>
@@ -23,3 +25,9 @@ blifood:
     jks-location: secretsmanager:local/blifood/jwtKey
     password: secretsmanager:local/blifood/jwtPassword
     keypair-alias: secretsmanager:local/blifood/jwtAlias
+
+management:
+  otlp:
+    metrics:
+      export:
+        url: http://localhost:4318/v1/metrics

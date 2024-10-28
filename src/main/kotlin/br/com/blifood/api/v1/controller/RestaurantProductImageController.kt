@@ -87,7 +87,7 @@ class RestaurantProductImageController(
         return try {
             productService.findOrThrow(restaurantId, productId)
         } catch (ex: EntityNotFoundException) {
-            throw throw BusinessException(ex.message)
+            throw BusinessException(ex.message)
         } catch (ex: Exception) {
             throw ex
         }

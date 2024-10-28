@@ -85,7 +85,7 @@ class OrderController(
         return try {
             orderService.issue(order)
         } catch (ex: EntityNotFoundException) {
-            throw throw BusinessException(ex.message)
+            throw BusinessException(ex.message)
         } catch (ex: Throwable) {
             throw ex
         }

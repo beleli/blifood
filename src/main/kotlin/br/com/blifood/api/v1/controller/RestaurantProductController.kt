@@ -94,7 +94,7 @@ class RestaurantProductController(
         return try {
             productService.save(product)
         } catch (ex: EntityNotFoundException) {
-            throw throw BusinessException(ex.message)
+            throw BusinessException(ex.message)
         } catch (ex: Exception) {
             throw ex
         }

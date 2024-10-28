@@ -42,7 +42,7 @@ class RestaurantPaymentMethodController(
                 PaymentMethodModel.findAllLink(Pageable.ofSize(DEFAULT_PAGE_SIZE), true)
             )
         } catch (ex: EntityNotFoundException) {
-            throw throw BusinessException(ex.message)
+            throw BusinessException(ex.message)
         } catch (ex: Throwable) {
             throw ex
         }
@@ -60,7 +60,7 @@ class RestaurantPaymentMethodController(
             restaurantService.addPaymentMethod(restaurantId, getRequestContextHolderUserId(), paymentMethodId!!)
             return ResponseEntity.noContent().build()
         } catch (ex: EntityNotFoundException) {
-            throw throw BusinessException(ex.message)
+            throw BusinessException(ex.message)
         } catch (ex: Throwable) {
             throw ex
         }
@@ -78,7 +78,7 @@ class RestaurantPaymentMethodController(
             restaurantService.removePaymentMethod(restaurantId, getRequestContextHolderUserId(), paymentMethodId)
             return ResponseEntity.noContent().build()
         } catch (ex: EntityNotFoundException) {
-            throw throw BusinessException(ex.message)
+            throw BusinessException(ex.message)
         } catch (ex: Throwable) {
             throw ex
         }

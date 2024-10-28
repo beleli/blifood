@@ -35,3 +35,12 @@ out/
 
 ### VS Code ###
 .vscode/
+/docker/grafana/grafana.db
+/docker/opentelemetry/hostname
+/docker/opentelemetry/hosts
+/docker/localstack/cache/machine.json
+/docker/opentelemetry/resolv.conf
+/docker/localstack/cache/server.test.pem
+/docker/localstack/cache/server.test.pem.crt
+/docker/localstack/cache/server.test.pem.key
+/docker/localstack/cache/service-catalog-2_2_1_dev-1_31_18.pickle
