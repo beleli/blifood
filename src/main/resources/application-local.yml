@@ -12,6 +12,8 @@ spring:
     locations: classpath:db/migration,classpath:db/testdata
 
 blifood:
+  logging:
+    invalid-requests: true
   secrets-manager:
     impl: ${BLIFOOD_SECRETS_MANAGER_IMPL:localstack}
   email:

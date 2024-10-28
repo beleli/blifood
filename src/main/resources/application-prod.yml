@@ -10,6 +10,8 @@ spring:
     password: test
 
 blifood:
+  logging:
+    invalid-requests: false
   secrets-manager:
     impl: ${BLIFOOD_SECRETS_MANAGER_IMPL:aws}
   email:

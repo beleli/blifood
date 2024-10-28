@@ -13,6 +13,7 @@ import io.micrometer.tracing.Tracer
 import jakarta.validation.ConstraintViolationException
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.mapping.PropertyReferenceException
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
@@ -32,7 +33,11 @@ import org.springframework.web.util.ContentCachingRequestWrapper
 import java.net.URI
 
 @ControllerAdvice
-class ExceptionHandler(private val tracer: Tracer) : ResponseEntityExceptionHandler() {
+class ExceptionHandler(
+    @Value("\${blifood.logging.invalid-requests}")
+    private val logInvalidRequest: Boolean,
+    private val tracer: Tracer
+) : ResponseEntityExceptionHandler() {
 
     private val apiLogger = LoggerFactory.getLogger(this.javaClass)
 
@@ -150,6 +155,7 @@ class ExceptionHandler(private val tracer: Tracer) : ResponseEntityExceptionHand
     }
 
     private fun getRequestBody(request: WebRequest): String {
+        if (!logInvalidRequest) return "not logged"
         val nativeRequest = (request as ServletWebRequest).nativeRequest as ContentCachingRequestWrapper
         return String(nativeRequest.contentAsByteArray).compactJson()
     }
