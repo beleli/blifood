@@ -11,6 +11,8 @@ spring:
     database-platform: org.hibernate.dialect.H2Dialect
 
 blifood:
+  logging:
+    invalid-requests: true
   secrets-manager:
     impl: ${BLIFOOD_SECRETS_MANAGER_IMPL:localstack}
   email:
