@@ -26,7 +26,7 @@ class JwtResourceConfig(private val jwtKeyProvider: JwtKeyProvider) {
     fun resourceServerFilterChain(http: HttpSecurity): SecurityFilterChain {
         return http
             .csrf { it.disable() }
-            .cors { }
+            .cors {}
             .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
             .authorizeHttpRequests {
                 it.requestMatchers(*whiteList).permitAll()

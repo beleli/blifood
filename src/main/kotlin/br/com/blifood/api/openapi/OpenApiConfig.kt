@@ -103,7 +103,7 @@ class OpenApiConfig {
                                 responses.addApiResponse("404", ApiResponse().`$ref`(notFoundResponse))
                             }
 
-                            else -> { }
+                            else -> {}
                         }
                         responses.addApiResponse("500", ApiResponse().`$ref`(internalServerErrorResponse))
                     }

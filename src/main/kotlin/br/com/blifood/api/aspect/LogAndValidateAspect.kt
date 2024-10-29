@@ -38,7 +38,7 @@ class LogAndValidateAspect {
     private val validator = Validation.buildDefaultValidatorFactory().validator
 
     @Pointcut("@annotation(logAnnotation)")
-    fun logMethods(logAnnotation: LogAndValidate) { }
+    fun logMethods(logAnnotation: LogAndValidate) {}
 
     @Before("logMethods(logAnnotation)")
     fun logRequest(joinPoint: JoinPoint, logAnnotation: LogAndValidate) {
