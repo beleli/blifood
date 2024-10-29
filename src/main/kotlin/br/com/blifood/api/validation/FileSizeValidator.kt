@@ -26,6 +26,6 @@ class FileSizeValidator : ConstraintValidator<FileSize, MultipartFile?> {
     }
 
     override fun isValid(value: MultipartFile?, context: ConstraintValidatorContext): Boolean {
-        return if (value == null) true else value.size <= maxSize!!.toBytes()
+        return value?.let { it.size <= maxSize!!.toBytes() } ?: true
     }
 }

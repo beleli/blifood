@@ -36,7 +36,7 @@ interface RestaurantManagerControllerOpenApi {
         restaurantId: Long,
         @Parameter(example = "1", required = true)
         userId: Long?
-    ): ResponseEntity<Void>
+    ): ResponseEntity<Unit>
 
     @Operation(
         summary = "Remove Manager to the Restaurant",
@@ -51,5 +51,5 @@ interface RestaurantManagerControllerOpenApi {
         restaurantId: Long,
         @Parameter(example = "1", required = true)
         userId: Long
-    ): ResponseEntity<Void>
+    ): ResponseEntity<Unit>
 }

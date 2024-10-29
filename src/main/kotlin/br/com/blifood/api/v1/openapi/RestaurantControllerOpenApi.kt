@@ -77,7 +77,7 @@ interface RestaurantControllerOpenApi {
     fun delete(
         @Parameter(example = "1", required = true)
         restaurantId: Long
-    ): ResponseEntity<Void>
+    ): ResponseEntity<Unit>
 
     @Operation(
         summary = "Activate Restaurant by Id",
@@ -90,7 +90,7 @@ interface RestaurantControllerOpenApi {
     fun activate(
         @Parameter(example = "1", required = true)
         restaurantId: Long
-    ): ResponseEntity<Void>
+    ): ResponseEntity<Unit>
 
     @Operation(
         summary = "Inactivate Restaurant by Id",
@@ -103,7 +103,7 @@ interface RestaurantControllerOpenApi {
     fun inactivate(
         @Parameter(example = "1", required = true)
         restaurantId: Long
-    ): ResponseEntity<Void>
+    ): ResponseEntity<Unit>
 
     @Operation(
         summary = "Open Restaurant by Id",
@@ -116,7 +116,7 @@ interface RestaurantControllerOpenApi {
     fun open(
         @Parameter(example = "1", required = true)
         restaurantId: Long
-    ): ResponseEntity<Void>
+    ): ResponseEntity<Unit>
 
     @Operation(
         summary = "Close Restaurant by Id",
@@ -129,5 +129,5 @@ interface RestaurantControllerOpenApi {
     fun close(
         @Parameter(example = "1", required = true)
         restaurantId: Long
-    ): ResponseEntity<Void>
+    ): ResponseEntity<Unit>
 }

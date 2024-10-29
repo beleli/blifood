@@ -36,7 +36,7 @@ interface RestaurantPaymentMethodControllerOpenApi {
         restaurantId: Long,
         @Parameter(example = "1", required = true)
         paymentMethodId: Long?
-    ): ResponseEntity<Void>
+    ): ResponseEntity<Unit>
 
     @Operation(
         summary = "Remove Payment Method to the Restaurant",
@@ -51,5 +51,5 @@ interface RestaurantPaymentMethodControllerOpenApi {
         restaurantId: Long,
         @Parameter(example = "1", required = true)
         paymentMethodId: Long
-    ): ResponseEntity<Void>
+    ): ResponseEntity<Unit>
 }

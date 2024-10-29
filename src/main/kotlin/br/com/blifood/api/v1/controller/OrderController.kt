@@ -58,7 +58,7 @@ class OrderController(
     @PreAuthorize("hasAuthority('${Authority.ORDER_WRITE}')")
     @PutMapping("/{orderCode}/confirm")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    override fun confirm(@PathVariable orderCode: String): ResponseEntity<Void> {
+    override fun confirm(@PathVariable orderCode: String): ResponseEntity<Unit> {
         orderService.confirm(orderCode)
         return ResponseEntity.noContent().build()
     }
@@ -67,7 +67,7 @@ class OrderController(
     @PreAuthorize("hasAuthority('${Authority.ORDER_WRITE}')")
     @PutMapping("/{orderCode}/delivery")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    override fun delivery(@PathVariable orderCode: String): ResponseEntity<Void> {
+    override fun delivery(@PathVariable orderCode: String): ResponseEntity<Unit> {
         orderService.delivery(orderCode)
         return ResponseEntity.noContent().build()
     }
@@ -76,7 +76,7 @@ class OrderController(
     @PreAuthorize("hasAuthority('${Authority.ORDER_WRITE}')")
     @PutMapping("/{orderCode}/cancel")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    override fun cancel(@PathVariable orderCode: String): ResponseEntity<Void> {
+    override fun cancel(@PathVariable orderCode: String): ResponseEntity<Unit> {
         orderService.cancel(orderCode)
         return ResponseEntity.noContent().build()
     }

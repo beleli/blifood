@@ -39,14 +39,14 @@ class RestaurantManagerControllerTest : StringSpec({
     "add should return NO_CONTENT" {
         every { restaurantService.addManager(any(), any()) } answers {}
 
-        val result: ResponseEntity<Void> = controller.add(restaurantId, userId)
+        val result: ResponseEntity<Unit> = controller.add(restaurantId, userId)
         result.statusCode shouldBe HttpStatus.NO_CONTENT
     }
 
     "remove should return NO_CONTENT" {
         every { restaurantService.removeManager(any(), any()) } answers {}
 
-        val result: ResponseEntity<Void> = controller.remove(restaurantId, userId)
+        val result: ResponseEntity<Unit> = controller.remove(restaurantId, userId)
         result.statusCode shouldBe HttpStatus.NO_CONTENT
     }
 })

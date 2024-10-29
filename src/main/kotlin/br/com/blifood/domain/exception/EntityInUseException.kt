@@ -2,7 +2,7 @@ package br.com.blifood.domain.exception
 
 import br.com.blifood.core.message.Messages
 
-open class EntityInUseException(message: String?) : BusinessException(message)
+open class EntityInUseException(message: String) : BusinessException(message)
 
 class StateInUseException(
     message: String = Messages.get("state.inUse")

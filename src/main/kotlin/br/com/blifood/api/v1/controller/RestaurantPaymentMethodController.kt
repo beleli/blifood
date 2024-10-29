@@ -55,7 +55,7 @@ class RestaurantPaymentMethodController(
     override fun add(
         @PathVariable restaurantId: Long,
         @PathVariable paymentMethodId: Long?
-    ): ResponseEntity<Void> {
+    ): ResponseEntity<Unit> {
         try {
             restaurantService.addPaymentMethod(restaurantId, getRequestContextHolderUserId(), paymentMethodId!!)
             return ResponseEntity.noContent().build()
@@ -73,7 +73,7 @@ class RestaurantPaymentMethodController(
     override fun remove(
         @PathVariable restaurantId: Long,
         @PathVariable paymentMethodId: Long
-    ): ResponseEntity<Void> {
+    ): ResponseEntity<Unit> {
         try {
             restaurantService.removePaymentMethod(restaurantId, getRequestContextHolderUserId(), paymentMethodId)
             return ResponseEntity.noContent().build()

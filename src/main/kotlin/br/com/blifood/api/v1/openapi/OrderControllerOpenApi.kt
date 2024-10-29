@@ -50,7 +50,7 @@ interface OrderControllerOpenApi {
     fun confirm(
         @PathVariable
         orderCode: String
-    ): ResponseEntity<Void>
+    ): ResponseEntity<Unit>
 
     @Operation(
         summary = "Delivery Order by Code",
@@ -63,7 +63,7 @@ interface OrderControllerOpenApi {
     fun delivery(
         @PathVariable
         orderCode: String
-    ): ResponseEntity<Void>
+    ): ResponseEntity<Unit>
 
     @Operation(
         summary = "Cancel Order by Code",
@@ -76,5 +76,5 @@ interface OrderControllerOpenApi {
     fun cancel(
         @PathVariable
         orderCode: String
-    ): ResponseEntity<Void>
+    ): ResponseEntity<Unit>
 }

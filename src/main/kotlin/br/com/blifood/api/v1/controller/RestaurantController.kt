@@ -86,7 +86,7 @@ class RestaurantController(
     @PreAuthorize("hasAuthority('${Authority.RESTAURANT_WRITE}')")
     @DeleteMapping("/{restaurantId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    override fun delete(@PathVariable restaurantId: Long): ResponseEntity<Void> {
+    override fun delete(@PathVariable restaurantId: Long): ResponseEntity<Unit> {
         restaurantService.delete(restaurantId, getRequestContextHolderUserId())
         return ResponseEntity.noContent().build()
     }
@@ -95,7 +95,7 @@ class RestaurantController(
     @PreAuthorize("hasAuthority('${Authority.RESTAURANT_WRITE}')")
     @PutMapping("/{restaurantId}/activate")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    override fun activate(@PathVariable restaurantId: Long): ResponseEntity<Void> {
+    override fun activate(@PathVariable restaurantId: Long): ResponseEntity<Unit> {
         restaurantService.activate(restaurantId, getRequestContextHolderUserId())
         return ResponseEntity.noContent().build()
     }
@@ -104,7 +104,7 @@ class RestaurantController(
     @PreAuthorize("hasAuthority('${Authority.RESTAURANT_WRITE}')")
     @PutMapping("/{restaurantId}/inactivate")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    override fun inactivate(@PathVariable restaurantId: Long): ResponseEntity<Void> {
+    override fun inactivate(@PathVariable restaurantId: Long): ResponseEntity<Unit> {
         restaurantService.inactivate(restaurantId, getRequestContextHolderUserId())
         return ResponseEntity.noContent().build()
     }
@@ -113,7 +113,7 @@ class RestaurantController(
     @PreAuthorize("hasAuthority('${Authority.RESTAURANT_WRITE}')")
     @PutMapping("/{restaurantId}/open")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    override fun open(@PathVariable restaurantId: Long): ResponseEntity<Void> {
+    override fun open(@PathVariable restaurantId: Long): ResponseEntity<Unit> {
         restaurantService.open(restaurantId, getRequestContextHolderUserId())
         return ResponseEntity.noContent().build()
     }
@@ -122,7 +122,7 @@ class RestaurantController(
     @PreAuthorize("hasAuthority('${Authority.RESTAURANT_WRITE}')")
     @PutMapping("/{restaurantId}/close")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    override fun close(@PathVariable restaurantId: Long): ResponseEntity<Void> {
+    override fun close(@PathVariable restaurantId: Long): ResponseEntity<Unit> {
         restaurantService.close(restaurantId, getRequestContextHolderUserId())
         return ResponseEntity.noContent().build()
     }

@@ -51,7 +51,7 @@ class RestaurantManagerController(
     override fun add(
         @PathVariable restaurantId: Long,
         @PathVariable userId: Long?
-    ): ResponseEntity<Void> {
+    ): ResponseEntity<Unit> {
         try {
             restaurantService.addManager(restaurantId, userId!!)
             return ResponseEntity.noContent().build()
@@ -69,7 +69,7 @@ class RestaurantManagerController(
     override fun remove(
         @PathVariable restaurantId: Long,
         @PathVariable userId: Long
-    ): ResponseEntity<Void> {
+    ): ResponseEntity<Unit> {
         try {
             restaurantService.removeManager(restaurantId, userId)
             return ResponseEntity.noContent().build()

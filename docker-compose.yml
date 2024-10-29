@@ -16,6 +16,20 @@ services:
     networks:
       - blifood-net
 
+  sonarqube:
+    image: sonarqube:community
+    container_name: sonarqube
+    ports:
+      - "9000:9000"
+    environment:
+      SONAR_JDBC_URL: jdbc:postgresql://psql:5432/postgresDb
+      SONAR_JDBC_USERNAME: postgresUser
+      SONAR_JDBC_PASSWORD: postgresPassword
+    depends_on:
+      - psql
+    networks:
+      - blifood-net
+
   localstack:
     image: localstack/localstack
     container_name: blifood-localstack

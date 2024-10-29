@@ -39,14 +39,14 @@ class RestaurantPaymentMethodControllerTest : StringSpec({
     "add should return NO_CONTENT" {
         every { restaurantService.addPaymentMethod(any(), any(), any()) } answers {}
 
-        val result: ResponseEntity<Void> = controller.add(restaurantId, paymentMethodId)
+        val result: ResponseEntity<Unit> = controller.add(restaurantId, paymentMethodId)
         result.statusCode shouldBe HttpStatus.NO_CONTENT
     }
 
     "remove should return NO_CONTENT" {
         every { restaurantService.removePaymentMethod(any(), any(), any()) } answers {}
 
-        val result: ResponseEntity<Void> = controller.remove(restaurantId, paymentMethodId)
+        val result: ResponseEntity<Unit> = controller.remove(restaurantId, paymentMethodId)
         result.statusCode shouldBe HttpStatus.NO_CONTENT
     }
 })
