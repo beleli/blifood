@@ -16,6 +16,11 @@ blifood:
     invalid-requests: true
   secrets-manager:
     impl: ${BLIFOOD_SECRETS_MANAGER_IMPL:localstack}
+  cache:
+    type: redis
+    redis:
+      host: localhost
+      port: 6379
   email:
     impl: fake
     from: bliFood <noreply@blifood.com.br>

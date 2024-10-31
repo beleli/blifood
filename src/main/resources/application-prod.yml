@@ -14,6 +14,11 @@ blifood:
     invalid-requests: false
   secrets-manager:
     impl: ${BLIFOOD_SECRETS_MANAGER_IMPL:aws}
+  cache:
+    impl: redis
+    redis:
+      host: localhost
+      port: 6379
   email:
     impl: smtp
   storage:

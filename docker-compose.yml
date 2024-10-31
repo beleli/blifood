@@ -16,6 +16,16 @@ services:
     networks:
       - blifood-net
 
+  redis:
+    image: redis
+    container_name: blifood-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./docker/redis:/data
+    networks:
+      - blifood-net
+
   sonarqube:
     image: sonarqube:community
     container_name: sonarqube
