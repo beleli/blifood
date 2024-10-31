@@ -25,7 +25,7 @@ class FileContentTypeValidator : ConstraintValidator<FileContentType, MultipartF
         allowedContentTypes.addAll(constraint.allowed.toSet())
     }
 
-    override fun isValid(multipartFile: MultipartFile?, context: ConstraintValidatorContext): Boolean {
-        return (multipartFile == null || allowedContentTypes.contains(multipartFile.contentType))
+    override fun isValid(value: MultipartFile?, context: ConstraintValidatorContext): Boolean {
+        return value?.let { allowedContentTypes.contains(it.contentType) } ?: true
     }
 }

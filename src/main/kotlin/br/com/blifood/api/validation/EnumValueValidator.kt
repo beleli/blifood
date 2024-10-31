@@ -26,6 +26,6 @@ class EnumValueValidator : ConstraintValidator<EnumValue, String> {
     }
 
     override fun isValid(value: String?, context: ConstraintValidatorContext): Boolean {
-        return (value == null || allowedValues.contains(value.uppercase()))
+        return value?.let { allowedValues.contains(it.uppercase()) } ?: true
     }
 }

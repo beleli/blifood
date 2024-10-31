@@ -44,6 +44,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-freemarker")
     implementation("org.springframework.boot:spring-boot-starter-hateoas")
     implementation("org.springframework.boot:spring-boot-starter-security")
+    implementation("org.springframework.boot:spring-boot-starter-data-redis")
     implementation("io.micrometer:micrometer-tracing-bridge-brave:$micrometerTracingVersion")
     implementation("io.micrometer:micrometer-registry-otlp:$micrometerRegistryOtlpVersion")
 
@@ -95,7 +96,7 @@ configure<KtlintExtension> {
 
 sonarqube {
     properties {
-        property("sonar.projectKey", "blifood-api") // Substitua pelo nome do seu projeto
+        property("sonar.projectKey", "blifood-api")
         property("sonar.host.url", "http://localhost:9000")
         property("sonar.token", "sqp_f60225cd023d93ebe360dccc87f93b1097c90355")
     }

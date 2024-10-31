@@ -1,6 +1,7 @@
 package br.com.blifood.api.v1.controller
 
 import br.com.blifood.api.aspect.LogAndValidate
+import br.com.blifood.api.aspect.RateLimit
 import br.com.blifood.api.security.JwtKeyProvider
 import br.com.blifood.api.v1.model.LoginModel
 import br.com.blifood.api.v1.model.input.LoginInputModel
@@ -25,6 +26,7 @@ class LoginController(
     private val jwtKeyProvider: JwtKeyProvider
 ) : LoginControllerOpenApi {
 
+    @RateLimit(maxRequests = 10, timeValue = 5)
     @LogAndValidate(logResponse = false)
     @PostMapping
     override fun login(

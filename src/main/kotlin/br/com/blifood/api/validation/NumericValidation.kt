@@ -19,6 +19,6 @@ class NumericValidator : ConstraintValidator<NumericValue, String> {
     private val regex = "^[0-9]+(\\.[0-9]+)?$".toRegex()
 
     override fun isValid(value: String?, context: ConstraintValidatorContext): Boolean {
-        return (value == null || regex.matches(value))
+        return value?.let { regex.matches(it) } ?: true
     }
 }

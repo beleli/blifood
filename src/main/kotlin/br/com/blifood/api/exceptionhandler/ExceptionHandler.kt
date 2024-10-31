@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.context.request.ServletWebRequest
 import org.springframework.web.context.request.WebRequest
+import org.springframework.web.server.ResponseStatusException
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler
 import org.springframework.web.util.ContentCachingRequestWrapper
 import java.net.URI
@@ -55,6 +56,11 @@ class ExceptionHandler(
     @ExceptionHandler(AccessDeniedException::class)
     fun handleAccessDeniedException(ex: AccessDeniedException, request: WebRequest): ResponseEntity<Any>? {
         return this.handleExceptionInternal(ex, null, HttpHeaders(), HttpStatus.FORBIDDEN, request)
+    }
+
+    @ExceptionHandler(ResponseStatusException::class)
+    fun handleResponseStatusException(ex: ResponseStatusException, request: WebRequest): ResponseEntity<Any>? {
+        return this.handleExceptionInternal(ex, ex.reason, HttpHeaders(), ex.statusCode, request)
     }
 
     @ExceptionHandler(EntityNotFoundException::class)
@@ -126,8 +132,8 @@ class ExceptionHandler(
         request: WebRequest
     ): ResponseEntity<Any>? {
         val newBody = when (body) {
-            null -> buildProblem(statusCode, ex.localizedMessage, request)
             is String -> buildProblem(statusCode, body, request)
+            null -> buildProblem(statusCode, ex.localizedMessage, request)
             else -> body
         }
         apiLogger.logErrorResponse(statusCode.value(), newBody)

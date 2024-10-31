@@ -37,11 +37,11 @@ class LogAndValidateAspect {
     private val loggers = mutableMapOf<Class<*>, Logger>()
     private val validator = Validation.buildDefaultValidatorFactory().validator
 
-    @Pointcut("@annotation(logAnnotation)")
-    fun logMethods(logAnnotation: LogAndValidate) {}
+    @Pointcut("@annotation(logAndValidate)")
+    fun logMethods(logAndValidate: LogAndValidate) {}
 
-    @Before("logMethods(logAnnotation)")
-    fun logRequest(joinPoint: JoinPoint, logAnnotation: LogAndValidate) {
+    @Before("logMethods(logAndValidate)")
+    fun logRequest(joinPoint: JoinPoint, logAndValidate: LogAndValidate) {
         val request = (RequestContextHolder.getRequestAttributes() as ServletRequestAttributes).request
         val requestBody = getRequestBody(joinPoint)
         if (requestBody == null) {
@@ -50,15 +50,15 @@ class LogAndValidateAspect {
             getLogger(joinPoint).info("request userId:${request.getUserId()}, uri:${request.requestURI}, httpMethod:${request.method}, $log}")
         } else {
             getLogger(joinPoint).info("request userId:${request.getUserId()}, uri:${request.requestURI}, httpMethod:${request.method}, body:${requestBody.toJsonLog()}")
-            if (logAnnotation.validateRequest) validateRequestBody(requestBody, *logAnnotation.validationGroups)
+            if (logAndValidate.validateRequest) validateRequestBody(requestBody, *logAndValidate.validationGroups)
         }
     }
 
-    @AfterReturning(value = "logMethods(logAnnotation)", returning = "returnValue")
-    fun logResponse(joinPoint: JoinPoint, logAnnotation: LogAndValidate, returnValue: Any?) {
+    @AfterReturning(value = "logMethods(logAndValidate)", returning = "returnValue")
+    fun logResponse(joinPoint: JoinPoint, logAndValidate: LogAndValidate, returnValue: Any?) {
         val status = if (returnValue is ResponseEntity<*>) returnValue.statusCode.value() else getResponseStatus(joinPoint)
         val body = if (returnValue is ResponseEntity<*>) returnValue.body else returnValue
-        getLogger(joinPoint).info("response httpStatus:$status, body:${if (logAnnotation.logResponse) body?.toJsonLog() else "not logged"}")
+        getLogger(joinPoint).info("response httpStatus:$status, body:${if (logAndValidate.logResponse) body?.toJsonLog() else "not logged"}")
     }
 
     private fun getLogger(joinPoint: JoinPoint): Logger {
