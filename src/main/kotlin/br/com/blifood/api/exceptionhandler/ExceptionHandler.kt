@@ -6,6 +6,7 @@ import br.com.blifood.core.log.compactJson
 import br.com.blifood.core.log.toJsonLog
 import br.com.blifood.core.message.Messages
 import br.com.blifood.domain.exception.BusinessException
+import br.com.blifood.domain.exception.EntityAlreadyExistsException
 import br.com.blifood.domain.exception.EntityNotFoundException
 import br.com.blifood.domain.exception.UserNotAuthorizedException
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException
@@ -71,6 +72,11 @@ class ExceptionHandler(
     @ExceptionHandler(UserNotAuthorizedException::class)
     fun handleUserNotAuthorizedException(ex: UserNotAuthorizedException, request: WebRequest): ResponseEntity<Any>? {
         return this.handleExceptionInternal(ex, null, HttpHeaders(), HttpStatus.FORBIDDEN, request)
+    }
+
+    @ExceptionHandler(EntityAlreadyExistsException::class)
+    fun handleEntityAlreadyExistsException(ex: EntityAlreadyExistsException, request: WebRequest): ResponseEntity<Any>? {
+        return this.handleExceptionInternal(ex, null, HttpHeaders(), HttpStatus.CONFLICT, request)
     }
 
     @ExceptionHandler(BusinessException::class)
@@ -152,7 +158,7 @@ class ExceptionHandler(
             detail = message,
             instance = URI.create((request as ServletWebRequest).request.requestURI),
             traceId = tracer.currentTraceContext().context()?.traceId(),
-            errors = fieldErrors
+            errors = fieldErrors.takeIf { it?.isNotEmpty() ?: false }
         )
     }
 

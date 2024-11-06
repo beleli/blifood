@@ -7,7 +7,7 @@ spring:
     username: local/blifood/databaseUser
     password: local/blifood/databasePassword
   jpa:
-    show-sql: false
+    show-sql: true
   flyway:
     locations: classpath:db/migration,classpath:db/testdata
 
