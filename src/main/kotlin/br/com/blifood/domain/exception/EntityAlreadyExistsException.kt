@@ -5,29 +5,29 @@ import br.com.blifood.core.message.Messages
 open class EntityAlreadyExistsException(message: String) : BusinessException(message)
 
 class StateAlreadyExistsException(
-    message: String = Messages.get("state.alreadyExists")
+    message: String = Messages.get("state.already-exists")
 ) : EntityAlreadyExistsException(message)
 
 class CityAlreadyExistsException(
-    message: String = Messages.get("city.alreadyExists")
+    message: String = Messages.get("city.already-exists")
 ) : EntityAlreadyExistsException(message)
 
 class CulinaryAlreadyExistsException(
-    message: String = Messages.get("culinary.alreadyExists")
+    message: String = Messages.get("culinary.already-exists")
 ) : EntityAlreadyExistsException(message)
 
 class PaymentMethodAlreadyExistsException(
-    message: String = Messages.get("paymentMethod.alreadyExists")
+    message: String = Messages.get("payment-method.already-exists")
 ) : EntityAlreadyExistsException(message)
 
 class RestaurantAlreadyExistsException(
-    message: String = Messages.get("restaurant.alreadyExists")
+    message: String = Messages.get("restaurant.already-exists")
 ) : EntityAlreadyExistsException(message)
 
 class ProductAlreadyExistsException(
-    message: String = Messages.get("product.alreadyExists")
+    message: String = Messages.get("product.already-exists")
 ) : EntityAlreadyExistsException(message)
 
 class UserAlreadyExistsException(
-    message: String = Messages.get("user.alreadyExists")
+    message: String = Messages.get("user.already-exists")
 ) : EntityAlreadyExistsException(message)

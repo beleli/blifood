@@ -43,7 +43,7 @@ class SmtpEmailAdapterTest : StringSpec({
 
         val exception = shouldThrow<EmailException> { smtpEmailAdapter.send(message) }
 
-        exception shouldBe EmailException(Messages.get("email.sendException"))
+        exception shouldBe EmailException(Messages.get("email.send-exception"))
         verify { mailSender.send(mimeMessage) }
     }
 })

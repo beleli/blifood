@@ -9,7 +9,7 @@ import kotlin.reflect.KClass
 @Target(AnnotationTarget.FIELD, AnnotationTarget.PROPERTY)
 @Constraint(validatedBy = [NumericValidator::class])
 annotation class NumericValue(
-    val message: String = "numericValue.invalid",
+    val message: String = "validation.numeric-value.invalid",
     val groups: Array<KClass<*>> = [],
     val payload: Array<KClass<out Payload>> = []
 )

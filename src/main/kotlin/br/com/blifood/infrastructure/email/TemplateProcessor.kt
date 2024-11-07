@@ -17,7 +17,7 @@ class TemplateProcessor(
             val template: Template = freemarkerConfig.getTemplate(templateName)
             FreeMarkerTemplateUtils.processTemplateIntoString(template, variables)
         } catch (cause: Throwable) {
-            throw EmailException(Messages.get("email.templateException"), cause)
+            throw EmailException(Messages.get("email.template-exception"), cause)
         }
     }
 }

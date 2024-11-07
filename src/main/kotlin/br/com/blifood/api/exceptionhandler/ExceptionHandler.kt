@@ -46,12 +46,12 @@ class ExceptionHandler(
     @ExceptionHandler(Exception::class)
     fun handleUncaughtException(ex: Exception, request: WebRequest): ResponseEntity<Any>? {
         apiLogger.error(ex.message, ex)
-        return this.handleExceptionInternal(ex, Messages.get("system.unscathedException"), HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request)
+        return this.handleExceptionInternal(ex, Messages.get("api.unscathed-exception"), HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request)
     }
 
     @ExceptionHandler(PropertyReferenceException::class)
     fun handlePropertyReferenceException(ex: PropertyReferenceException, request: WebRequest): ResponseEntity<Any>? {
-        return this.handleExceptionInternal(ex, Messages.get("system.propertyReferenceException"), HttpHeaders(), HttpStatus.BAD_REQUEST, request)
+        return this.handleExceptionInternal(ex, Messages.get("api.property-reference-exception"), HttpHeaders(), HttpStatus.BAD_REQUEST, request)
     }
 
     @ExceptionHandler(AccessDeniedException::class)
@@ -90,7 +90,7 @@ class ExceptionHandler(
         ex.constraintViolations.map {
             errors.add(ApiFieldError(it.propertyPath.toString(), Messages.get(it.message)))
         }
-        val problemDetail = buildProblem(HttpStatus.BAD_REQUEST, Messages.get("validation.failed"), request, errors)
+        val problemDetail = buildProblem(HttpStatus.BAD_REQUEST, Messages.get("api.validation-exception"), request, errors)
         return this.handleExceptionInternal(ex, problemDetail, HttpHeaders(), HttpStatus.BAD_REQUEST, request)
     }
 
@@ -109,7 +109,7 @@ class ExceptionHandler(
                 else -> {}
             }
         }
-        val problemDetail = buildProblem(HttpStatus.BAD_REQUEST, message = Messages.get("validation.failed"), request, errors)
+        val problemDetail = buildProblem(HttpStatus.BAD_REQUEST, message = Messages.get("api.validation-exception"), request, errors)
         return this.handleExceptionInternal(ex, problemDetail, headers, status, request)
     }
 
@@ -123,10 +123,10 @@ class ExceptionHandler(
         val errors = mutableSetOf<ApiFieldError>()
         val rootCause = ex.rootCause
         when (rootCause) {
-            is UnrecognizedPropertyException -> errors.add(ApiFieldError(rootCause.propertyName, Messages.get("unrecognized.field")))
+            is UnrecognizedPropertyException -> errors.add(ApiFieldError(rootCause.propertyName, Messages.get("api.unrecognized-field-exception")))
             else -> {}
         }
-        val problemDetail = buildProblem(HttpStatus.BAD_REQUEST, message = Messages.get("readRequest.failed"), request, errors)
+        val problemDetail = buildProblem(HttpStatus.BAD_REQUEST, message = Messages.get("api.read-request-exception"), request, errors)
         return this.handleExceptionInternal(Exception(rootCause), problemDetail, headers, status, request)
     }
 

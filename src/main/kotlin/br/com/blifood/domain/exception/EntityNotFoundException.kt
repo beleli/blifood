@@ -5,37 +5,37 @@ import br.com.blifood.core.message.Messages
 open class EntityNotFoundException(message: String) : BusinessException(message)
 
 class StateNotFoundException(
-    message: String = Messages.get("state.notFound")
+    message: String = Messages.get("state.not-found")
 ) : EntityNotFoundException(message)
 
 class CityNotFoundException(
-    message: String = Messages.get("city.notFound")
+    message: String = Messages.get("city.not-found")
 ) : EntityNotFoundException(message)
 
 class CulinaryNotFoundException(
-    message: String = Messages.get("culinary.notFound")
+    message: String = Messages.get("culinary.not-found")
 ) : EntityNotFoundException(message)
 
 class PaymentTypeNotFoundException(
-    message: String = Messages.get("paymentMethod.notFound")
+    message: String = Messages.get("payment-method.not-found")
 ) : EntityNotFoundException(message)
 
 class RestaurantNotFoundException(
-    message: String = Messages.get("restaurant.notFound")
+    message: String = Messages.get("restaurant.not-found")
 ) : EntityNotFoundException(message)
 
 class ProductNotFoundException(
-    message: String = Messages.get("product.notFound")
+    message: String = Messages.get("product.not-found")
 ) : EntityNotFoundException(message)
 
 class ProductImageNotFoundException(
-    message: String = Messages.get("productImage.notFound")
+    message: String = Messages.get("product-image.not-found")
 ) : EntityNotFoundException(message)
 
 class UserNotFoundException(
-    message: String = Messages.get("user.notFound")
+    message: String = Messages.get("user.not-found")
 ) : EntityNotFoundException(message)
 
 class OrderNotFoundException(
-    message: String = Messages.get("order.notFound")
+    message: String = Messages.get("order.not-found")
 ) : EntityNotFoundException(message)

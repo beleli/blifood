@@ -11,7 +11,7 @@ import kotlin.reflect.KClass
 @Target(AnnotationTarget.FIELD, AnnotationTarget.PROPERTY)
 @Constraint(validatedBy = [FileSizeValidator::class])
 annotation class FileSize(
-    val message: String = "fileSize.invalid",
+    val message: String = "validation.file-size.invalid",
     val groups: Array<KClass<*>> = [],
     val payload: Array<KClass<out Payload>> = [],
     val max: String = "1MB"

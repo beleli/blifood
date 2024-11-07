@@ -19,7 +19,7 @@ class SmtpEmailAdapter(
         runCatching {
             mailSender.send(mimeMessage)
         }.onFailure {
-            throw EmailException(Messages.get("email.sendException"), it)
+            throw EmailException(Messages.get("email.send-exception"), it)
         }
     }
 

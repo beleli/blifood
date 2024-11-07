@@ -44,7 +44,7 @@ class RateLimitAspect(
         requestInfo?.let {
             validRequests.addAll(it.requests.filter { requestEpoch -> requestEpoch >= (currentTime - periodInSeconds) })
             if (validRequests.count() > rateLimit.maxRequests) {
-                throw ResponseStatusException(HttpStatus.TOO_MANY_REQUESTS, Messages.get("system.rateLimitException"))
+                throw ResponseStatusException(HttpStatus.TOO_MANY_REQUESTS, Messages.get("api.rate-limit-exception"))
             }
         }
         cacheService.setKey(key, RequestInfo(validRequests), Duration.ofSeconds(periodInSeconds))

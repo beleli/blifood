@@ -28,7 +28,7 @@ class S3ImageStorageAdapter(
             ).withCannedAcl(CannedAccessControlList.PublicRead)
             amazonS3.putObject(putObjectRequest)
         }.onFailure {
-            throw StorageException(Messages.get("productImage.uploadException"), it)
+            throw StorageException(Messages.get("product-image.upload-exception"), it)
         }
     }
 
@@ -37,7 +37,7 @@ class S3ImageStorageAdapter(
             val deleteObjectRequest = DeleteObjectRequest(bucket, fullPath(fileName))
             amazonS3.deleteObject(deleteObjectRequest)
         }.onFailure {
-            throw StorageException(Messages.get("productImage.removeException"), it)
+            throw StorageException(Messages.get("product-image.remove-exception"), it)
         }
     }
 

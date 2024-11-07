@@ -40,6 +40,6 @@ class TemplateProcessorTest : StringSpec({
 
         val exception = shouldThrow<EmailException> { templateProcessor.processTemplate(templateName, variables) }
 
-        exception shouldBe EmailException(Messages.get("email.templateException"))
+        exception shouldBe EmailException(Messages.get("email.template-exception"))
     }
 })

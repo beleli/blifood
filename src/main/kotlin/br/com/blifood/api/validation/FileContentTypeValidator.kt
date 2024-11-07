@@ -11,7 +11,7 @@ import kotlin.reflect.KClass
 @Retention(AnnotationRetention.RUNTIME)
 @Constraint(validatedBy = [FileContentTypeValidator::class])
 annotation class FileContentType(
-    val message: String = "fileContentType.invalid",
+    val message: String = "validation.file-content-type.invalid",
     val groups: Array<KClass<*>> = [],
     val payload: Array<KClass<out Payload>> = [],
     val allowed: Array<String>

@@ -16,7 +16,7 @@ class LocalImageStorageAdapter(
             val path = Path.of(path, image.fileName)
             image.inputStream.copyTo(Files.newOutputStream(path))
         }.onFailure {
-            throw StorageException(Messages.get("productImage.uploadException"), it)
+            throw StorageException(Messages.get("product-image.upload-exception"), it)
         }
     }
 
@@ -25,7 +25,7 @@ class LocalImageStorageAdapter(
             val path = Path.of(path, fileName)
             Files.deleteIfExists(path)
         }.onFailure {
-            throw StorageException(Messages.get("productImage.removeException"), it)
+            throw StorageException(Messages.get("product-image.remove-exception"), it)
         }
     }
 

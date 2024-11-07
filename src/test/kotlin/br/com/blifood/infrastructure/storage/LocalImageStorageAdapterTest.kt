@@ -32,7 +32,7 @@ class LocalImageStorageAdapterTest : StringSpec({
         val localAdapterWithInvalidPath = LocalImageStorageAdapter(invalidDir.absolutePath)
 
         val exception = shouldThrow<StorageException> { localAdapterWithInvalidPath.upload(image) }
-        exception.message shouldBe Messages.get("productImage.uploadException")
+        exception.message shouldBe Messages.get("product-image.upload-exception")
     }
 
     "should remove image successfully" {

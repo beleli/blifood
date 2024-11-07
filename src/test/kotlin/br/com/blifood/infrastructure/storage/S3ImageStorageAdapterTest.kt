@@ -38,7 +38,7 @@ class S3ImageStorageAdapterTest : StringSpec({
         every { amazonS3.putObject(any<PutObjectRequest>()) } throws RuntimeException("Failed to upload")
 
         val exception = shouldThrow<StorageException> { s3ImageStorageAdapter.upload(image) }
-        exception.message shouldBe Messages.get("productImage.uploadException")
+        exception.message shouldBe Messages.get("product-image.upload-exception")
     }
 
     "should remove image successfully" {
@@ -53,7 +53,7 @@ class S3ImageStorageAdapterTest : StringSpec({
         every { amazonS3.deleteObject(any<DeleteObjectRequest>()) } throws RuntimeException("Failed to delete")
 
         val exception = shouldThrow<StorageException> { s3ImageStorageAdapter.remove(fileName) }
-        exception.message shouldBe Messages.get("productImage.removeException")
+        exception.message shouldBe Messages.get("product-image.remove-exception")
     }
 
     "should recover image successfully" {
