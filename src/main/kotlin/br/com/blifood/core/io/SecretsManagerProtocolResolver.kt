@@ -1,6 +1,6 @@
 package br.com.blifood.core.io
 
-import br.com.blifood.core.config.SecretsManagerClientConfig
+import br.com.blifood.core.config.SecretsManagerConfig
 import br.com.blifood.core.config.getSecretValue
 import br.com.blifood.core.properties.SecretsManagerProperties
 import org.springframework.boot.context.event.ApplicationContextInitializedEvent
@@ -35,6 +35,6 @@ class SecretsManagerProtocolResolver : ProtocolResolver, ApplicationListener<App
     private fun setSecretsManagerClient(): SecretsManagerClient {
         val env = System.getenv()["BLIFOOD_SECRETS_MANAGER_IMPL"]
         val impl = if (!env.isNullOrEmpty()) SecretsManagerProperties.Impl.valueOf(env.uppercase()) else SecretsManagerProperties.Impl.AWS
-        return SecretsManagerClientConfig.createWithImpl(impl).secretsManager()
+        return SecretsManagerConfig.createWithImpl(impl).secretsManager()
     }
 }

@@ -1,6 +1,7 @@
 package br.com.blifood.core.log
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import java.time.OffsetDateTime
 import kotlin.reflect.KProperty1
 import kotlin.reflect.full.declaredMemberProperties
@@ -31,7 +32,7 @@ fun Any.toLog(): String {
 fun Any.toJsonLog(): String {
     val propertiesMap = this.getProperties { it?.toJsonLog() }
     val propertiesJsonMap = propertiesMap.map { (prop, value) -> prop.name to value }.toMap()
-    return jacksonObjectMapper().writeValueAsString(propertiesJsonMap)
+    return jacksonObjectMapper().registerKotlinModule().writeValueAsString(propertiesJsonMap)
         .replace("\"{", "{")
         .replace("}\"", "}")
         .replace("\\\"", "\"")

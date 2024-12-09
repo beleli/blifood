@@ -1,6 +1,8 @@
 package br.com.blifood.core.config
 
 import br.com.blifood.core.properties.SecretsManagerProperties
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials
@@ -10,13 +12,13 @@ import software.amazon.awssdk.services.secretsmanager.model.GetSecretValueReques
 import java.net.URI
 
 @Configuration
-class SecretsManagerClientConfig(
+class SecretsManagerConfig(
     private val secretsManagerProperties: SecretsManagerProperties
 ) {
 
     companion object {
-        fun createWithImpl(impl: SecretsManagerProperties.Impl): SecretsManagerClientConfig {
-            return SecretsManagerClientConfig(SecretsManagerProperties(impl))
+        fun createWithImpl(impl: SecretsManagerProperties.Impl): SecretsManagerConfig {
+            return SecretsManagerConfig(SecretsManagerProperties(impl))
         }
     }
 
@@ -45,4 +47,8 @@ fun SecretsManagerClient.getSecretValue(secretName: String): String {
     val valueRequest = GetSecretValueRequest.builder().secretId(secretName).build()
     val response = this.getSecretValue(valueRequest)
     return response.secretString()
+}
+
+fun <T> SecretsManagerClient.getSecretValue(secretName: String, clazz: Class<T>): T? {
+    return jacksonObjectMapper().registerKotlinModule().readValue(this.getSecretValue(secretName), clazz)
 }
