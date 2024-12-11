@@ -31,7 +31,9 @@ class RateLimitAspect(
 ) {
 
     @Pointcut("@annotation(rateLimit)")
-    fun validateMethod(rateLimit: RateLimit) {}
+    fun validateMethod(rateLimit: RateLimit) {
+        // Pointcut definition
+    }
 
     @Before("validateMethod(rateLimit)")
     fun checkRateLimit(joinPoint: JoinPoint, rateLimit: RateLimit) {

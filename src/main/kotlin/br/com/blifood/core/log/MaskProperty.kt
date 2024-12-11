@@ -42,14 +42,20 @@ private fun Any.getProperties(logFunction: (Any?) -> String?): Map<KProperty1<ou
     val propertiesMap = this::class.declaredMemberProperties
         .associateWith { prop ->
             val value = prop.getter.call(this)
-            if (value is Iterable<*>) {
-                value.map { logFunction(it) }
-            } else if (value?.javaClass?.name?.startsWith(APPLICATION_PACKAGED) == true) {
-                if (prop.returnType.isSubtypeOf(Enum::class.starProjectedType)) value.toString() else logFunction(value)
-            } else if (prop.annotations.any { it is MaskProperty }) {
-                value.toString().applyMask(prop.findAnnotation<MaskProperty>()!!.format)
-            } else {
-                if (value is OffsetDateTime) value.toString() else value
+            when {
+                value is Iterable<*> -> value.map { logFunction(it) }
+                value?.javaClass?.name?.startsWith(APPLICATION_PACKAGED) == true -> {
+                    if (prop.returnType.isSubtypeOf(Enum::class.starProjectedType)) {
+                        value.toString()
+                    } else {
+                        logFunction(value)
+                    }
+                }
+                prop.annotations.any { it is MaskProperty } -> {
+                    value.toString().applyMask(prop.findAnnotation<MaskProperty>()!!.format)
+                }
+                value is OffsetDateTime -> value.toString()
+                else -> value
             }
         }
     return propertiesMap
