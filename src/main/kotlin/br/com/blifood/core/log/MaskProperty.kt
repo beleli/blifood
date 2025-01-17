@@ -101,14 +101,28 @@ fun String.maskName(): String {
 }
 
 fun String.compactJson(): String {
-    var isInQuotes = false
-    val result = StringBuilder()
-    for (char in this) {
-        when (char) {
-            '"' -> isInQuotes = !isInQuotes
-            ' ', '\r', '\n', '\t' -> if (!isInQuotes) continue
+    val result = java.lang.StringBuilder(this.length)
+    var i = 0
+    while (i < this.length) {
+        val ch = this[i]
+        when {
+            ch == '\u0000' || ch == '\\' -> {
+                i++
+                continue
+            }
+            ch == '"' && i < this.length - 1 && this[i + 1] == '{' -> {
+                result.append('{')
+                i++
+            }
+            ch == '}' && i < this.length - 1 && this[i + 1] == '"' -> {
+                result.append('}')
+                i++
+            }
+            else -> {
+                result.append(ch)
+            }
         }
-        result.append(char)
+        i++
     }
     return result.toString()
 }

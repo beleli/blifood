@@ -6,8 +6,8 @@ spring:
   mail:
     host: smtp.sendgrid.net
     port: 587
-    username: apikey
-    password: test
+    username: secretsmanager:prod/blifood/emailApikey
+    password: secretsmanager:prod/blifood/emailPassword
 
 blifood:
   logging:
@@ -24,8 +24,8 @@ blifood:
   storage:
     type: S3
     s3:
-      access-key: localstack
-      secret-access-key: localstack
-      bucket: blifood-local
+      access-key: secretsmanager:prod/blifood/s3AccessKey
+      secret-access-key: secretsmanager:prod/blifood/s3SecretAccessKey
+      bucket: blifood-prod
       region: us-east-1
       path: catalog
