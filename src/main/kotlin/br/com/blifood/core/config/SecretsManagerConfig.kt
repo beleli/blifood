@@ -3,6 +3,7 @@ package br.com.blifood.core.config
 import br.com.blifood.core.properties.SecretsManagerProperties
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
+import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials
@@ -12,6 +13,7 @@ import software.amazon.awssdk.services.secretsmanager.model.GetSecretValueReques
 import java.net.URI
 
 @Configuration
+@EnableConfigurationProperties(SecretsManagerProperties::class)
 class SecretsManagerConfig(
     private val secretsManagerProperties: SecretsManagerProperties
 ) {

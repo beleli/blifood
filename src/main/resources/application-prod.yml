@@ -1,8 +1,6 @@
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/postgresDb
-    username: prod/blifood/databaseUser
-    password: prod/blifood/databasePassword
   mail:
     host: smtp.sendgrid.net
     port: 587
@@ -12,6 +10,9 @@ spring:
 blifood:
   logging:
     invalid-requests: false
+  datasource:
+    username: secretsmanager:prod/blifood/databaseUser
+    password: secretsmanager:prod/blifood/databasePassword
   secrets-manager:
     impl: ${BLIFOOD_SECRETS_MANAGER_IMPL:aws}
   cache:

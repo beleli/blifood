@@ -3,7 +3,7 @@ package br.com.blifood.core.properties
 import org.springframework.boot.context.properties.ConfigurationProperties
 
 @ConfigurationProperties("blifood.cache")
-data class CacheProperties(
+class CacheProperties(
     val type: Type,
     val redis: Redis?
 ) {
@@ -18,7 +18,7 @@ data class CacheProperties(
         MEMORY
     }
 
-    data class Redis(
+    class Redis(
         val host: String,
         val port: Int
     )

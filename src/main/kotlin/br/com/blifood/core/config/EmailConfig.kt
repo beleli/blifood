@@ -5,11 +5,13 @@ import br.com.blifood.domain.service.EmailService
 import br.com.blifood.infrastructure.email.FakeEmailAdapter
 import br.com.blifood.infrastructure.email.SmtpEmailAdapter
 import br.com.blifood.infrastructure.email.TemplateProcessor
+import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.mail.javamail.JavaMailSenderImpl
 
 @Configuration
+@EnableConfigurationProperties(EmailProperties::class)
 class EmailConfig(
     private val emailProperties: EmailProperties,
     private val templateProcessor: TemplateProcessor

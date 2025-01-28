@@ -5,12 +5,13 @@ spring:
       fail-on-ignored-properties: true
   datasource:
     driver-class-name: org.postgresql.Driver
-  flyway:
-    schemas: blifood
   jpa:
     properties:
       hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
         default_schema: blifood
+  flyway:
+    schemas: blifood
 
 logging:
   pattern:

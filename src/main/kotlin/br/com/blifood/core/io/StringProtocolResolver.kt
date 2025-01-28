@@ -6,18 +6,16 @@ import org.springframework.core.io.ByteArrayResource
 import org.springframework.core.io.ProtocolResolver
 import org.springframework.core.io.Resource
 import org.springframework.core.io.ResourceLoader
-import java.util.Base64
 
-class Base64ProtocolResolver : ProtocolResolver, ApplicationListener<ApplicationContextInitializedEvent> {
+class StringProtocolResolver : ProtocolResolver, ApplicationListener<ApplicationContextInitializedEvent> {
 
     companion object {
-        private const val BASE64_PREFIX = "base64:"
+        private const val STRING_PREFIX = "string:"
     }
 
     override fun resolve(location: String, resourceLoader: ResourceLoader): Resource? {
-        if (location.startsWith(BASE64_PREFIX)) {
-            val decodedResource = Base64.getDecoder().decode(location.substring(7))
-            return ByteArrayResource(decodedResource)
+        if (location.startsWith(STRING_PREFIX)) {
+            return ByteArrayResource(location.substring(STRING_PREFIX.length).toByteArray())
         }
         return null
     }

@@ -21,11 +21,11 @@ class StorageProperties(
         S3
     }
 
-    data class Local(
+    class Local(
         val path: String
     )
 
-    data class S3(
+    class S3(
         val accessKey: String,
         val secretAccessKey: String,
         val bucket: String,

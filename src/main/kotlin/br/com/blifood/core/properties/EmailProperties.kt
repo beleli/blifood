@@ -3,7 +3,7 @@ package br.com.blifood.core.properties
 import org.springframework.boot.context.properties.ConfigurationProperties
 
 @ConfigurationProperties("blifood.email")
-data class EmailProperties(
+class EmailProperties(
     val impl: Impl,
     val from: String,
     val to: Set<String>?

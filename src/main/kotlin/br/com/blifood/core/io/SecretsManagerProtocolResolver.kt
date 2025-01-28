@@ -11,9 +11,11 @@ import org.springframework.core.io.Resource
 import org.springframework.core.io.ResourceLoader
 import software.amazon.awssdk.services.secretsmanager.SecretsManagerClient
 
-private const val SECRETS_MANAGER_PREFIX = "secretsmanager:"
-
 class SecretsManagerProtocolResolver : ProtocolResolver, ApplicationListener<ApplicationContextInitializedEvent> {
+
+    companion object {
+        private const val SECRETS_MANAGER_PREFIX = "secretsmanager:"
+    }
 
     private val secretsManagerClient = setSecretsManagerClient()
     private val base64ProtocolResolver = Base64ProtocolResolver()

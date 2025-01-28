@@ -1,17 +1,17 @@
 package br.com.blifood.core.config
 
+import br.com.blifood.core.properties.DataSourceProperties
+import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.context.annotation.Profile
 import org.springframework.core.env.Environment
-import software.amazon.awssdk.services.secretsmanager.SecretsManagerClient
 import javax.sql.DataSource
 
 @Configuration
-@Profile("!test")
+@EnableConfigurationProperties(DataSourceProperties::class)
 class DataSourceConfig(
     private val environment: Environment,
-    private val secretsManagerClient: SecretsManagerClient
+    private val dataSourceProperties: DataSourceProperties
 ) {
 
     @Bean
@@ -20,8 +20,8 @@ class DataSourceConfig(
         dataSource.setDriverClassName(environment.getProperty("spring.datasource.driver-class-name")!!)
         dataSource.schema = environment.getProperty("spring.jpa.properties.hibernate.default_schema")
         dataSource.url = environment.getProperty("spring.datasource.url")
-        dataSource.username = secretsManagerClient.getSecretValue(environment.getProperty("spring.datasource.username")!!)
-        dataSource.password = secretsManagerClient.getSecretValue(environment.getProperty("spring.datasource.password")!!)
+        dataSource.username = dataSourceProperties.username
+        dataSource.password = dataSourceProperties.password
         return dataSource
     }
 }

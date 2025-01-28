@@ -4,8 +4,6 @@ server:
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/postgresDb
-    username: local/blifood/databaseUser
-    password: local/blifood/databasePassword
   jpa:
     show-sql: true
   flyway:
@@ -16,6 +14,9 @@ blifood:
     invalid-requests: true
   secrets-manager:
     impl: ${BLIFOOD_SECRETS_MANAGER_IMPL:localstack}
+  datasource:
+    username: secretsmanager:local/blifood/databaseUser
+    password: secretsmanager:local/blifood/databasePassword
   cache:
     type: redis
     redis:

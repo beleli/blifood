@@ -79,6 +79,7 @@ tasks.withType<KotlinCompile> {
 }
 
 tasks.withType<Test> {
+    systemProperties(Pair("spring.profiles.active", "test"))
     environment("BLIFOOD_SECRETS_MANAGER_IMPL", "localstack")
     useJUnitPlatform()
 }

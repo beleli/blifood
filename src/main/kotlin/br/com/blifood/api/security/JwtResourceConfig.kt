@@ -1,6 +1,8 @@
 package br.com.blifood.api.security
 
 import br.com.blifood.api.filter.JwtAuthenticationFilter
+import br.com.blifood.core.properties.JwtKeyStoreProperties
+import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
@@ -13,6 +15,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
+@EnableConfigurationProperties(JwtKeyStoreProperties::class)
 class JwtResourceConfig(private val jwtKeyProvider: JwtKeyProvider) {
 
     private val whiteList = arrayOf(
