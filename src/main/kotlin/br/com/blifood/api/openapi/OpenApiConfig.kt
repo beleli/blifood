@@ -8,7 +8,6 @@ import io.swagger.v3.oas.annotations.security.SecurityScheme
 import io.swagger.v3.oas.models.Components
 import io.swagger.v3.oas.models.OpenAPI
 import io.swagger.v3.oas.models.Operation
-import io.swagger.v3.oas.models.PathItem
 import io.swagger.v3.oas.models.info.Info
 import io.swagger.v3.oas.models.media.Content
 import io.swagger.v3.oas.models.media.MediaType
@@ -31,10 +30,7 @@ import java.util.function.Consumer
 )
 class OpenApiConfig {
 
-    private val badRequestResponse = "BadRequestResponse"
-    private val notFoundResponse = "NotFoundResponse"
-    private val notAcceptableResponse = "NotAcceptableResponse"
-    private val internalServerErrorResponse = "InternalServerErrorResponse"
+    private val clientErrorResponse = "ClientErrorResponse"
 
     @Bean
     fun openAPI(): OpenAPI {
@@ -82,30 +78,8 @@ class OpenApiConfig {
         return OpenApiCustomizer { openApi ->
             openApi.paths.values.forEach(
                 Consumer { pathItem ->
-                    pathItem.readOperationsMap().forEach { (httpMethod: PathItem.HttpMethod, operation: Operation) ->
-                        val responses = operation.responses
-                        when (httpMethod) {
-                            PathItem.HttpMethod.GET -> {
-                                responses.addApiResponse("406", ApiResponse().`$ref`(notAcceptableResponse))
-                            }
-
-                            PathItem.HttpMethod.POST -> {
-                                responses.addApiResponse("400", ApiResponse().`$ref`(badRequestResponse))
-                                responses.addApiResponse("404", ApiResponse().`$ref`(notFoundResponse))
-                            }
-
-                            PathItem.HttpMethod.PUT -> {
-                                responses.addApiResponse("400", ApiResponse().`$ref`(badRequestResponse))
-                            }
-
-                            PathItem.HttpMethod.DELETE -> {
-                                responses.addApiResponse("400", ApiResponse().`$ref`(badRequestResponse))
-                                responses.addApiResponse("404", ApiResponse().`$ref`(notFoundResponse))
-                            }
-
-                            else -> {}
-                        }
-                        responses.addApiResponse("500", ApiResponse().`$ref`(internalServerErrorResponse))
+                    pathItem.readOperations().forEach { operation: Operation ->
+                        operation.responses.addApiResponse("4xx", ApiResponse().`$ref`(clientErrorResponse))
                     }
                 }
             )
@@ -114,16 +88,9 @@ class OpenApiConfig {
 
     private fun generateResponses(): Map<String, ApiResponse> {
         val apiResponseMap = mutableMapOf<String, ApiResponse>()
+        val content = Content().addMediaType(APPLICATION_JSON_VALUE, MediaType().schema(Schema<ApiProblemDetail>().`$ref`("ApiProblemDetail")))
 
-        val content = Content().addMediaType(
-            APPLICATION_JSON_VALUE,
-            MediaType().schema(Schema<ApiProblemDetail>().`$ref`("ApiProblemDetail"))
-        )
-
-        apiResponseMap[badRequestResponse] = ApiResponse().description("Bad Request").content(content)
-        apiResponseMap[notFoundResponse] = ApiResponse().description("Not Found").content(content)
-        apiResponseMap[notAcceptableResponse] = ApiResponse().description("Not Acceptable").content(content)
-        apiResponseMap[internalServerErrorResponse] = ApiResponse().description("Internal Server Error").content(content)
+        apiResponseMap[clientErrorResponse] = ApiResponse().description("Default api error response").content(content)
 
         return apiResponseMap
     }

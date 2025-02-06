@@ -5,9 +5,6 @@ import br.com.blifood.api.v1.model.ProductModel
 import br.com.blifood.api.v1.model.input.ProductInputModel
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
-import io.swagger.v3.oas.annotations.media.Content
-import io.swagger.v3.oas.annotations.media.Schema
-import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.data.domain.Pageable
 import org.springframework.hateoas.PagedModel
@@ -18,25 +15,14 @@ import org.springframework.web.bind.annotation.RequestBody
 interface RestaurantProductControllerOpenApi {
 
     @PageableParameter
-    @Operation(
-        summary = "List all products of a restaurant",
-        responses = [
-            ApiResponse(responseCode = "200")
-        ]
-    )
+    @Operation(summary = "List all products of a restaurant")
     fun findAll(
         @Parameter(example = "1", required = true)
         restaurantId: Long,
         @Parameter(hidden = true) pageable: Pageable
     ): PagedModel<ProductModel>
 
-    @Operation(
-        summary = "Find Product by Id",
-        responses = [
-            ApiResponse(responseCode = "200"),
-            ApiResponse(responseCode = "400", content = [Content(schema = Schema(ref = "ApiProblemDetail"))])
-        ]
-    )
+    @Operation(summary = "Find Product by Id")
     fun findById(
         @Parameter(example = "1", required = true)
         restaurantId: Long,
@@ -44,14 +30,7 @@ interface RestaurantProductControllerOpenApi {
         productId: Long
     ): ProductModel
 
-    @Operation(
-        summary = "Insert a Product",
-        responses = [
-            ApiResponse(responseCode = "201"),
-            ApiResponse(responseCode = "400", content = [Content(schema = Schema(ref = "ApiProblemDetail"))]),
-            ApiResponse(responseCode = "404", content = [Content(schema = Schema(ref = "ApiProblemDetail"))])
-        ]
-    )
+    @Operation(summary = "Insert a Product")
     fun create(
         @Parameter(example = "1", required = true)
         restaurantId: Long,
@@ -59,14 +38,7 @@ interface RestaurantProductControllerOpenApi {
         productInputModel: ProductInputModel
     ): ProductModel
 
-    @Operation(
-        summary = "Update Product by Id",
-        responses = [
-            ApiResponse(responseCode = "200"),
-            ApiResponse(responseCode = "400", content = [Content(schema = Schema(ref = "ApiProblemDetail"))]),
-            ApiResponse(responseCode = "404", content = [Content(schema = Schema(ref = "ApiProblemDetail"))])
-        ]
-    )
+    @Operation(summary = "Update Product by Id")
     @PutMapping("/{productId}")
     fun alter(
         @Parameter(example = "1", required = true)
@@ -77,14 +49,7 @@ interface RestaurantProductControllerOpenApi {
         productInputModel: ProductInputModel
     ): ProductModel
 
-    @Operation(
-        summary = "Delete Product by Id",
-        responses = [
-            ApiResponse(responseCode = "204"),
-            ApiResponse(responseCode = "400", content = [Content(schema = Schema(ref = "ApiProblemDetail"))]),
-            ApiResponse(responseCode = "404", content = [Content(schema = Schema(ref = "ApiProblemDetail"))])
-        ]
-    )
+    @Operation(summary = "Delete Product by Id")
     fun delete(
         @Parameter(example = "1", required = true)
         restaurantId: Long,

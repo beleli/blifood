@@ -5,9 +5,6 @@ import br.com.blifood.api.v1.model.CulinaryModel
 import br.com.blifood.api.v1.model.input.CulinaryInputModel
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
-import io.swagger.v3.oas.annotations.media.Content
-import io.swagger.v3.oas.annotations.media.Schema
-import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.data.domain.Pageable
 import org.springframework.hateoas.PagedModel
@@ -17,47 +14,22 @@ import org.springframework.web.bind.annotation.RequestBody
 interface CulinaryControllerOpenApi {
 
     @PageableParameter
-    @Operation(
-        summary = "List all Culinary",
-        responses = [
-            ApiResponse(responseCode = "200")
-        ]
-    )
+    @Operation(summary = "List all Culinary")
     fun findAll(@Parameter(hidden = true) pageable: Pageable): PagedModel<CulinaryModel>
 
-    @Operation(
-        summary = "Find Culinary by Id",
-        responses = [
-            ApiResponse(responseCode = "200"),
-            ApiResponse(responseCode = "400", content = [Content(schema = Schema(ref = "ApiProblemDetail"))]),
-            ApiResponse(responseCode = "404", content = [Content(schema = Schema(ref = "ApiProblemDetail"))])
-        ]
-    )
+    @Operation(summary = "Find Culinary by Id")
     fun findById(
         @Parameter(example = "1", required = true)
         culinaryId: Long
     ): CulinaryModel
 
-    @Operation(
-        summary = "Insert a Culinary",
-        responses = [
-            ApiResponse(responseCode = "201"),
-            ApiResponse(responseCode = "400", content = [Content(schema = Schema(ref = "ApiProblemDetail"))])
-        ]
-    )
+    @Operation(summary = "Insert a Culinary")
     fun create(
         @RequestBody(required = true)
         culinaryInputModel: CulinaryInputModel
     ): CulinaryModel
 
-    @Operation(
-        summary = "Update Culinary by Id",
-        responses = [
-            ApiResponse(responseCode = "200"),
-            ApiResponse(responseCode = "400", content = [Content(schema = Schema(ref = "ApiProblemDetail"))]),
-            ApiResponse(responseCode = "404", content = [Content(schema = Schema(ref = "ApiProblemDetail"))])
-        ]
-    )
+    @Operation(summary = "Update Culinary by Id")
     fun alter(
         @Parameter(example = "1", required = true)
         culinaryId: Long,
@@ -65,14 +37,7 @@ interface CulinaryControllerOpenApi {
         culinaryInputModel: CulinaryInputModel
     ): CulinaryModel
 
-    @Operation(
-        summary = "Delete Culinary by Id",
-        responses = [
-            ApiResponse(responseCode = "204"),
-            ApiResponse(responseCode = "400", content = [Content(schema = Schema(ref = "ApiProblemDetail"))]),
-            ApiResponse(responseCode = "404", content = [Content(schema = Schema(ref = "ApiProblemDetail"))])
-        ]
-    )
+    @Operation(summary = "Delete Culinary by Id")
     fun delete(
         @Parameter(example = "1", required = true)
         culinaryId: Long

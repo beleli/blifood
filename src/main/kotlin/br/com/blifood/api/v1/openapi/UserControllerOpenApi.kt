@@ -7,48 +7,25 @@ import br.com.blifood.api.v1.model.input.UserInputModel
 import br.com.blifood.api.v1.model.input.UserWithPasswordInputModel
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
-import io.swagger.v3.oas.annotations.media.Content
-import io.swagger.v3.oas.annotations.media.Schema
-import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.web.bind.annotation.RequestBody
 
 @Tag(name = "Users")
 interface UserControllerOpenApi {
 
-    @Operation(
-        summary = "Find User by Id",
-        responses = [
-            ApiResponse(responseCode = "200"),
-            ApiResponse(responseCode = "400", content = [Content(schema = Schema(ref = "ApiProblemDetail"))]),
-            ApiResponse(responseCode = "404", content = [Content(schema = Schema(ref = "ApiProblemDetail"))])
-        ]
-    )
+    @Operation(summary = "Find User by Id")
     fun findById(
         @Parameter(example = "1", required = true)
         userId: Long
     ): UserModel
 
-    @Operation(
-        summary = "Insert a User",
-        responses = [
-            ApiResponse(responseCode = "201"),
-            ApiResponse(responseCode = "400", content = [Content(schema = Schema(ref = "ApiProblemDetail"))]),
-            ApiResponse(responseCode = "404", content = [Content(schema = Schema(ref = "ApiProblemDetail"))])
-        ]
-    )
+    @Operation(summary = "Insert a User")
     fun create(
         @RequestBody(required = true)
         userWithPasswordInputModel: UserWithPasswordInputModel
     ): UserModel
 
-    @Operation(
-        summary = "Update User by Id",
-        responses = [
-            ApiResponse(responseCode = "200"),
-            ApiResponse(responseCode = "400", content = [Content(schema = Schema(ref = "ApiProblemDetail"))])
-        ]
-    )
+    @Operation(summary = "Update User by Id")
     fun alter(
         @Parameter(example = "1", required = true)
         userId: Long,
@@ -56,14 +33,7 @@ interface UserControllerOpenApi {
         userInputModel: UserInputModel
     ): UserModel
 
-    @Operation(
-        summary = "Update user password by Id",
-        responses = [
-            ApiResponse(responseCode = "200"),
-            ApiResponse(responseCode = "400", content = [Content(schema = Schema(ref = "ApiProblemDetail"))]),
-            ApiResponse(responseCode = "404", content = [Content(schema = Schema(ref = "ApiProblemDetail"))])
-        ]
-    )
+    @Operation(summary = "Update user password by Id")
     fun changePassword(
         @Parameter(example = "1", required = true)
         userId: Long,
@@ -71,14 +41,7 @@ interface UserControllerOpenApi {
         userChangePasswordModel: UserChangePasswordModel
     )
 
-    @Operation(
-        summary = "Update user profile by Id",
-        responses = [
-            ApiResponse(responseCode = "200"),
-            ApiResponse(responseCode = "400", content = [Content(schema = Schema(ref = "ApiProblemDetail"))]),
-            ApiResponse(responseCode = "404", content = [Content(schema = Schema(ref = "ApiProblemDetail"))])
-        ]
-    )
+    @Operation(summary = "Update user profile by Id")
     fun changeProfile(
         @Parameter(example = "1", required = true)
         userId: Long,

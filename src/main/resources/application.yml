@@ -13,6 +13,9 @@ spring:
   flyway:
     schemas: blifood
 
+springdoc:
+  remove-broken-reference-definitions: false
+
 logging:
   pattern:
     level: '[traceId:%X{traceId} spanId:%X{spanId}] %6level'

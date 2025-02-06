@@ -19,6 +19,7 @@ import org.springframework.data.mapping.PropertyReferenceException
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.HttpStatusCode
+import org.springframework.http.ProblemDetail
 import org.springframework.http.ResponseEntity
 import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.security.access.AccessDeniedException
@@ -138,8 +139,9 @@ class ExceptionHandler(
         request: WebRequest
     ): ResponseEntity<Any>? {
         val newBody = when (body) {
-            is String -> buildProblem(statusCode, body, request)
             null -> buildProblem(statusCode, ex.localizedMessage, request)
+            is String -> buildProblem(statusCode, body, request)
+            is ProblemDetail -> buildProblem(statusCode, body.detail ?: "", request)
             else -> body
         }
         apiLogger.logErrorResponse(statusCode.value(), newBody)
