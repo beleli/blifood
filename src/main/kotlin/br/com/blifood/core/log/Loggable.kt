@@ -7,13 +7,6 @@ import kotlin.reflect.KProperty1
 import kotlin.reflect.full.declaredMemberProperties
 import kotlin.reflect.full.findAnnotation
 
-@Target(AnnotationTarget.PROPERTY, AnnotationTarget.FIELD)
-annotation class MaskProperty(val format: LogMaskFormat = LogMaskFormat.DEFAULT)
-
-enum class LogMaskFormat {
-    DEFAULT, CPF, ADDRESS, EMAIL, NAME
-}
-
 interface Loggable {
     companion object {
         const val MASK_MAX_LENGTH = 5
@@ -88,5 +81,12 @@ interface Loggable {
 
     private fun String.maskName(): String {
         return this.split(" ").map { it.maskAfter(2) }.reduce { acc, s -> "$acc $s" }
+    }
+
+    @Target(AnnotationTarget.PROPERTY, AnnotationTarget.FIELD)
+    annotation class MaskProperty(val format: LogMaskFormat = LogMaskFormat.DEFAULT)
+
+    enum class LogMaskFormat {
+        DEFAULT, CPF, ADDRESS, EMAIL, NAME
     }
 }

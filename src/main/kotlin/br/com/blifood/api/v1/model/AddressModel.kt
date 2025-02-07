@@ -1,8 +1,8 @@
 package br.com.blifood.api.v1.model
 
-import br.com.blifood.core.log.LogMaskFormat
 import br.com.blifood.core.log.Loggable
-import br.com.blifood.core.log.MaskProperty
+import br.com.blifood.core.log.Loggable.LogMaskFormat
+import br.com.blifood.core.log.Loggable.MaskProperty
 import br.com.blifood.domain.entity.Address
 import com.fasterxml.jackson.annotation.JsonInclude
 import io.swagger.v3.oas.annotations.media.Schema
