@@ -1,6 +1,7 @@
 package br.com.blifood.api.v1.model
 
-import br.com.blifood.core.log.MaskProperty
+import br.com.blifood.core.log.Loggable
+import br.com.blifood.core.log.Loggable.MaskProperty
 import br.com.blifood.domain.entity.OrderItem
 import com.fasterxml.jackson.annotation.JsonInclude
 import io.swagger.v3.oas.annotations.media.Schema
@@ -28,7 +29,8 @@ class OrderItemModel(
     @Schema(example = "Sem pimenta")
     @MaskProperty
     val observation: String?
-)
+) : Loggable
+
 fun OrderItem.toModel() = OrderItemModel(
     product.id,
     product.name,

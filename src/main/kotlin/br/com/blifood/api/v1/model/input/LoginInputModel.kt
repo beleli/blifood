@@ -1,7 +1,8 @@
 package br.com.blifood.api.v1.model.input
 
-import br.com.blifood.core.log.LogMaskFormat
-import br.com.blifood.core.log.MaskProperty
+import br.com.blifood.core.log.Loggable
+import br.com.blifood.core.log.Loggable.LogMaskFormat
+import br.com.blifood.core.log.Loggable.MaskProperty
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotBlank
@@ -18,4 +19,4 @@ data class LoginInputModel(
     @MaskProperty
     @field:NotBlank
     val password: String? = null
-)
+) : Loggable

@@ -1,5 +1,6 @@
 package br.com.blifood.api.v1.model.input
 
+import br.com.blifood.core.log.Loggable
 import br.com.blifood.domain.entity.Order
 import br.com.blifood.domain.entity.PaymentMethod
 import br.com.blifood.domain.entity.Restaurant
@@ -29,7 +30,8 @@ data class OrderInputModel(
     @field:NotNull
     @field:Size(min = 1)
     val items: List<OrderItemInputModel>?
-)
+) : Loggable
+
 fun OrderInputModel.toEntity(userId: Long) = Order(
     user = User(id = userId),
     restaurant = Restaurant(id = restaurantId!!),

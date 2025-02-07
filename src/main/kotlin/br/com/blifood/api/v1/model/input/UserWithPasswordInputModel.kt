@@ -1,7 +1,8 @@
 package br.com.blifood.api.v1.model.input
 
-import br.com.blifood.core.log.LogMaskFormat
-import br.com.blifood.core.log.MaskProperty
+import br.com.blifood.core.log.Loggable
+import br.com.blifood.core.log.Loggable.LogMaskFormat
+import br.com.blifood.core.log.Loggable.MaskProperty
 import br.com.blifood.domain.entity.User
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.Email
@@ -26,7 +27,8 @@ data class UserWithPasswordInputModel(
     @MaskProperty
     @field:NotBlank
     val password: String? = null
-)
+) : Loggable
+
 fun UserWithPasswordInputModel.toEntity() = User(
     name = name!!,
     email = email!!,

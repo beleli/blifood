@@ -2,7 +2,8 @@ package br.com.blifood.api.v1.model
 
 import br.com.blifood.api.v1.DEFAULT_PAGE_SIZE
 import br.com.blifood.api.v1.controller.RestaurantProductController
-import br.com.blifood.core.log.MaskProperty
+import br.com.blifood.core.log.Loggable
+import br.com.blifood.core.log.Loggable.MaskProperty
 import br.com.blifood.domain.entity.Product
 import io.swagger.v3.oas.annotations.media.Schema
 import org.springframework.data.domain.Pageable
@@ -37,7 +38,7 @@ open class ProductModel(
 
     val active: Boolean
 
-) : RepresentationModel<StateModel>() {
+) : RepresentationModel<StateModel>(), Loggable {
     companion object {
         fun findAllLink(restaurantId: Long, pageable: Pageable, isSelfRel: Boolean = false) = linkTo(methodOn(RestaurantProductController::class.java).findAll(restaurantId, pageable))
             .withRel(if (isSelfRel) IanaLinkRelations.SELF_VALUE else COLLECTION_RELATION)

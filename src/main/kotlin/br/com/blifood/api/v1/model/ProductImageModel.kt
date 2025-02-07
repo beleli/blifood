@@ -1,7 +1,8 @@
 package br.com.blifood.api.v1.model
 
 import br.com.blifood.api.v1.controller.RestaurantProductImageController
-import br.com.blifood.core.log.MaskProperty
+import br.com.blifood.core.log.Loggable
+import br.com.blifood.core.log.Loggable.MaskProperty
 import br.com.blifood.domain.entity.ProductImage
 import com.fasterxml.jackson.annotation.JsonInclude
 import io.swagger.v3.oas.annotations.media.Schema
@@ -36,7 +37,7 @@ open class ProductImageModel(
     @Schema(example = "202912")
     val size: Long
 
-) : RepresentationModel<ProductImageModel>() {
+) : RepresentationModel<ProductImageModel>(), Loggable {
     companion object {
         fun findByIdLink(restaurantId: Long, id: Long, isSelfRel: Boolean = false) =
             linkTo(methodOn(RestaurantProductImageController::class.java).findById(restaurantId, id))

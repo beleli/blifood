@@ -1,6 +1,7 @@
 package br.com.blifood.api.v1.model
 
 import br.com.blifood.api.v1.controller.OrderController
+import br.com.blifood.core.log.Loggable
 import br.com.blifood.domain.entity.Order
 import br.com.blifood.domain.entity.OrderStatus
 import com.fasterxml.jackson.annotation.JsonInclude
@@ -52,7 +53,7 @@ open class OrderModel(
     val deliveryAddress: AddressModel,
 
     val items: List<OrderItemModel>
-) : RepresentationModel<OrderModel>() {
+) : RepresentationModel<OrderModel>(), Loggable {
     companion object {
         /*fun controllerLink(isSelfRel: Boolean = false) = linkTo(OrderController::class.java)
             .withRel(if (isSelfRel) IanaLinkRelations.SELF_VALUE else COLLECTION_RELATION)*/
