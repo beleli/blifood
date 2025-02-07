@@ -2,6 +2,7 @@ package br.com.blifood.api.v1.model.input
 
 import br.com.blifood.api.validation.NumericValue
 import br.com.blifood.core.log.LogMaskFormat
+import br.com.blifood.core.log.Loggable
 import br.com.blifood.core.log.MaskProperty
 import br.com.blifood.domain.entity.Address
 import br.com.blifood.domain.entity.City
@@ -47,7 +48,8 @@ data class AddressInputModel(
     @field:NotBlank
     @field:Size(max = 60)
     val district: String?
-)
+) : Loggable
+
 fun AddressInputModel.toEntity() = Address(
     City(id = this.cityId!!),
     zipCode!!,

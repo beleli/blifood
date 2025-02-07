@@ -1,5 +1,6 @@
 package br.com.blifood.api.v1.model.input
 
+import br.com.blifood.core.log.Loggable
 import br.com.blifood.domain.entity.City
 import br.com.blifood.domain.entity.State
 import io.swagger.v3.oas.annotations.media.Schema
@@ -19,8 +20,10 @@ data class CityInputModel(
     @field:NotNull
     @field:Positive
     val stateId: Long?
-)
+) : Loggable
+
 fun CityInputModel.toEntity() = City(name = name!!, state = State(id = stateId!!))
+
 fun City.applyModel(cityInputModel: CityInputModel) = this.apply {
     name = cityInputModel.name!!
     state = State(id = cityInputModel.stateId!!)

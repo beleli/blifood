@@ -4,6 +4,7 @@ import br.com.blifood.api.v1.DEFAULT_PAGE_SIZE
 import br.com.blifood.api.v1.controller.RestaurantController
 import br.com.blifood.api.v1.controller.RestaurantPaymentMethodController
 import br.com.blifood.core.log.LogMaskFormat
+import br.com.blifood.core.log.Loggable
 import br.com.blifood.core.log.MaskProperty
 import br.com.blifood.domain.entity.Restaurant
 import io.swagger.v3.oas.annotations.media.Schema
@@ -42,7 +43,7 @@ open class RestaurantModel(
 
     val paymentMethods: List<PaymentMethodModel>
 
-) : RepresentationModel<RestaurantModel>() {
+) : RepresentationModel<RestaurantModel>(), Loggable {
     companion object {
         fun findAllLink(pageable: Pageable, isSelfRel: Boolean = false) = linkTo(methodOn(RestaurantController::class.java).findAll(pageable))
             .withRel(if (isSelfRel) IanaLinkRelations.SELF_VALUE else COLLECTION_RELATION)

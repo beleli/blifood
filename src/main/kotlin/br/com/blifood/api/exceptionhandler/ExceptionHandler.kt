@@ -2,8 +2,7 @@ package br.com.blifood.api.exceptionhandler
 
 import br.com.blifood.api.exceptionhandler.ApiProblemDetail.ApiFieldError
 import br.com.blifood.api.v1.getRequestContextHolderUserId
-import br.com.blifood.core.log.compactJson
-import br.com.blifood.core.log.toJsonLog
+import br.com.blifood.core.log.Loggable
 import br.com.blifood.core.message.Messages
 import br.com.blifood.domain.exception.BusinessException
 import br.com.blifood.domain.exception.EntityAlreadyExistsException
@@ -165,13 +164,14 @@ class ExceptionHandler(
     }
 
     private fun Logger.logErrorResponse(status: Int, response: Any) {
-        this.error("response httpStatus:$status, body:${response.toJsonLog()}")
+        val log = if (response is Loggable) response.toJsonLog() else "not logged"
+        this.error("response httpStatus:$status, body:$log")
     }
 
     private fun getRequestBody(request: WebRequest): String {
         if (!logInvalidRequest) return "not logged"
         val nativeRequest = (request as ServletWebRequest).nativeRequest as ContentCachingRequestWrapper
-        return String(nativeRequest.contentAsByteArray).compactJson()
+        return String(nativeRequest.contentAsByteArray)
     }
 
     private fun Logger.logRequest(request: WebRequest) {

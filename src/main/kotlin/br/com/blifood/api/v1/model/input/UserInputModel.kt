@@ -1,6 +1,7 @@
 package br.com.blifood.api.v1.model.input
 
 import br.com.blifood.core.log.LogMaskFormat
+import br.com.blifood.core.log.Loggable
 import br.com.blifood.core.log.MaskProperty
 import br.com.blifood.domain.entity.User
 import io.swagger.v3.oas.annotations.media.Schema
@@ -21,7 +22,8 @@ data class UserInputModel(
     @field:NotBlank
     @field:Email
     val email: String? = null
-)
+) : Loggable
+
 fun UserInputModel.toEntity() = User(
     name = name!!,
     email = email!!

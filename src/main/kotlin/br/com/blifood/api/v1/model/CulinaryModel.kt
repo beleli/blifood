@@ -2,6 +2,7 @@ package br.com.blifood.api.v1.model
 
 import br.com.blifood.api.v1.DEFAULT_PAGE_SIZE
 import br.com.blifood.api.v1.controller.CulinaryController
+import br.com.blifood.core.log.Loggable
 import br.com.blifood.domain.entity.Culinary
 import io.swagger.v3.oas.annotations.media.Schema
 import org.springframework.data.domain.Pageable
@@ -22,7 +23,7 @@ open class CulinaryModel(
     @Schema(example = "Brasileira")
     val name: String
 
-) : RepresentationModel<CulinaryModel>() {
+) : RepresentationModel<CulinaryModel>(), Loggable {
     companion object {
         fun findAllLink(pageable: Pageable, isSelfRel: Boolean = false) = linkTo(methodOn(CulinaryController::class.java).findAll(pageable))
             .withRel(if (isSelfRel) IanaLinkRelations.SELF_VALUE else COLLECTION_RELATION)

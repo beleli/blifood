@@ -1,6 +1,7 @@
 package br.com.blifood.api.v1.model.input
 
 import br.com.blifood.core.log.LogMaskFormat
+import br.com.blifood.core.log.Loggable
 import br.com.blifood.core.log.MaskProperty
 import br.com.blifood.domain.entity.Culinary
 import br.com.blifood.domain.entity.Restaurant
@@ -34,7 +35,8 @@ data class RestaurantInputModel(
     @field:NotNull
     @field:Valid
     val address: AddressInputModel?
-)
+) : Loggable
+
 fun RestaurantInputModel.toEntity() =
     Restaurant(
         culinary = Culinary(id = culinaryId!!),

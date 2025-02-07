@@ -2,6 +2,7 @@ package br.com.blifood.api.v1.model
 
 import br.com.blifood.api.v1.DEFAULT_PAGE_SIZE
 import br.com.blifood.api.v1.controller.CityController
+import br.com.blifood.core.log.Loggable
 import br.com.blifood.domain.entity.City
 import io.swagger.v3.oas.annotations.media.Schema
 import org.springframework.data.domain.Pageable
@@ -25,7 +26,7 @@ open class CityModel(
     @Schema(example = "MG")
     val state: String
 
-) : RepresentationModel<CityModel>() {
+) : RepresentationModel<CityModel>(), Loggable {
     companion object {
         fun findAllLink(pageable: Pageable, isSelfRel: Boolean = false) = linkTo(methodOn(CityController::class.java).findAll(pageable))
             .withRel(if (isSelfRel) IanaLinkRelations.SELF_VALUE else COLLECTION_RELATION)

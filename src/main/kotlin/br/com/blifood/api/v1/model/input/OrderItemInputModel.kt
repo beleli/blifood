@@ -1,5 +1,6 @@
 package br.com.blifood.api.v1.model.input
 
+import br.com.blifood.core.log.Loggable
 import br.com.blifood.core.log.MaskProperty
 import br.com.blifood.domain.entity.OrderItem
 import br.com.blifood.domain.entity.Product
@@ -22,7 +23,8 @@ data class OrderItemInputModel(
     @Schema(example = "Sem pimenta")
     @MaskProperty
     val observation: String?
-)
+) : Loggable
+
 fun OrderItemInputModel.toEntity() = OrderItem(
     product = Product(id = productId!!),
     amount = amount!!,

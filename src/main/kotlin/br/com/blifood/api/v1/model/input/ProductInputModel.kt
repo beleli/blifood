@@ -1,5 +1,6 @@
 package br.com.blifood.api.v1.model.input
 
+import br.com.blifood.core.log.Loggable
 import br.com.blifood.core.log.MaskProperty
 import br.com.blifood.domain.entity.Product
 import br.com.blifood.domain.entity.Restaurant
@@ -28,7 +29,7 @@ data class ProductInputModel(
     @field:NotNull
     @field:PositiveOrZero
     val price: BigDecimal?
-)
+) : Loggable
 
 fun ProductInputModel.toEntity(restaurantId: Long) =
     Product(
