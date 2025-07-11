@@ -1,5 +1,6 @@
 package br.com.blifood.api.exceptionhandler
 
+import br.com.blifood.core.log.Loggable
 import com.fasterxml.jackson.annotation.JsonInclude
 import io.swagger.v3.oas.annotations.media.Schema
 import java.net.URI
@@ -25,7 +26,7 @@ class ApiProblemDetail(
 
     @Schema(description = "List of objects or fields that generated the error")
     val errors: Set<ApiFieldError>? = null
-) {
+) : Loggable {
 
     @Schema(name = "ApiFieldError", description = "Details about a specific field error")
     class ApiFieldError(

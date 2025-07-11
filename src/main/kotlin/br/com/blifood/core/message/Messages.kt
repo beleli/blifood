@@ -1,20 +1,22 @@
 package br.com.blifood.core.message
 
 import org.springframework.context.NoSuchMessageException
+import org.springframework.context.i18n.LocaleContextHolder
 import java.util.*
 
 object Messages {
-    private val resourceBundle = ResourceBundle.getBundle("i18n/messages")
+
     fun get(key: String, vararg args: Any?): String {
+        val resourceBundle = ResourceBundle.getBundle("i18n/messages", LocaleContextHolder.getLocale())
         return try {
             if (args.isEmpty()) {
                 resourceBundle.getString(key)
             } else {
                 resourceBundle.getString(key).format(*args)
             }
-        } catch (ex: NoSuchMessageException) {
+        } catch (_: NoSuchMessageException) {
             key
-        } catch (ex: MissingResourceException) {
+        } catch (_: MissingResourceException) {
             key
         } catch (ex: Exception) {
             throw ex
