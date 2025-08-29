@@ -9,8 +9,8 @@ import jakarta.validation.constraints.Size
 data class StateInputModel(
 
     @Schema(example = "MG")
-    @field:NotBlank
-    @field:Size(min = 2, max = 2)
+    @field:NotBlank(message = "api.constraints.not-blank")
+    @field:Size(min = 2, max = 2, message = "api.constraints.size")
     val name: String?
 ) : Loggable
 

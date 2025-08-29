@@ -88,7 +88,7 @@ class ExceptionHandler(
     fun handleConstraintViolationException(ex: ConstraintViolationException, request: WebRequest): ResponseEntity<Any>? {
         val errors = mutableSetOf<ApiFieldError>()
         ex.constraintViolations.map {
-            errors.add(ApiFieldError(it.propertyPath.toString(), Messages.get(it.message)))
+            errors.add(ApiFieldError(it.propertyPath.toString(), Messages.get(it.message, it.constraintDescriptor.attributes)))
         }
         val problemDetail = buildProblem(HttpStatus.BAD_REQUEST, Messages.get("api.validation-exception"), request, errors)
         return this.handleExceptionInternal(ex, problemDetail, HttpHeaders(), HttpStatus.BAD_REQUEST, request)
