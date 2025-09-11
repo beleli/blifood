@@ -11,13 +11,13 @@ import jakarta.validation.constraints.Positive
 data class OrderItemInputModel(
 
     @Schema(example = "1")
-    @field:NotNull
-    @field:Positive
+    @field:NotNull(message = "constraints.not-null")
+    @field:Positive(message = "constraints.positive")
     val productId: Long?,
 
     @Schema(example = "1")
-    @field:NotNull
-    @field:Positive
+    @field:NotNull(message = "constraints.not-null")
+    @field:Positive(message = "constraints.positive")
     val amount: Int?,
 
     @Schema(example = "Sem pimenta")

@@ -9,8 +9,8 @@ import jakarta.validation.constraints.Size
 data class CulinaryInputModel(
 
     @Schema(example = "1")
-    @field:NotBlank
-    @field:Size(max = 60)
+    @field:NotBlank(message = "constraints.not-blank")
+    @field:Size(max = 60, message = "constraints.size")
     val name: String?
 ) : Loggable
 

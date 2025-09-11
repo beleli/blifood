@@ -13,19 +13,19 @@ data class UserWithPasswordInputModel(
 
     @Schema(example = "Carlos Beleli")
     @MaskProperty(LogMaskFormat.NAME)
-    @field:NotBlank
+    @field:NotBlank(message = "constraints.not-blank")
     @field:Size(max = 80)
     val name: String? = null,
 
     @Schema(example = "beleli@gmail.com")
     @MaskProperty(LogMaskFormat.EMAIL)
-    @field:NotBlank
-    @field:Email
+    @field:NotBlank(message = "constraints.not-blank")
+    @field:Email(message = "constraints.email")
     val email: String? = null,
 
     @Schema(example = "test123")
     @MaskProperty
-    @field:NotBlank
+    @field:NotBlank(message = "constraints.not-blank")
     val password: String? = null
 ) : Loggable
 

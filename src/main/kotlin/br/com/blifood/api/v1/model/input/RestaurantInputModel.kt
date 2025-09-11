@@ -18,22 +18,22 @@ data class RestaurantInputModel(
 
     @Schema(example = "Celina")
     @MaskProperty(LogMaskFormat.NAME)
-    @field:NotBlank
-    @field:Size(max = 80)
+    @field:NotBlank(message = "constraints.not-blank")
+    @field:Size(max = 80, message = "constraints.size")
     val name: String?,
 
     @Schema(example = "10.00")
-    @field:NotNull
-    @field:PositiveOrZero
+    @field:NotNull(message = "constraints.not-null")
+    @field:PositiveOrZero(message = "constraints.positive-or-zero")
     val deliveryFee: BigDecimal?,
 
     @Schema(example = "1")
-    @field:NotNull
-    @field:Positive
+    @field:NotNull(message = "constraints.not-null")
+    @field:Positive(message = "constraints.positive")
     val culinaryId: Long?,
 
-    @field:NotNull
     @field:Valid
+    @field:NotNull(message = "constraints.not-null")
     val address: AddressInputModel?
 ) : Loggable
 

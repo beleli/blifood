@@ -16,15 +16,15 @@ import org.springframework.web.multipart.MultipartFile
 data class ProductImageInputModel(
 
     @Schema(description = "Product photo file (maximum 500KB, JPG and PNG only)")
-    @field:NotNull
+    @field:NotNull(message = "constraints.not-null")
     @field:FileContentType(allowed = [MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE])
     @field:FileSize(max = "500KB")
     val file: MultipartFile?,
 
     @Schema(example = "Foto do produto")
     @MaskProperty
-    @field:NotBlank
-    @field:Size(max = 150)
+    @field:NotBlank(message = "constraints.not-blank")
+    @field:Size(max = 150, message = "constraints.size")
     val description: String?
 ) : Loggable
 

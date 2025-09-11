@@ -13,14 +13,14 @@ data class UserInputModel(
 
     @Schema(example = "Carlos Beleli")
     @MaskProperty(LogMaskFormat.NAME)
-    @field:NotBlank
-    @field:Size(max = 80)
+    @field:NotBlank(message = "constraints.not-blank")
+    @field:Size(max = 80, message = "constraints.size")
     val name: String? = null,
 
     @Schema(example = "gerente@blifood.com.br")
     @MaskProperty(LogMaskFormat.EMAIL)
-    @field:NotBlank
-    @field:Email
+    @field:NotBlank(message = "constraints.not-blank")
+    @field:Email(message = "constraints.email")
     val email: String? = null
 ) : Loggable
 

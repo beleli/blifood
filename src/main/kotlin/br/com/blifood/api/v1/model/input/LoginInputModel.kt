@@ -11,12 +11,12 @@ data class LoginInputModel(
 
     @Schema(example = "gerente@blifood.com.br")
     @MaskProperty(LogMaskFormat.EMAIL)
-    @field:NotBlank
-    @field:Email
+    @field:NotBlank(message = "constraints.not-blank")
+    @field:Email(message = "constraints")
     val username: String? = null,
 
     @Schema(example = "test123")
     @MaskProperty
-    @field:NotBlank
+    @field:NotBlank(message = "constraints.not-blank")
     val password: String? = null
 ) : Loggable

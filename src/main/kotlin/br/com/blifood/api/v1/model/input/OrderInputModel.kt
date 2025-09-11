@@ -14,21 +14,21 @@ import jakarta.validation.constraints.Size
 data class OrderInputModel(
 
     @Schema(example = "1")
-    @field:NotNull
-    @field:Positive
+    @field:NotNull(message = "constraints.not-null")
+    @field:Positive(message = "constraints.positive")
     val restaurantId: Long?,
 
     @Schema(example = "1")
-    @field:NotNull
-    @field:Positive
+    @field:NotNull(message = "constraints.not-null")
+    @field:Positive(message = "constraints.positive")
     val paymentMethodId: Long?,
 
-    @field:NotNull
     @field:Valid
+    @field:NotNull(message = "constraints.not-null")
     val deliveryAddress: AddressInputModel?,
 
-    @field:NotNull
-    @field:Size(min = 1)
+    @field:NotNull(message = "constraints.not-null")
+    @field:Size(min = 1, message = "constraints.size")
     val items: List<OrderItemInputModel>?
 ) : Loggable
 

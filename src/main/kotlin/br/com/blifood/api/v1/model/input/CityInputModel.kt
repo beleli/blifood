@@ -12,13 +12,13 @@ import jakarta.validation.constraints.Size
 data class CityInputModel(
 
     @Schema(example = "Uberlândia")
-    @field:NotBlank
-    @field:Size(max = 80)
+    @field:NotBlank(message = "constraints.not-blank")
+    @field:Size(max = 80, message = "constraints.size")
     val name: String?,
 
     @Schema(example = "1")
-    @field:NotNull
-    @field:Positive
+    @field:NotNull(message = "constraints.not-null")
+    @field:Positive(message = "constraints.positive")
     val stateId: Long?
 ) : Loggable
 

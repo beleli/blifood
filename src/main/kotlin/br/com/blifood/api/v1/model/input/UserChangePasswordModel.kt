@@ -7,10 +7,10 @@ import jakarta.validation.constraints.NotBlank
 data class UserChangePasswordModel(
 
     @MaskProperty
-    @field:NotBlank
+    @field:NotBlank(message = "constraints.not-blank")
     val password: String? = null,
 
     @MaskProperty
-    @field:NotBlank
+    @field:NotBlank(message = "constraints.not-blank")
     val newPassword: String? = null
 ) : Loggable

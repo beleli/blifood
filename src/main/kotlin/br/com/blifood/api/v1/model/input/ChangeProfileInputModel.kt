@@ -9,7 +9,7 @@ import jakarta.validation.constraints.NotBlank
 data class ChangeProfileInputModel(
 
     @Schema(example = "MANAGER")
-    @field:NotBlank
+    @field:NotBlank(message = "constraints.not-blank")
     @field:EnumValue(enumClass = UserProfile::class)
     val profile: String?
 ) : Loggable

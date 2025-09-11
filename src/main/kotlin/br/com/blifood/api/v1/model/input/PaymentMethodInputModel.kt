@@ -9,8 +9,8 @@ import jakarta.validation.constraints.Size
 data class PaymentMethodInputModel(
 
     @Schema(example = "Cartão de Credito")
-    @field:NotBlank
-    @field:Size(max = 60)
+    @field:NotBlank(message = "constraints.not-blank")
+    @field:Size(max = 60, message = "constraints.size")
     val description: String?
 ) : Loggable
 

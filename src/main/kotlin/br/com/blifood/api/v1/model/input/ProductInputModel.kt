@@ -15,19 +15,19 @@ data class ProductInputModel(
 
     @Schema(example = "Marmita")
     @MaskProperty
-    @field:NotBlank
-    @field:Size(max = 80)
+    @field:NotBlank(message = "constraints.not-blank")
+    @field:Size(max = 80, message = "constraints.size")
     val name: String?,
 
     @Schema(example = "Marmita com 2 carnes")
     @MaskProperty
-    @field:NotBlank
+    @field:NotBlank(message = "constraints.not-blank")
     val description: String?,
 
     @Schema(example = "10.00")
     @MaskProperty
-    @field:NotNull
-    @field:PositiveOrZero
+    @field:NotNull(message = "constraints.not-null")
+    @field:PositiveOrZero(message = "constraints.positive-or-zero")
     val price: BigDecimal?
 ) : Loggable
 

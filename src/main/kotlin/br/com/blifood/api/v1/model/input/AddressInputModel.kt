@@ -15,38 +15,38 @@ import jakarta.validation.constraints.Size
 data class AddressInputModel(
 
     @Schema(example = "1")
-    @field:NotNull
-    @field:Positive
+    @field:NotNull(message = "constraints.not-null")
+    @field:Positive(message = "constraints.positive")
     val cityId: Long?,
 
     @Schema(example = "38400000")
     @MaskProperty
     @field:NumericValue
-    @field:NotBlank
-    @field:Size(min = 8, max = 8)
+    @field:NotBlank(message = "constraints.not-blank")
+    @field:Size(min = 8, max = 8, message = "constraints.size")
     val zipCode: String?,
 
     @Schema(example = "Rua Floriano Peixoto")
     @MaskProperty(LogMaskFormat.ADDRESS)
-    @field:NotBlank
-    @field:Size(max = 100)
+    @field:NotBlank(message = "constraints.not-blank")
+    @field:Size(max = 100, message = "constraints.size")
     val street: String?,
 
     @Schema(example = "1500")
     @MaskProperty
-    @field:NotBlank
-    @field:Size(max = 20)
+    @field:NotBlank(message = "constraints.not-blank")
+    @field:Size(max = 20, message = "constraints.size")
     val number: String?,
 
     @Schema(example = "Apto 901")
     @MaskProperty
-    @field:Size(max = 60)
+    @field:Size(max = 60, message = "constraints.size")
     val complement: String?,
 
     @Schema(example = "Centro")
     @MaskProperty
-    @field:NotBlank
-    @field:Size(max = 60)
+    @field:NotBlank(message = "constraints.not-blank")
+    @field:Size(max = 60, message = "constraints.size")
     val district: String?
 ) : Loggable
 
