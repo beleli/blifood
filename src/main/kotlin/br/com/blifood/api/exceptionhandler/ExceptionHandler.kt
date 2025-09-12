@@ -81,7 +81,7 @@ class ExceptionHandler(
 
     @ExceptionHandler(BusinessException::class)
     fun handleBusinessException(ex: BusinessException, request: WebRequest): ResponseEntity<Any>? {
-        return this.handleExceptionInternal(ex, null, HttpHeaders(), HttpStatus.BAD_REQUEST, request)
+        return this.handleExceptionInternal(ex, null, HttpHeaders(), HttpStatus.UNPROCESSABLE_ENTITY, request)
     }
 
     @ExceptionHandler(ConstraintViolationException::class)
